@@ -2,6 +2,8 @@
     <string name="app_name">attendance</string>
     <string name="button">Button</string>
     <string name="title_activity_home_pg">home_pg</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
