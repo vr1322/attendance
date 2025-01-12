@@ -18,8 +18,8 @@
         android:orderInCategory="3" />
     <item
         android:id="@+id/logout"
-        android:title="Settings"
-        android:icon="@drawable/ic_settings"
+        android:title="LogOut"
+        android:icon="@drawable/ic_logout"
         android:orderInCategory="4" />
 </group>
 </menu>

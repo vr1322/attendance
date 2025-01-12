@@ -9,63 +9,63 @@
     tools:context=".home">
 
 
-
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/ma_View"
         android:layout_width="175dp"
         android:layout_height="111dp"
         android:layout_marginTop="370dp"
         android:layout_marginEnd="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/sal_View"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/button" />
+        app:srcCompat="@drawable/ripple_effect" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/ab_View"
         android:layout_width="175dp"
         android:layout_height="111dp"
         android:layout_marginTop="130dp"
         android:contentDescription="TODO"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/el_View"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.8"
-        app:layout_constraintStart_toEndOf="@+id/imageButton2"
+        app:layout_constraintStart_toEndOf="@+id/ma_Button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/button"
+        app:srcCompat="@drawable/ripple_effect"
         tools:ignore="MissingConstraints" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/el_View"
         android:layout_width="175dp"
         android:layout_height="111dp"
         android:layout_marginStart="26dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/ab_View"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.208"
-        app:srcCompat="@drawable/button" />
+        app:srcCompat="@drawable/ripple_effect" />
 
     <ImageButton
         android:id="@+id/el_button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="56dp"
+        android:elevation="10dp"
         android:background="@drawable/circle_bg"
         android:clickable="true"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="@+id/el_View"
+        app:layout_constraintStart_toStartOf="@+id/el_View"
+        app:layout_constraintTop_toTopOf="@+id/el_View"
         app:srcCompat="@drawable/ep_icon" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/sal_View"
         android:layout_width="175dp"
         android:layout_height="111dp"
         android:layout_marginBottom="404dp"
@@ -74,46 +74,49 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.937"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:srcCompat="@drawable/button"
+        app:layout_constraintTop_toBottomOf="@+id/ab_View"
+        app:srcCompat="@drawable/ripple_effect"
         tools:ignore="MissingConstraints" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/ma_Button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginBottom="60dp"
+        android:elevation="10dp"
         android:background="@drawable/circle_bg"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintBottom_toBottomOf="@+id/ma_View"
+        app:layout_constraintEnd_toEndOf="@+id/ma_View"
         app:layout_constraintHorizontal_bias="0.455"
-        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:layout_constraintStart_toStartOf="@+id/ma_View"
         app:srcCompat="@drawable/attend_icon" />
 
     <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/sal_Button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="52dp"
+        android:elevation="10dp"
         android:background="@drawable/circle_bg"
         android:clickable="true"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="@+id/sal_View"
+        app:layout_constraintStart_toStartOf="@+id/sal_View"
+        app:layout_constraintTop_toTopOf="@+id/sal_View"
         app:srcCompat="@drawable/mark_icon" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/ab_Button"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginBottom="56dp"
+        android:elevation="10dp"
         android:background="@drawable/circle_bg"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintBottom_toBottomOf="@+id/ab_View"
+        app:layout_constraintEnd_toEndOf="@+id/ab_View"
         app:layout_constraintHorizontal_bias="0.455"
-        app:layout_constraintStart_toStartOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/ab_View"
         app:srcCompat="@drawable/ot_icon" />
 
     <TextView
@@ -123,11 +126,11 @@
         android:fontFamily="@font/inter_bold"
         android:text="Employee list"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/el_View"
+        app:layout_constraintEnd_toEndOf="@+id/el_View"
         app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/el_View"
+        app:layout_constraintTop_toTopOf="@+id/el_View"
         app:layout_constraintVertical_bias="0.27" />
 
     <TextView
@@ -138,10 +141,10 @@
         android:includeFontPadding="false"
         android:text="Add Branches"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:layout_constraintBottom_toBottomOf="@+id/ab_View"
+        app:layout_constraintEnd_toEndOf="@+id/ab_View"
+        app:layout_constraintStart_toStartOf="@+id/ab_View"
+        app:layout_constraintTop_toTopOf="@+id/ab_View"
         app:layout_constraintVertical_bias="0.75" />
 
     <TextView
@@ -151,11 +154,11 @@
         android:fontFamily="@font/inter_bold"
         android:text="Mark Attendance"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintBottom_toBottomOf="@+id/ma_View"
+        app:layout_constraintEnd_toEndOf="@+id/ma_View"
         app:layout_constraintHorizontal_bias="0.59"
-        app:layout_constraintStart_toStartOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        app:layout_constraintStart_toStartOf="@+id/ma_View"
+        app:layout_constraintTop_toTopOf="@+id/ma_View"
         app:layout_constraintVertical_bias="0.682" />
 
     <TextView
@@ -166,11 +169,11 @@
         android:fontFamily="@font/inter_bold"
         android:text="Salary"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
+        app:layout_constraintBottom_toBottomOf="@+id/sal_View"
+        app:layout_constraintEnd_toEndOf="@+id/sal_View"
         app:layout_constraintHorizontal_bias="0.47"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/sal_View"
+        app:layout_constraintTop_toTopOf="@+id/sal_View"
         app:layout_constraintVertical_bias="0.105" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -250,7 +253,8 @@
             app:layout_constraintVertical_bias="0.09" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.appcompat.widget.Toolbar
+
+  <!-- <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -265,5 +269,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         android:padding="5dp"
-        app:navigationIcon="@drawable/bar_chart" />
+        app:navigationIcon="@drawable/bar_chart" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
