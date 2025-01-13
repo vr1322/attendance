@@ -56,4 +56,3 @@ dependencies {
     implementation (libs.drawerlayout)
 
 }
-{}

@@ -1,28 +1,35 @@
 package com.example.attendance;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;  // Added missing import for Intent
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toolbar;
-
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import com.google.android.material.navigation.NavigationView;
 
-public class home extends AppCompatActivity {  // Renamed to HomeActivity for convention
+public class home extends AppCompatActivity {  // Renamed to follow conventions
     private ImageButton el_button, ab_Button, ma_Button, sal_Button;
     private ImageView el_View, ab_View, ma_View, sal_View;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // Initialize Views
         el_button = findViewById(R.id.el_button);
         ab_Button = findViewById(R.id.ab_Button);
         ma_Button = findViewById(R.id.ma_Button);
@@ -32,71 +39,55 @@ public class home extends AppCompatActivity {  // Renamed to HomeActivity for co
         ma_View = findViewById(R.id.ma_View);
         sal_View = findViewById(R.id.sal_View);
 
+        // Setup Toolbar
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        el_button.setOnClickListener(new View.OnClickListener() {
+        // Setup Drawer Layout
+        drawerLayout = findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+
+        // Setup Navigation View
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, MainActivity.class);
-                startActivity(intent);
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                // Handle navigation item clicks
+                if (id == R.id.settings) {
+                    startActivity(new Intent(home.this, settings.class));
+                }
+                drawerLayout.closeDrawer(GravityCompat.START); // Close drawer
+                return true;
             }
         });
 
-        ab_Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        // Assign Click Listeners
+        assignClickListener(el_button, MainActivity.class);
+        assignClickListener(ab_Button, MainActivity.class);
+        assignClickListener(ma_Button, MainActivity.class);
+        assignClickListener(sal_Button, MainActivity.class);
 
-        ma_Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        assignClickListener(el_View, MainActivity.class);
+        assignClickListener(ab_View, MainActivity.class);
+        assignClickListener(ma_View, MainActivity.class);
+        assignClickListener(sal_View, MainActivity.class);
+    }
 
-        sal_Button.setOnClickListener(new View.OnClickListener() {
+    /**
+     * Helper method to assign click listeners to buttons and views.
+     */
+    private void assignClickListener(View view, final Class<?> targetActivity) {
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        el_View.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        ab_View.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        ma_View.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        sal_View.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(home.this, MainActivity.class);
+            public void onClick(View v) {
+                Intent intent = new Intent(home.this, targetActivity);
                 startActivity(intent);
             }
         });
     }
 }
-
-

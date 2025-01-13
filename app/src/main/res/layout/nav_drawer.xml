@@ -8,10 +8,9 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity"
+    android:elevation="@dimen/dp20"
     tools:openDrawer="start">
 
-    <include
-        layout="@layout/toolbar"/>
 
 
     <com.google.android.material.navigation.NavigationView
