@@ -49,4 +49,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation (libs.material.v1110)
+    implementation (libs.appcompat)
+    implementation (libs.navigation.fragment)
+    implementation (libs.navigation.ui)
+    implementation (libs.drawerlayout)
+
 }
