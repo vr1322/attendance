@@ -43,4 +43,5 @@
         android:textSize="24dp"
         android:textColor="#565555"
         android:fontFamily="@font/inter_bold"/>
+
 </LinearLayout>
