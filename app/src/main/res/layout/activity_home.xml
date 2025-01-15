@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -113,7 +113,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/sal_View"
                 app:layout_constraintStart_toStartOf="@+id/sal_View"
                 app:layout_constraintTop_toTopOf="@+id/sal_View"
-                app:srcCompat="@drawable/mark_icon" />
+                app:srcCompat="@drawable/ic_salary" />
 
             <ImageButton
                 android:id="@+id/ab_Button"
@@ -127,7 +127,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/ab_View"
                 app:layout_constraintStart_toStartOf="@+id/ab_View"
                 app:layout_constraintTop_toTopOf="@id/ab_View"
-                app:srcCompat="@drawable/ot_icon" />
+                app:srcCompat="@drawable/ic_addbranches" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -162,7 +162,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/inter_bold"
-                android:text="Mark Attendance"
+                android:text="Attendence Report"
                 android:textSize="@dimen/dp15"
                 app:layout_constraintBottom_toBottomOf="@+id/ma_View"
                 app:layout_constraintEnd_toEndOf="@+id/ma_View"
@@ -177,7 +177,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp12"
                 android:fontFamily="@font/inter_bold"
-                android:text="Salary"
+                android:text="Salary Calculation"
                 android:textSize="@dimen/dp15"
                 app:layout_constraintBottom_toBottomOf="@+id/sal_View"
                 app:layout_constraintEnd_toEndOf="@+id/sal_View"
@@ -214,6 +214,10 @@
                     android:background="@drawable/btn_bg"
                     android:drawableLeft="@drawable/chevron_right"
                     android:paddingLeft="@dimen/dp10"
+                    android:text="Add Employee"
+                    android:textSize="@dimen/dp14"
+                    android:fontFamily="@font/inter_bold"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                     app:layout_constraintEnd_toEndOf="@+id/imageView6"
                     app:layout_constraintHorizontal_bias="0.637"
@@ -229,6 +233,10 @@
                     android:background="@drawable/btn_bg"
                     android:drawableLeft="@drawable/chevron_right"
                     android:paddingLeft="@dimen/dp10"
+                    android:text="Advance Payment"
+                    android:textSize="@dimen/dp14"
+                    android:fontFamily="@font/inter_bold"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                     app:layout_constraintEnd_toEndOf="@+id/button"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -242,7 +250,12 @@
                     android:layout_height="@dimen/dp45"
                     android:background="@drawable/btn_bg"
                     android:drawableLeft="@drawable/chevron_right"
+                    android:drawableEnd=""
                     android:paddingLeft="@dimen/dp10"
+                    android:text="Leave management"
+                    android:textSize="@dimen/dp14"
+                    android:fontFamily="@font/inter_bold"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                     app:layout_constraintEnd_toEndOf="@+id/button4"
                     app:layout_constraintHorizontal_bias="0.9"
@@ -257,7 +270,11 @@
                     android:layout_marginTop="@dimen/dp4"
                     android:background="@drawable/btn_bg"
                     android:drawableLeft="@drawable/chevron_right"
-                    android:paddingLeft="@dimen/dp10"
+                    android:paddingStart="@dimen/dp10"
+                    android:text="allocate overtime"
+                    android:textSize="@dimen/dp14"
+                    android:fontFamily="@font/inter_bold"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                     app:layout_constraintEnd_toEndOf="@+id/button2"
                     app:layout_constraintHorizontal_bias="1.0"
