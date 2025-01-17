@@ -25,30 +25,34 @@
             android:layout_width="@dimen/dp45"
             android:layout_height="@dimen/dp45"
             android:layout_gravity="top|left"
+            android:clickable="true"
             android:elevation="@dimen/dp6"
             android:padding="10dp"
             android:src="@drawable/chevron_left"
-            android:clickable="true"
+            app:layout_constraintBottom_toTopOf="@id/card"
+            app:layout_constraintEnd_toStartOf="@id/settext"
+            app:layout_constraintHorizontal_bias="0.266"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/card"
-            app:layout_constraintEnd_toStartOf="@id/settext"/>
+            app:layout_constraintVertical_bias="0.4" />
 
         <TextView
             android:id="@+id/settext"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dp150"
             android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp50"
+            android:clickable="true"
             android:elevation="@dimen/dp20"
+            android:fontFamily="@font/inter_bold"
             android:text="Settings"
             android:textColor="@color/black"
-            android:fontFamily="@font/inter_bold"
             android:textSize="@dimen/dp27"
-            android:clickable="true"
-            android:layout_marginStart="@dimen/dp50"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/card"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.049"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.434" />
 
         <ImageView
                android:id="@+id/card"
