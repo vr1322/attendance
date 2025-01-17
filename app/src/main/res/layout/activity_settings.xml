@@ -21,12 +21,14 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:id="@+id/back"
             android:layout_width="@dimen/dp45"
             android:layout_height="@dimen/dp45"
             android:layout_gravity="top|left"
             android:elevation="@dimen/dp6"
             android:padding="10dp"
             android:src="@drawable/chevron_left"
+            android:clickable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/card"
@@ -37,9 +39,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:elevation="@dimen/dp20"
-            android:fontFamily="@font/inter_bold"
             android:text="Settings"
+            android:textColor="@color/black"
+            android:fontFamily="@font/inter_bold"
             android:textSize="@dimen/dp27"
+            android:clickable="true"
             android:layout_marginStart="@dimen/dp50"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/card"
