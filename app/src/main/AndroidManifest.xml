@@ -16,6 +16,10 @@
             android:name=".update_admin"
             android:exported="false" />
         <activity
+            android:name=".demo"
+            android:exported="false"
+            android:theme="@style/Theme.Attendance" />
+        <activity
             android:name=".salary_calculation"
             android:exported="false" />
         <activity
@@ -43,6 +47,13 @@
         <activity
             android:name=".demo2"
             android:exported="false" />
+        <activity
+            android:name=".EmployeeDetailsActivity"
+            android:exported="false" />
+        <activity android:name=".EmployeeDetailActivity"
+            android:exported="false" />
+        <activity android:name=".EditEmployeeActivity">
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
