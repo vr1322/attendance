@@ -1,5 +1,8 @@
 [versions]
 agp = "8.5.2"
+blurkit = "1.1.0"
+blurview = "version-2.0.5"
+blurviewVersion = "version-2.0.6"
 drawerlayout = "1.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -13,6 +16,9 @@ materialVersion = "1.11.0"
 navigationFragment = "2.8.5"
 
 [libraries]
+blurkit = { module = "io.alterac.blurkit:blurkit", version.ref = "blurkit" }
+blurview = { module = "com.github.Dimezis:BlurView", version.ref = "blurview" }
+blurview-vversion206 = { module = "com.github.Dimezis:BlurView", version.ref = "blurviewVersion" }
 drawerlayout = { module = "androidx.drawerlayout:drawerlayout", version.ref = "drawerlayout" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

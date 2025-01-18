@@ -2,6 +2,8 @@ package com.example.attendance;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
@@ -42,7 +45,7 @@ public class home extends AppCompatActivity {  // Renamed to follow conventions
         // Setup Toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle("E-Attendence");
         // Setup Drawer Layout
         drawerLayout = findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -68,15 +71,15 @@ public class home extends AppCompatActivity {  // Renamed to follow conventions
         });
 
         // Assign Click Listeners
-        assignClickListener(el_button, MainActivity.class);
-        assignClickListener(ab_Button, MainActivity.class);
-        assignClickListener(ma_Button, MainActivity.class);
-        assignClickListener(sal_Button, MainActivity.class);
+        assignClickListener(el_button, emp_list.class);
+        assignClickListener(ab_Button, add_branch.class);
+        assignClickListener(ma_Button, attendance_report.class);
+        assignClickListener(sal_Button, salary_calculation.class);
 
-        assignClickListener(el_View, MainActivity.class);
-        assignClickListener(ab_View, MainActivity.class);
-        assignClickListener(ma_View, MainActivity.class);
-        assignClickListener(sal_View, MainActivity.class);
+        assignClickListener(el_View, emp_list.class);
+        assignClickListener(ab_View, add_branch.class);
+        assignClickListener(ma_View, attendance_report.class);
+        assignClickListener(sal_View, salary_calculation.class);
     }
 
     /**
