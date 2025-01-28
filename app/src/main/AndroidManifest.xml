@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Attendance"
         tools:targetApi="31">
         <activity
+            android:name=".add_emp"
+            android:exported="false" />
+        <activity
+            android:name=".add_Emp"
+            android:exported="false" />
+        <activity
             android:name=".update_admin"
             android:exported="false" />
         <activity
@@ -50,10 +56,10 @@
         <activity
             android:name=".EmployeeDetailsActivity"
             android:exported="false" />
-        <activity android:name=".EmployeeDetailActivity"
+        <activity
+            android:name=".EmployeeDetailActivity"
             android:exported="false" />
-        <activity android:name=".EditEmployeeActivity">
-        </activity>
+        <activity android:name=".EditEmployeeActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
