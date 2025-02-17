@@ -17,6 +17,7 @@ navigationFragment = "2.8.5"
 annotation = "1.9.1"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
+carUiLib = "2.6.0"
 
 [libraries]
 blurkit = { module = "io.alterac.blurkit:blurkit", version.ref = "blurkit" }
@@ -38,6 +39,7 @@ version-x-x-x = { module = "com.github.Dimezis.BlurView:version-2.0.5" }
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

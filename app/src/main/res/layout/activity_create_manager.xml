@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp50"
             android:gravity="center"
-            android:text="Create Admin\nAccount"
+            android:text="Create Manager/Supervisor\nAccount"
             android:textColor="#063F5D"
             android:textSize="32sp"
             android:textStyle="bold"
@@ -113,13 +113,6 @@
                     android:layout_marginTop="10dp"
                     android:text="Show Password" />
 
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp10"
-                    android:text="Note: Only single Admin account exists per company and hence you are not allowed to create multiple admin accounts."
-                    android:textColor="@color/black" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
