@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissions for location access -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- Google Play Services (required for maps & geofencing) -->
+    <uses-feature android:name="android.hardware.location.gps"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +20,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Attendance"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g"/>
+
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddBranchActivity"
+            android:exported="false" />
         <activity
             android:name=".Create_emp_acc"
             android:exported="false" />
@@ -30,22 +49,15 @@
         <activity
             android:name=".CreateAdminActivity"
             android:exported="false" />
-        <activity
-            android:name=".account_verification"
-            android:exported="false" />
+
         <activity
             android:name=".add_emp"
             android:exported="false" />
-        <activity
-            android:name=".add_Emp"
-            android:exported="false" />
+
         <activity
             android:name=".update_admin"
             android:exported="false" />
-        <activity
-            android:name=".demo"
-            android:exported="false"
-            android:theme="@style/Theme.Attendance" />
+
         <activity
             android:name=".salary_calculation"
             android:exported="false" />
@@ -58,12 +70,8 @@
         <activity
             android:name=".emp_list"
             android:exported="false" />
-        <activity
-            android:name=".nav_drawer1"
-            android:exported="false" />
-        <activity
-            android:name=".drawer_layout"
-            android:exported="false" />
+
+
         <activity
             android:name=".settings"
             android:exported="false" />
@@ -71,9 +79,7 @@
             android:name=".home"
             android:exported="false"
             tools:ignore="Instantiatable" />
-        <activity
-            android:name=".demo2"
-            android:exported="false" />
+
         <activity
             android:name=".EmployeeDetailsActivity"
             android:exported="false" />
