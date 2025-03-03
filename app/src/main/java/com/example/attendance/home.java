@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,7 +21,7 @@ import com.google.android.material.navigation.NavigationView;
 
 public class home extends AppCompatActivity {  // Renamed to follow conventions
     private ImageButton el_button, ab_Button, ma_Button, sal_Button;
-    private ImageView el_View, ab_View, ma_View, sal_View;
+    private CardView el_View, ab_View, ma_View, sal_View;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;

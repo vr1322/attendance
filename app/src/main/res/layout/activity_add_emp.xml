@@ -23,19 +23,20 @@
 
             <ImageView
                 android:id="@+id/backButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/dp24"
+                android:layout_height="@dimen/dp24"
                 android:contentDescription="Back"
                 android:src="@drawable/chevron_left" />
 
             <TextView
-                android:id="@+id/titleText"
+                android:id="@+id/updttext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/dp8"
                 android:text="Add Employee"
-                android:textSize="18sp"
+                android:textSize="25sp"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
         <!-- Profile Image -->

@@ -64,7 +64,7 @@ public class emp_list extends AppCompatActivity {
                 return;
             }
 
-            Intent intent = new Intent(emp_list.this, EmployeeDetailsActivity.class);
+            Intent intent = new Intent(emp_list.this, add_emp.class);
             intent.putStringArrayListExtra("branchList", new ArrayList<>(listGroupTitles)); // Pass branch list to EmployeeDetailsActivity
             startActivityForResult(intent, REQUEST_ADD_EMPLOYEE);
         });

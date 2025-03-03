@@ -30,8 +30,9 @@
             tools:context=".home">
 
 
-            <ImageView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/ma_View"
+                app:cardCornerRadius="@dimen/dp30"
                 android:layout_width="@dimen/dp155"
                 android:layout_height="@dimen/dp100"
                 android:layout_marginTop="@dimen/dp90"
@@ -39,20 +40,26 @@
                 app:layout_constraintEnd_toStartOf="@id/sal_View"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/el_View"
-                app:srcCompat="@drawable/ripple_effect" />
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_effect"/>
 
-            <ImageView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/ab_View"
+                app:cardCornerRadius="@dimen/dp30"
                 android:layout_width="@dimen/dp155"
                 android:layout_height="@dimen/dp100"
                 app:layout_constraintBottom_toTopOf="@id/sal_View"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/el_View"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ripple_effect" />
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_effect"/>
 
-            <ImageView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/el_View"
+                app:cardCornerRadius="@dimen/dp30"
                 android:layout_width="@dimen/dp155"
                 android:layout_height="@dimen/dp100"
                 android:layout_marginTop="@dimen/dp70"
@@ -60,7 +67,10 @@
                 app:layout_constraintEnd_toStartOf="@id/ab_View"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ripple_effect" />
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_effect"
+               />
 
             <ImageButton
                 android:id="@+id/el_button"
@@ -76,8 +86,9 @@
                 app:layout_constraintTop_toTopOf="@+id/el_View"
                 app:srcCompat="@drawable/ep_icon" />
 
-            <ImageView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/sal_View"
+                app:cardCornerRadius="@dimen/dp30"
                 android:layout_width="@dimen/dp155"
                 android:layout_height="@dimen/dp100"
                 android:layout_marginBottom="@dimen/dp50"
@@ -85,7 +96,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ma_View"
                 app:layout_constraintTop_toBottomOf="@id/ab_View"
-                app:srcCompat="@drawable/ripple_effect" />
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="@drawable/ripple_effect"/>
 
             <ImageButton
                 android:id="@+id/ma_Button"
@@ -136,6 +149,7 @@
                 android:fontFamily="@font/inter_bold"
                 android:text="Employee list"
                 android:textSize="@dimen/dp15"
+                android:elevation="@dimen/dp15"
                 app:layout_constraintBottom_toBottomOf="@+id/el_View"
                 app:layout_constraintEnd_toEndOf="@+id/el_View"
                 app:layout_constraintHorizontal_bias="0.482"
@@ -151,6 +165,7 @@
                 android:includeFontPadding="false"
                 android:text="Add Branches"
                 android:textSize="@dimen/dp15"
+                android:elevation="@dimen/dp15"
                 app:layout_constraintBottom_toBottomOf="@+id/ab_View"
                 app:layout_constraintEnd_toEndOf="@+id/ab_View"
                 app:layout_constraintStart_toStartOf="@+id/ab_View"
@@ -164,6 +179,7 @@
                 android:fontFamily="@font/inter_bold"
                 android:text="Attendence Report"
                 android:textSize="@dimen/dp15"
+                android:elevation="@dimen/dp15"
                 app:layout_constraintBottom_toBottomOf="@+id/ma_View"
                 app:layout_constraintEnd_toEndOf="@+id/ma_View"
                 app:layout_constraintHorizontal_bias="0.59"
@@ -179,6 +195,7 @@
                 android:fontFamily="@font/inter_bold"
                 android:text="Salary Calculation"
                 android:textSize="@dimen/dp15"
+                android:elevation="@dimen/dp15"
                 app:layout_constraintBottom_toBottomOf="@+id/sal_View"
                 app:layout_constraintEnd_toEndOf="@+id/sal_View"
                 app:layout_constraintHorizontal_bias="0.47"
@@ -196,16 +213,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/ma_View">
 
-                <ImageView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/card1"
+                    app:cardCornerRadius="@dimen/dp30"
                     android:layout_width="@dimen/dp330"
                     android:layout_height="@dimen/dp275"
                     app:layout_constraintBottom_toBottomOf="@+id/constraint"
                     app:layout_constraintEnd_toEndOf="@+id/constraint"
                     app:layout_constraintHorizontal_bias="0.483"
                     app:layout_constraintStart_toStartOf="@+id/constraint"
-                    app:layout_constraintTop_toTopOf="@+id/constraint"
-                    app:srcCompat="@drawable/round_ic" />
+                    app:layout_constraintTop_toTopOf="@+id/constraint" />
 
                 <Button
                     android:id="@+id/advance_paybt"
@@ -213,6 +230,7 @@
                     android:layout_height="@dimen/dp45"
                     android:background="@drawable/btn_bg"
                     android:drawableLeft="@drawable/chevron_right"
+                    android:elevation="@dimen/dp20"
                     android:paddingLeft="@dimen/dp10"
                     android:text="Advance payment"
                     android:textSize="@dimen/dp14"

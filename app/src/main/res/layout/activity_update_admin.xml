@@ -1,294 +1,305 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
-    tools:context=".settings">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient_bg">
 
 
-    <ScrollView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints">
+        android:background="@drawable/gradient_bg">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraint1"
+        <!-- Back Button & Title -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            tools:ignore="MissingConstraints">
 
             <ImageView
                 android:id="@+id/back"
-                android:layout_width="@dimen/dp45"
-                android:layout_height="@dimen/dp45"
-                android:layout_marginStart="12dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="top|left"
                 android:clickable="true"
-                android:elevation="@dimen/dp6"
+                android:elevation="6dp"
                 android:padding="10dp"
-                android:src="@drawable/chevron_left"
-                app:layout_constraintBottom_toTopOf="@id/card"
-                app:layout_constraintEnd_toStartOf="@id/updttext"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginBottom="@dimen/dp43" />
+                android:src="@drawable/chevron_left" />
 
             <TextView
                 android:id="@+id/updttext"
-                android:layout_width="@dimen/dp200"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp50"
-                android:clickable="true"
-                android:elevation="@dimen/dp20"
-                android:fontFamily="@font/inter_bold"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Update Profile"
-                android:textColor="@color/black"
-                android:textSize="@dimen/dp24"
-                app:layout_constraintBottom_toTopOf="@id/card"
-                app:layout_constraintEnd_toStartOf="@id/logout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginBottom="@dimen/dp43"/>
+                android:textSize="20sp"
+                android:clickable="true"/>
 
             <TextView
                 android:id="@+id/logout"
-                android:layout_width="@dimen/dp70"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="LogOut"
-                android:textSize="@dimen/dp20"
-                android:textColor="@color/red"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/updttext"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/card"
-                android:layout_marginBottom="@dimen/dp43"
-                android:layout_marginEnd="@dimen/dp25"/>
+                android:textSize="20sp"
+                android:layout_marginStart="@dimen/dp20"
+                android:clickable="true"
+                android:textColor="@color/red"/>
             <ImageView
                 android:id="@+id/logout_iv"
+                android:layout_gravity="top|right"
                 android:layout_width="@dimen/dp30"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_logout"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/logout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/card"
-                android:layout_marginBottom="@dimen/dp43"/>
-
-            <ImageView
-                android:id="@+id/card"
-                android:layout_width="@dimen/dp320"
-                android:layout_height="@dimen/dp180"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/card2"
-                android:layout_marginTop="@dimen/dp120"
-                app:srcCompat="@drawable/round_ic" />
-
-            <ImageView
-                android:id="@+id/profile_View"
-                android:layout_width="@dimen/dp100"
-                android:layout_height="@dimen/dp100"
-                android:layout_marginBottom="@dimen/dp180"
-                android:elevation="@dimen/dp15"
-                app:layout_constraintBottom_toBottomOf="@id/card"
-                app:layout_constraintEnd_toEndOf="@id/card"
-                app:layout_constraintStart_toStartOf="@id/card"
-                app:layout_constraintTop_toTopOf="@id/card"
-                app:srcCompat="@drawable/ic_profile" />
-
-            <TextView
-                android:id="@+id/cname_View"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:text="Company Name :"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toTopOf="@id/creg_View"
-                app:layout_constraintEnd_toEndOf="@id/card"
-                app:layout_constraintStart_toStartOf="@id/card"
-                app:layout_constraintTop_toTopOf="@id/card"
-                android:layout_marginTop="@dimen/dp55"
-                android:layout_marginEnd="@dimen/dp180"/>
-
-            <TextView
-                android:id="@+id/creg_View"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:text="Company Reg No :"
-                android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@id/cname_View"
-                app:layout_constraintStart_toStartOf="@id/card"
-                app:layout_constraintEnd_toEndOf="@id/card"
-                app:layout_constraintBottom_toTopOf="@id/ccode_View"
-                android:layout_marginEnd="@dimen/dp170"
-                android:layout_marginTop="@dimen/dp15"/>
-
-            <TextView
-                android:id="@+id/ccode_View"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/inter_bold"
-                android:text="Company code :"
-                android:textColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@id/creg_View"
-                app:layout_constraintStart_toStartOf="@id/card"
-                app:layout_constraintEnd_toEndOf="@id/card"
-                app:layout_constraintBottom_toTopOf="@id/shortn_View"
-                android:layout_marginEnd="@dimen/dp180"
-                android:layout_marginTop="@dimen/dp15"/>
-
-            <TextView
-                android:id="@+id/shortn_View"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp180"
-                android:fontFamily="@font/inter_bold"
-                android:text="(short name)"
-                android:textSize="@dimen/dp10"
-                app:layout_constraintBottom_toBottomOf="@id/card"
-                app:layout_constraintEnd_toEndOf="@id/card"
-                app:layout_constraintStart_toStartOf="@id/card"
-                app:layout_constraintTop_toBottomOf="@id/ccode_View" />
-
-            <EditText
-                android:id="@+id/cname_editText"
-                android:layout_width="@dimen/dp190"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:ems="20"
-                app:layout_constraintTop_toTopOf="@id/card"
-                app:layout_constraintBottom_toTopOf="@id/creg_editText"
-                app:layout_constraintStart_toEndOf="@id/cname_View"
-                app:layout_constraintEnd_toEndOf="@id/card"
-                android:layout_marginTop="@dimen/dp50"/>
-
-            <EditText
-                android:id="@+id/creg_editText"
-                android:layout_width="@dimen/dp180"
-                android:layout_height="wrap_content"
-                android:ems="20"
-                android:inputType="text"
-                app:layout_constraintTop_toBottomOf="@id/cname_editText"
-                app:layout_constraintBottom_toTopOf="@id/ccode_editText"
-                app:layout_constraintStart_toEndOf="@id/cname_View"
-                app:layout_constraintEnd_toEndOf="@id/card"/>
-
-            <EditText
-                android:id="@+id/ccode_editText"
-                android:layout_width="@dimen/dp190"
-                android:layout_height="wrap_content"
-                android:ems="20"
-                android:inputType="text"
-                app:layout_constraintTop_toBottomOf="@id/creg_editText"
-                app:layout_constraintBottom_toBottomOf="@id/card"
-                app:layout_constraintStart_toEndOf="@id/cname_View"
-                app:layout_constraintEnd_toEndOf="@id/card"
-                android:layout_marginBottom="@dimen/dp18"/>
-
-            <ImageView
-                android:id="@+id/card2"
-                android:layout_width="@dimen/dp320"
-                android:layout_height="@dimen/dp350"
-                android:layout_marginTop="@dimen/dp18"
-                app:layout_constraintTop_toBottomOf="@id/card"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/updt_btn"
-                app:srcCompat="@drawable/round_ic" />
-
-            <EditText
-                android:id="@+id/admin_editText"
-                android:layout_width="@dimen/dp290"
-                android:layout_height="@dimen/dp50"
-                android:ems="10"
-                android:background="@drawable/btn_bg"
-                android:inputType="text"
-                android:hint="Admin Name"
-                android:paddingStart="@dimen/dp20"
-                android:drawableRight="@drawable/ic_admin"
-                app:layout_constraintTop_toTopOf="@id/card2"
-                app:layout_constraintStart_toStartOf="@id/card2"
-                app:layout_constraintEnd_toEndOf="@id/card2"
-                app:layout_constraintBottom_toTopOf="@id/desig_editText"/>
-
-            <EditText
-                android:id="@+id/desig_editText"
-                android:layout_width="@dimen/dp290"
-                android:layout_height="@dimen/dp50"
-                android:ems="20"
-                android:inputType="text"
-                android:hint="Desigmation"
-                android:paddingStart="@dimen/dp20"
-                android:background="@drawable/btn_bg"
-                android:drawableRight="@drawable/ic_designation"
-                app:layout_constraintTop_toBottomOf="@id/admin_editText"
-                app:layout_constraintStart_toStartOf="@id/card2"
-                app:layout_constraintEnd_toEndOf="@id/card2"
-                app:layout_constraintBottom_toTopOf="@id/email_editText"/>
-
-            <EditText
-                android:id="@+id/email_editText"
-                android:layout_width="@dimen/dp290"
-                android:layout_height="@dimen/dp50"
-                android:ems="10"
-                android:inputType="textEmailAddress"
-                android:hint="E-mail ID"
-                android:paddingStart="@dimen/dp20"
-                android:background="@drawable/btn_bg"
-                android:drawableRight="@drawable/ic_email"
-                app:layout_constraintTop_toBottomOf="@id/desig_editText"
-                app:layout_constraintStart_toStartOf="@id/card2"
-                app:layout_constraintEnd_toEndOf="@id/card2"
-                app:layout_constraintBottom_toTopOf="@id/phone_editText"/>
-
-            <EditText
-                android:id="@+id/phone_editText"
-                android:layout_width="@dimen/dp290"
-                android:layout_height="@dimen/dp50"
-                android:ems="10"
-                android:inputType="phone"
-                android:hint="Mobile No"
-                android:paddingStart="@dimen/dp20"
-                android:background="@drawable/btn_bg"
-                android:drawableRight="@drawable/ic_phone"
-                app:layout_constraintTop_toBottomOf="@id/email_editText"
-                app:layout_constraintStart_toStartOf="@id/card2"
-                app:layout_constraintEnd_toEndOf="@id/card2"
-                app:layout_constraintBottom_toTopOf="@id/address_editText"/>
-
-            <EditText
-                android:id="@+id/address_editText"
-                android:layout_width="@dimen/dp290"
-                android:layout_height="@dimen/dp50"
-                android:ems="10"
-                android:inputType="textPostalAddress"
-                android:hint="Address"
-                android:paddingStart="@dimen/dp20"
-                android:background="@drawable/btn_bg"
-                android:drawableRight="@drawable/ic_address"
-                app:layout_constraintTop_toBottomOf="@id/phone_editText"
-                app:layout_constraintStart_toStartOf="@id/card2"
-                app:layout_constraintEnd_toEndOf="@id/card2"
-                app:layout_constraintBottom_toBottomOf="@id/card2"/>
-            <Button
-                android:id="@+id/updt_btn"
-                android:layout_width="@dimen/dp200"
-                android:layout_height="@dimen/dp50"
-                android:text="UPDATE"
-                android:textSize="@dimen/dp18"
-                android:background="@drawable/button"
-                app:layout_constraintTop_toBottomOf="@id/card2"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                 android:layout_marginTop="@dimen/dp10"/>
+                android:layout_marginEnd="@dimen/dp10"
+                android:clickable="true"
+                android:src="@drawable/ic_logout" />
+        </LinearLayout>
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="@dimen/dp320"
+            android:layout_height="@dimen/dp180"
+            android:layout_marginTop="@dimen/dp100"
+            app:cardCornerRadius="@dimen/dp20"
+            app:layout_constraintBottom_toTopOf="@id/card2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/userImage"
+            android:layout_width="@dimen/dp90"
+            android:layout_height="@dimen/dp90"
+            android:src="@drawable/ic_profile"
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="60dp"
+            android:elevation="10dp"/>
+
+        <TextView
+            android:id="@+id/cname_View"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp55"
+            android:layout_marginEnd="@dimen/dp180"
+            android:elevation="@dimen/dp10"
+            android:text="Company Name :"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/creg_View"
+            app:layout_constraintEnd_toEndOf="@id/card"
+            app:layout_constraintStart_toStartOf="@id/card"
+            app:layout_constraintTop_toTopOf="@id/card" />
+
+        <TextView
+            android:id="@+id/creg_View"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp15"
+            android:layout_marginEnd="@dimen/dp170"
+            android:elevation="@dimen/dp10"
+            android:text="Company Reg No :"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/ccode_View"
+            app:layout_constraintEnd_toEndOf="@id/card"
+            app:layout_constraintStart_toStartOf="@id/card"
+            app:layout_constraintTop_toBottomOf="@id/cname_View" />
+
+        <TextView
+            android:id="@+id/ccode_View"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp15"
+            android:layout_marginEnd="@dimen/dp180"
+            android:elevation="@dimen/dp10"
+            android:text="Company code :"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/shortn_View"
+            app:layout_constraintEnd_toEndOf="@id/card"
+            app:layout_constraintStart_toStartOf="@id/card"
+            app:layout_constraintTop_toBottomOf="@id/creg_View" />
+
+        <TextView
+            android:id="@+id/shortn_View"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp180"
+            android:elevation="@dimen/dp10"
+            android:fontFamily="@font/inter_bold"
+            android:text="(short name)"
+            android:textSize="@dimen/dp10"
+            app:layout_constraintBottom_toBottomOf="@id/card"
+            app:layout_constraintEnd_toEndOf="@id/card"
+            app:layout_constraintStart_toStartOf="@id/card"
+            app:layout_constraintTop_toBottomOf="@id/ccode_View" />
+
+        <EditText
+            android:id="@+id/cname_editText"
+            android:layout_width="@dimen/dp190"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp50"
+            android:elevation="@dimen/dp10"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Enter Company Name"
+            android:padding="4dp"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/creg_editText"
+            app:layout_constraintEnd_toEndOf="@id/card"
+            app:layout_constraintStart_toEndOf="@id/cname_View"
+            app:layout_constraintTop_toTopOf="@id/card" />
+
+        <EditText
+            android:id="@+id/creg_editText"
+            android:layout_width="@dimen/dp180"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/dp10"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Enter Company Reg no"
+            android:padding="4dp"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/ccode_editText"
+            app:layout_constraintEnd_toEndOf="@id/card"
+            app:layout_constraintStart_toEndOf="@id/cname_View"
+            app:layout_constraintTop_toBottomOf="@id/cname_editText" />
+
+        <EditText
+            android:id="@+id/ccode_editText"
+            android:layout_width="@dimen/dp190"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp18"
+            android:elevation="@dimen/dp10"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Enter Company code"
+            android:padding="4dp"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/card"
+            app:layout_constraintEnd_toEndOf="@id/card"
+            app:layout_constraintStart_toEndOf="@id/cname_View"
+            app:layout_constraintTop_toBottomOf="@id/creg_editText" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card2"
+            android:layout_width="@dimen/dp320"
+            android:layout_height="@dimen/dp350"
+            android:layout_marginTop="@dimen/dp18"
+            app:cardCornerRadius="@dimen/dp20"
+            app:layout_constraintBottom_toTopOf="@id/updt_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card"
+            app:srcCompat="@drawable/round_ic" />
+
+
+        <EditText
+            android:id="@+id/admin_editText"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp50"
+            android:elevation="@dimen/dp10"
+            android:background="@drawable/btn_bg"
+            android:drawableRight="@drawable/ic_admin"
+            android:ems="10"
+            android:hint="Admin Name"
+            android:inputType="text"
+            android:paddingStart="@dimen/dp20"
+            app:layout_constraintBottom_toTopOf="@id/desig_editText"
+            app:layout_constraintEnd_toEndOf="@id/card2"
+            app:layout_constraintStart_toStartOf="@id/card2"
+            app:layout_constraintTop_toTopOf="@id/card2" />
+
+        <EditText
+            android:id="@+id/desig_editText"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp50"
+            android:elevation="@dimen/dp10"
+
+            android:background="@drawable/btn_bg"
+            android:drawableRight="@drawable/ic_designation"
+            android:ems="20"
+            android:hint="Desigmation"
+            android:inputType="text"
+            android:paddingStart="@dimen/dp20"
+            app:layout_constraintBottom_toTopOf="@id/email_editText"
+            app:layout_constraintEnd_toEndOf="@id/card2"
+            app:layout_constraintStart_toStartOf="@id/card2"
+            app:layout_constraintTop_toBottomOf="@id/admin_editText" />
+
+        <EditText
+            android:id="@+id/email_editText"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp50"
+            android:elevation="@dimen/dp10"
+
+            android:background="@drawable/btn_bg"
+            android:drawableRight="@drawable/ic_email"
+            android:ems="10"
+            android:hint="E-mail ID"
+            android:inputType="textEmailAddress"
+            android:paddingStart="@dimen/dp20"
+            app:layout_constraintBottom_toTopOf="@id/phone_editText"
+            app:layout_constraintEnd_toEndOf="@id/card2"
+            app:layout_constraintStart_toStartOf="@id/card2"
+            app:layout_constraintTop_toBottomOf="@id/desig_editText" />
+
+        <EditText
+            android:id="@+id/phone_editText"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp50"
+            android:elevation="@dimen/dp10"
+            android:background="@drawable/btn_bg"
+            android:drawableRight="@drawable/ic_phone"
+            android:ems="10"
+            android:hint="Mobile No"
+            android:inputType="phone"
+            android:paddingStart="@dimen/dp20"
+            app:layout_constraintBottom_toTopOf="@id/address_editText"
+            app:layout_constraintEnd_toEndOf="@id/card2"
+            app:layout_constraintStart_toStartOf="@id/card2"
+            app:layout_constraintTop_toBottomOf="@id/email_editText" />
+
+        <EditText
+            android:id="@+id/address_editText"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp50"
+            android:elevation="@dimen/dp10"
+            android:background="@drawable/btn_bg"
+            android:drawableRight="@drawable/ic_address"
+            android:ems="10"
+            android:hint="Address"
+            android:inputType="textPostalAddress"
+            android:paddingStart="@dimen/dp20"
+            app:layout_constraintBottom_toBottomOf="@id/card2"
+            app:layout_constraintEnd_toEndOf="@id/card2"
+            app:layout_constraintStart_toStartOf="@id/card2"
+            app:layout_constraintTop_toBottomOf="@id/phone_editText" />
+
+        <Button
+            android:id="@+id/updt_btn"
+            android:layout_width="@dimen/dp200"
+            android:layout_height="@dimen/dp50"
+            android:layout_marginTop="@dimen/dp10"
+            android:layout_marginBottom="@dimen/dp20"
+            android:background="@drawable/button"
+            android:text="UPDATE"
+            android:textSize="@dimen/dp18"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card2" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+
+
