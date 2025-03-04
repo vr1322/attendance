@@ -25,7 +25,7 @@ import java.util.Locale;
 public class settings extends AppCompatActivity {
     private ImageView back;
     private TextView sp_text, wh_text, sc_text, df_text;
-    private Button sp_bt, wh_bt, sc_bt, df_bt, cd_bt;
+    private Button ap_bt,sp_bt, wh_bt, sc_bt, df_bt, cd_bt;
     private SharedPreferences sharedPreferences;
     private List<String[]> currencyList; // Stores country & currency
     private List<String> displayList; // For filtered currency display
@@ -36,6 +36,7 @@ public class settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         back = findViewById(R.id.back);
+        ap_bt = findViewById(R.id.ap_bt);
         sp_bt = findViewById(R.id.sp_bt);
         wh_bt = findViewById(R.id.wh_bt);
         sc_bt = findViewById(R.id.sc_bt);
@@ -51,7 +52,7 @@ public class settings extends AppCompatActivity {
         loadSavedValues();
 
         back.setOnClickListener(v -> startActivity(new Intent(settings.this, home.class)));
-
+        ap_bt.setOnClickListener(v -> startActivity(new Intent(settings.this, update_admin.class)));
         sp_bt.setOnClickListener(v -> showDialog("Select Parameter", new String[]{"Parameter 1", "Parameter 2", "Parameter 3"}, sp_text, "parameter"));
         wh_bt.setOnClickListener(v -> showDialog("Select Working Hours", new String[]{"4 hrs", "6 hrs", "8 hrs", "10 hrs"}, wh_text, "working_hours"));
         sc_bt.setOnClickListener(v -> showCurrencyDialog());

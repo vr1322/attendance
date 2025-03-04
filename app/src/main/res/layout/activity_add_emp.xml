@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true">
 
@@ -135,7 +135,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Date of Birth"
-                        android:textSize="14sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
 
                     <!-- Calendar icon for Date of Birth -->
                     <ImageView
@@ -155,7 +156,9 @@
                         android:focusable="false"
                         android:hint="Select Date of Birth"
                         android:padding="4dp"
-                        android:textSize="16sp" />
+                        android:layout_marginStart="@dimen/dp10"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
                 <!-- Joining Date -->
@@ -169,7 +172,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Joining Date"
-                        android:textSize="14sp" />
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
 
                     <!-- Calendar icon for Joining Date -->
                     <ImageView
@@ -189,7 +193,9 @@
                         android:focusable="false"
                         android:hint="Select Joining Date"
                         android:padding="4dp"
-                        android:textSize="16sp" />
+                        android:layout_marginStart="@dimen/dp10"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -313,6 +319,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/cardView4"
             android:layout_width="@dimen/dp325"
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
@@ -418,6 +425,20 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/save_btn"
+            android:layout_width="@dimen/dp200"
+            android:layout_height="@dimen/dp50"
+            android:layout_marginTop="@dimen/dp20"
+            android:layout_marginBottom="@dimen/dp20"
+            android:background="@drawable/button"
+            android:text="Save"
+            android:textSize="@dimen/dp18"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardView4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

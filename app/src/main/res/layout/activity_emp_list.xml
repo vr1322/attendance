@@ -61,7 +61,7 @@
             android:layout_marginBottom="16dp"
             android:background="@color/white"
             android:divider="@android:color/darker_gray"
-            android:dividerHeight="1dp"
+            android:dividerHeight="2dp"
             android:scrollbars="vertical" />
     </androidx.cardview.widget.CardView>
 
@@ -73,9 +73,10 @@
         android:layout_gravity="end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        app:fabCustomSize="@dimen/dp50"
         android:src="@drawable/ic_add"
         app:maxImageSize="@dimen/dp50"
-        app:fabSize="normal"
+        app:backgroundTint="@color/blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -90,7 +91,9 @@
         app:layout_constraintBottom_toTopOf="@+id/add_fab"
         app:layout_constraintEnd_toEndOf="@+id/add_fab"
         app:layout_constraintStart_toStartOf="@+id/add_fab"
-        app:srcCompat="@drawable/ic_add_location" />
+        app:srcCompat="@drawable/ic_addbranches"
+        app:maxImageSize="@dimen/dp30"
+        app:backgroundTint="@color/blue"/>
 
     <!-- Text for Add Branch -->
     <TextView
@@ -112,9 +115,9 @@
         android:layout_marginBottom="24dp"
         android:visibility="gone"
         app:fabSize="normal"
-        android:src="@drawable/ic_add_emp"
-        android:background="@drawable/circle_bg"
-        app:maxImageSize="@dimen/dp40"
+        android:src="@drawable/ic_add_ep"
+        app:maxImageSize="@dimen/dp30"
+        app:backgroundTint="@color/blue"
         app:layout_constraintBottom_toTopOf="@+id/add_branch_fab"
         app:layout_constraintEnd_toEndOf="@+id/add_branch_fab"
         app:layout_constraintStart_toStartOf="@+id/add_branch_fab" />

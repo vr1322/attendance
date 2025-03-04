@@ -3,6 +3,7 @@ package com.example.attendance;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import java.util.Calendar;
 
 public class add_emp extends AppCompatActivity {
@@ -21,6 +23,7 @@ public class add_emp extends AppCompatActivity {
     private ImageView backButton, icCalendarDob, icCalendarJoining;
     private RadioGroup paymentTypeGroup;
     private RadioButton perDay, monthly;
+    private Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class add_emp extends AppCompatActivity {
         paymentTypeGroup = findViewById(R.id.paymentTypeGroup);
         perDay = findViewById(R.id.radio_per_day);
         monthly = findViewById(R.id.radio_monthly);
+        saveButton = findViewById(R.id.save_btn);
     }
 
     private void setClickListeners() {
@@ -56,6 +60,8 @@ public class add_emp extends AppCompatActivity {
 
         icCalendarDob.setOnClickListener(v -> showDatePickerDialog(etDateOfBirth));
         icCalendarJoining.setOnClickListener(v -> showDatePickerDialog(etJoiningDate));
+        etDateOfBirth.setOnClickListener(v -> showDatePickerDialog(etDateOfBirth));
+        etJoiningDate.setOnClickListener(v -> showDatePickerDialog(etJoiningDate));
     }
 
     private void showDatePickerDialog(EditText editText) {

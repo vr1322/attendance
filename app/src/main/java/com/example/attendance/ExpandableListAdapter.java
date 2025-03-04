@@ -97,11 +97,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             Employee employee = employees.get(childPosition);
             TextView nameTextView = convertView.findViewById(R.id.employee_name);
             TextView detailsTextView = convertView.findViewById(R.id.employee_details);
-            TextView parkingTextView = convertView.findViewById(R.id.parking_status);
 
             nameTextView.setText(employee.getName());
             detailsTextView.setText(employee.getDesignation() + " " + employee.getId());
-            parkingTextView.setVisibility(employee.isParkingAvailable() ? View.VISIBLE : View.GONE);
 
             return convertView;
         }

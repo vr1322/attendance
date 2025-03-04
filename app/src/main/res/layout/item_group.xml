@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
+    android:paddingStart="@dimen/dp40"
     android:text="Group Name"
     android:textSize="16sp"
     android:textStyle="bold"
-    android:background="@color/white"
-    android:drawableEnd="@drawable/ic_expand_more" />
+    android:fontFamily="@font/inter_bold"
+    android:background="@color/white" />
