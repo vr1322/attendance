@@ -56,7 +56,7 @@
                 android:layout_marginStart="@dimen/dp15"
                 android:layout_marginEnd="@dimen/dp15"
                 android:layout_marginBottom="@dimen/dp25"
-                app:cardCornerRadius="20dp"
+                app:cardCornerRadius="@dimen/dp20"
                 android:foreground="?attr/selectableItemBackground"
                 app:cardElevation="6dp">
 
@@ -68,90 +68,179 @@
                     android:gravity="center_horizontal">
 
                     <!-- Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp55"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/dp10">
                     <Button
                         android:id="@+id/ap_bt"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="@dimen/dp55"
                         android:background="@drawable/btn_bg"
                         android:drawableLeft="@drawable/ic_update_admin"
                         android:drawableRight="@drawable/ic_rb_arrow"
-                        android:paddingLeft="10dp"
+                        android:drawablePadding="@dimen/dp20"
+                        android:paddingLeft="@dimen/dp10"
                         android:text="Update Admin Profile"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/dp12"
                         android:fontFamily="@font/inter_bold"
-                        android:textAlignment="center"
-                        android:layout_marginTop="@dimen/dp10"/>
+                        android:gravity="center|start" />
 
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp55"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/dp20">
                     <Button
                         android:id="@+id/sp_bt"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="@dimen/dp55"
                         android:background="@drawable/btn_bg"
                         android:drawableLeft="@drawable/ic_set_para"
                         android:drawableRight="@drawable/ic_rb_arrow"
+                        android:drawablePadding="@dimen/dp20"
                         android:paddingLeft="10dp"
                         android:text="Set Parameters"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/dp12"
                         android:fontFamily="@font/inter_bold"
-                        android:textAlignment="center"
-                        android:layout_marginTop="@dimen/dp20"/>
+                        android:gravity="center|start"/>
 
-                    <Button
-                        android:id="@+id/wh_bt"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:background="@drawable/btn_bg"
-                        android:drawableLeft="@drawable/ic_clock"
-                        android:drawableRight="@drawable/ic_rb_arrow"
-                        android:paddingLeft="10dp"
-                        android:text="Working Hours"
+                    <TextView
+                        android:id="@+id/sp_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Not Set"
+                        android:textColor="@color/black"
+                        android:elevation="@dimen/dp20"
                         android:textSize="14sp"
-                        android:fontFamily="@font/inter_bold"
-                        android:textAlignment="center"
-                        android:layout_marginTop="@dimen/dp20"/>
+                        android:layout_marginStart="@dimen/dp190"
+                        android:layout_marginTop="@dimen/dp18" />
+                </FrameLayout>
 
-                    <Button
-                        android:id="@+id/sc_bt"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:background="@drawable/btn_bg"
-                        android:drawableLeft="@drawable/ic_currency"
-                        android:drawableRight="@drawable/ic_rb_arrow"
-                        android:paddingLeft="10dp"
-                        android:text="Set Currency"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/inter_bold"
-                        android:textAlignment="center"
-                        android:layout_marginTop="@dimen/dp20"/>
+                        android:layout_height="@dimen/dp55"
+                        android:layout_marginTop="@dimen/dp20"
+                        android:gravity="center_vertical">
 
-                    <Button
-                        android:id="@+id/df_bt"
+                        <Button
+                            android:id="@+id/wh_bt"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp55"
+                            android:background="@drawable/btn_bg"
+                            android:drawableLeft="@drawable/ic_clock"
+                            android:drawableRight="@drawable/ic_rb_arrow"
+                            android:drawablePadding="@dimen/dp20"
+                            android:paddingLeft="10dp"
+                            android:text="Working Hours"
+                            android:textSize="@dimen/dp12"
+                            android:fontFamily="@font/inter_bold"
+                            android:gravity="center|start"/>
+
+                        <TextView
+                            android:id="@+id/wh_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not Set"
+                            android:textColor="@color/black"
+                            android:elevation="@dimen/dp20"
+                            android:textSize="14sp"
+                            android:layout_marginStart="@dimen/dp200"
+                            android:layout_marginTop="@dimen/dp18" />
+                    </FrameLayout>
+
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:background="@drawable/btn_bg"
-                        android:drawableLeft="@drawable/ic_date_for"
-                        android:drawableRight="@drawable/ic_rb_arrow"
-                        android:paddingLeft="10dp"
-                        android:text="Date Format"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/inter_bold"
-                        android:textAlignment="center"
-                        android:layout_marginTop="@dimen/dp20"/>
+                        android:layout_height="@dimen/dp55"
+                        android:layout_marginTop="@dimen/dp20"
+                        android:gravity="center_vertical">
+
+                        <Button
+                            android:id="@+id/sc_bt"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp55"
+                            android:background="@drawable/btn_bg"
+                            android:drawableLeft="@drawable/ic_currency"
+                            android:drawableRight="@drawable/ic_rb_arrow"
+                            android:drawablePadding="@dimen/dp20"
+                            android:paddingLeft="10dp"
+                            android:text="Set Currency"
+                            android:textSize="@dimen/dp12"
+                            android:fontFamily="@font/inter_bold"
+                            android:gravity="center|start"/>
+
+                        <TextView
+                            android:id="@+id/sc_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp200"
+                            android:layout_marginTop="@dimen/dp18"
+                            android:elevation="@dimen/dp20"
+                            android:text="Not Set"
+                            android:textColor="@color/black"
+                            android:textSize="14sp" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp55"
+                        android:layout_marginTop="@dimen/dp20"
+                        android:gravity="center_vertical">
+
+                        <Button
+                            android:id="@+id/df_bt"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp55"
+                            android:background="@drawable/btn_bg"
+                            android:drawableLeft="@drawable/ic_date_for"
+                            android:drawableRight="@drawable/ic_rb_arrow"
+                            android:drawablePadding="@dimen/dp20"
+                            android:paddingLeft="10dp"
+                            android:text="Date Format"
+                            android:textSize="@dimen/dp12"
+                            android:fontFamily="@font/inter_bold"
+                            android:gravity="center|start"/>
+
+                        <TextView
+                            android:id="@+id/df_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not Set"
+                            android:elevation="@dimen/dp20"
+                            android:textColor="@color/black"
+                            android:textSize="14sp"
+                            android:layout_marginStart="@dimen/dp180"
+                            android:layout_marginTop="@dimen/dp18" />
+                    </FrameLayout>
+
+
+                    <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp55"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/dp20"
+                    android:layout_marginBottom="@dimen/dp10">
 
                     <Button
                         android:id="@+id/cd_bt"
                         android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                        android:layout_height="@dimen/dp55"
                         android:background="@drawable/btn_bg"
                         android:drawableLeft="@drawable/ic_cd"
                         android:drawableRight="@drawable/ic_rb_arrow"
+                        android:drawablePadding="@dimen/dp20"
                         android:paddingLeft="10dp"
                         android:text="Clear Data"
                         android:textSize="14sp"
                         android:fontFamily="@font/inter_bold"
-                        android:textAlignment="center"
-                        android:layout_marginTop="@dimen/dp20"
-                        android:layout_marginBottom="@dimen/dp20"/>
+                        android:gravity="center|start" />
+                </LinearLayout>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
