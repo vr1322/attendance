@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -29,8 +31,11 @@ public class emp_list extends AppCompatActivity {
     private HashMap<String, List<Employee>> listData;
 
     // Declare the FABs
+    private boolean isOpen = false;
     private FloatingActionButton addFab, addBranchFab, addEmployeeFab;
     private TextView addAlarmText, addPersonText;
+    private Animation rotateForward, rotateBackward, fabOpen, fabClose;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -48,9 +53,18 @@ public class emp_list extends AppCompatActivity {
         addAlarmText = findViewById(R.id.add_alarm_action_text);
         addPersonText = findViewById(R.id.add_person_action_text);
 
-        // Initially hide the child FABs and text
-        toggleFabVisibility(false);
+        // Load animations
+        fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close);
+        rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(this, R.anim.rotate_backward);
 
+        // Initially hide child FABs
+        addBranchFab.setVisibility(View.GONE);
+        addEmployeeFab.setVisibility(View.GONE);
+        addAlarmText.setVisibility(View.GONE);
+        addPersonText.setVisibility(View.GONE);
+        addFab.setOnClickListener(view -> toggleFabVisibility(!isOpen));
         // Set a click listener for the parent FAB
         addFab.setOnClickListener(view -> toggleFabVisibility(addBranchFab.getVisibility() == View.GONE));
 
@@ -90,11 +104,29 @@ public class emp_list extends AppCompatActivity {
     // Toggles visibility of child FABs and their texts
     private void toggleFabVisibility(boolean show) {
         int visibility = show ? View.VISIBLE : View.GONE;
+
         addBranchFab.setVisibility(visibility);
         addEmployeeFab.setVisibility(visibility);
         addAlarmText.setVisibility(visibility);
         addPersonText.setVisibility(visibility);
+
+        if (show) {
+            addFab.startAnimation(rotateForward);
+            addBranchFab.startAnimation(fabOpen);
+            addEmployeeFab.startAnimation(fabOpen);
+            addFab.setImageResource(R.drawable.ic_close);  // Change to close icon
+        } else {
+            addFab.startAnimation(rotateBackward);
+            addBranchFab.startAnimation(fabClose);
+            addEmployeeFab.startAnimation(fabClose);
+            addFab.setImageResource(R.drawable.ic_add);  // Change back to add icon
+        }
+
+        // Toggle the state
+        isOpen = show;
     }
+
+
 
     // Handle the result from EmployeeDetailsActivity and EditEmployeeActivity
     @Override
