@@ -7,9 +7,10 @@
     android:background="@drawable/gradient_bg"
     tools:context=".AddBranchActivity">
 
+    <!-- Back Button and Title -->
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -19,20 +20,22 @@
 
         <ImageView
             android:id="@+id/back"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/dp40"
+            android:layout_height="@dimen/dp40"
             android:layout_gravity="top|left"
             android:clickable="true"
-            android:elevation="6dp"
-            android:padding="10dp"
+            android:padding="@dimen/dp11"
             android:src="@drawable/chevron_left" />
 
         <TextView
-            android:layout_width="200dp"
+            android:id="@+id/add_branch_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Add Branch"
-            android:textSize="30sp" />
+            android:text="Add Branches"
+            android:fontFamily="@font/inter_bold"
+            android:textStyle="bold"
+            android:textSize="@dimen/dp20" />
 
     </LinearLayout>
 
@@ -40,11 +43,11 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="50dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginRight="@dimen/dp15"
+        android:layout_marginTop="@dimen/dp50"
+        app:cardCornerRadius="@dimen/dp16"
+        app:cardElevation="@dimen/dp8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
@@ -53,37 +56,38 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="@dimen/dp20">
 
             <!-- Welcome Text -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Branch Information"
-                android:textSize="20sp"
+                android:fontFamily="@font/inter_bold"
+                android:textSize="@dimen/dp18"
                 android:textStyle="bold" />
 
             <!-- Branch Name -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="@dimen/dp15"
                 android:text="Branch Name"
-                android:textSize="18sp" />
+                android:textSize="@dimen/dp16" />
 
             <EditText
                 android:id="@+id/branchName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:textSize="18sp" />
+                android:textSize="@dimen/dp16" />
 
             <!-- Branch Address -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Branch Address"
-                android:textSize="18sp" />
+                android:textSize="@dimen/dp16" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -96,12 +100,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textSize="@dimen/dp16"
                     android:inputType="text" />
 
                 <ImageView
                     android:id="@+id/searchLocation"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="@dimen/dp35"
+                    android:layout_height="@dimen/dp35"
                     android:background="@drawable/search"
                     android:clickable="true" />
             </LinearLayout>
@@ -111,12 +116,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Radius in Meters"
-                android:textSize="18sp" />
+                android:textSize="@dimen/dp16" />
 
             <EditText
                 android:id="@+id/radiusMeters"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/dp16"
                 android:inputType="number" />
 
             <!-- Note -->
@@ -125,19 +131,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Note: Set radius between 50 to 500 meters only. Employee can mark their attendence inside this entered radius only."
-                android:textSize="12sp" />
+                android:textSize="@dimen/dp12" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <!-- Circular Submit Button (Overlapping Bottom Right of Card) -->
     <ImageButton
         android:id="@+id/submitBranch"
-        android:layout_width="62dp"
-        android:layout_height="62dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="-33dp"
+        android:layout_width="@dimen/dp70"
+        android:layout_height="@dimen/dp70"
+        android:layout_marginEnd="@dimen/dp16"
+        android:layout_marginBottom="-40dp"
         android:background="@drawable/check_right"
-        android:elevation="12dp"
+        android:elevation="@dimen/dp12"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="@+id/cardView" />
 

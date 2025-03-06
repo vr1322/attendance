@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".MapsActivity">
 
+
+
     <!-- Google Maps Fragment -->
     <fragment
         android:id="@+id/map"
@@ -15,10 +17,31 @@
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/guideline"/>
+    <!-- Back Button and Title -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="@dimen/dp40"
+        android:layout_height="@dimen/dp40"
+        android:layout_gravity="top|left"
+        android:clickable="true"
+        android:padding="@dimen/dp11"
+        android:src="@drawable/chevron_left" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/searchView"
-        android:layout_width="300dp"
+        android:layout_width="@dimen/dp270"
         android:layout_height="wrap_content"
         android:queryHint="Search Address"
         android:textColor="@android:color/black"
@@ -27,7 +50,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/dp15"
         app:iconifiedByDefault="false"/>
 
     <!-- Percentage Guideline for UI Separation -->
@@ -41,10 +64,10 @@
     <!-- Branch Location Details -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/dp0"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:elevation="15dp"
+        android:padding="@dimen/dp16"
+        android:elevation="@dimen/dp15"
         android:background="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/guideline"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -56,7 +79,7 @@
             android:layout_height="wrap_content"
             android:text="Branch Location"
             android:textStyle="bold"
-            android:textSize="18sp"
+            android:textSize="@dimen/dp16"
             android:textColor="#000000" />
 
         <!-- Address Text -->
@@ -64,9 +87,9 @@
             android:id="@+id/branchAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="@dimen/dp14"
             android:textColor="#666666"
-            android:paddingTop="4dp"
+            android:paddingTop="@dimen/dp4"
             android:text="Selected Branch Address will be Showned... " />
 
         <!-- Radius Selection -->
@@ -74,14 +97,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingTop="8dp">
+            android:paddingTop="@dimen/dp8">
 
             <TextView
                 android:id="@+id/setRadiusLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Set Radius : "
-                android:textSize="16sp"
+                android:textSize="@dimen/dp14"
                 android:textColor="#000000"
                 android:textStyle="bold" />
 
@@ -90,9 +113,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="50 meters"
-                android:textSize="16sp"
+                android:textSize="@dimen/dp14"
                 android:textColor="#9DDAFA"
-                android:layout_marginStart="8dp" />
+                android:layout_marginStart="@dimen/dp8" />
         </LinearLayout>
 
         <!-- SeekBar for Radius -->
@@ -101,7 +124,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="10000"
-            android:progress="50" />
+            android:progress="50"
+            android:pointerIcon="@color/blue"/>
 
         <!-- Advisory Note -->
         <TextView
@@ -109,9 +133,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Note: It's good to have all branches at least 1 KM apart."
-            android:textSize="14sp"
+            android:textSize="@dimen/dp14"
             android:textColor="#D32F2F"
-            android:paddingTop="8dp"
+            android:paddingTop="@dimen/dp8"
             android:textStyle="italic" />
 
         <!-- Save Button -->
@@ -121,11 +145,12 @@
             android:layout_height="wrap_content"
             android:text="SAVE AND PROCEED"
             android:textSize="16sp"
+            android:background="@drawable/button"
             android:textColor="@android:color/white"
             android:backgroundTint="#9DDAFA"
-            android:padding="12dp"
+            android:padding="@dimen/dp12"
             android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="@dimen/dp16" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

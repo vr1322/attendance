@@ -32,11 +32,11 @@
                 android:src="@drawable/chevron_left" />
 
             <TextView
-                android:id="@+id/updttext"
+                android:id="@+id/add_emp_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Employee List"
+                android:text="Add Employee"
                 android:fontFamily="@font/inter_bold"
                 android:textStyle="bold"
                 android:textSize="@dimen/dp20" />

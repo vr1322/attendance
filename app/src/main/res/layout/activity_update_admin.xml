@@ -15,44 +15,49 @@
 
         <!-- Back Button & Title -->
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            tools:ignore="MissingConstraints">
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/back"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="@dimen/dp40"
+                android:layout_height="@dimen/dp40"
                 android:layout_gravity="top|left"
                 android:clickable="true"
-                android:elevation="6dp"
-                android:padding="10dp"
+                android:padding="@dimen/dp11"
                 android:src="@drawable/chevron_left" />
 
             <TextView
                 android:id="@+id/updttext"
-                android:layout_width="200dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Update Profile"
-                android:textSize="20sp"
-                android:clickable="true"/>
+                android:text="Add Employee"
+                android:fontFamily="@font/inter_bold"
+                android:textStyle="bold"
+                android:textSize="@dimen/dp20" />
 
             <TextView
                 android:id="@+id/logout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="LogOut"
-                android:textSize="20sp"
-                android:layout_marginStart="@dimen/dp20"
+                android:textSize="@dimen/dp18"
+                android:fontFamily="@font/inter_bold"
+                android:layout_marginStart="@dimen/dp70"
                 android:clickable="true"
                 android:textColor="@color/red"/>
+
             <ImageView
                 android:id="@+id/logout_iv"
                 android:layout_gravity="top|right"
-                android:layout_width="@dimen/dp30"
+                android:layout_width="@dimen/dp25"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dp10"
                 android:clickable="true"
@@ -63,7 +68,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/card"
             android:layout_width="@dimen/dp320"
-            android:layout_height="@dimen/dp180"
+            android:layout_height="@dimen/dp190"
             android:layout_marginTop="@dimen/dp100"
             app:cardCornerRadius="@dimen/dp20"
             app:layout_constraintBottom_toTopOf="@id/card2"
@@ -81,8 +86,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="60dp"
-            android:elevation="10dp"/>
+            android:layout_marginTop="@dimen/dp55"
+            android:elevation="@dimen/dp10"/>
 
         <TextView
             android:id="@+id/cname_View"
@@ -92,7 +97,9 @@
             android:layout_marginEnd="@dimen/dp180"
             android:elevation="@dimen/dp10"
             android:text="Company Name :"
+            android:textSize="@dimen/dp14"
             android:textColor="@color/black"
+            android:fontFamily="@font/inter_bold"
             app:layout_constraintBottom_toTopOf="@id/creg_View"
             app:layout_constraintEnd_toEndOf="@id/card"
             app:layout_constraintStart_toStartOf="@id/card"
@@ -106,6 +113,8 @@
             android:layout_marginEnd="@dimen/dp170"
             android:elevation="@dimen/dp10"
             android:text="Company Reg No :"
+            android:textSize="@dimen/dp14"
+            android:fontFamily="@font/inter_bold"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/ccode_View"
             app:layout_constraintEnd_toEndOf="@id/card"
@@ -120,6 +129,8 @@
             android:layout_marginEnd="@dimen/dp180"
             android:elevation="@dimen/dp10"
             android:text="Company code :"
+            android:textSize="@dimen/dp14"
+            android:fontFamily="@font/inter_bold"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/shortn_View"
             app:layout_constraintEnd_toEndOf="@id/card"
@@ -131,10 +142,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp180"
+            android:layout_marginBottom="@dimen/dp10"
             android:elevation="@dimen/dp10"
             android:fontFamily="@font/inter_bold"
             android:text="(short name)"
-            android:textSize="@dimen/dp10"
+            android:textSize="@dimen/dp12"
             app:layout_constraintBottom_toBottomOf="@id/card"
             app:layout_constraintEnd_toEndOf="@id/card"
             app:layout_constraintStart_toStartOf="@id/card"
@@ -149,8 +161,8 @@
             android:layout_weight="1"
             android:background="@null"
             android:hint="Enter Company Name"
-            android:padding="4dp"
-            android:textSize="16sp"
+            android:padding="@dimen/dp4"
+            android:textSize="@dimen/dp14"
             app:layout_constraintBottom_toTopOf="@id/creg_editText"
             app:layout_constraintEnd_toEndOf="@id/card"
             app:layout_constraintStart_toEndOf="@id/cname_View"
@@ -164,8 +176,8 @@
             android:layout_weight="1"
             android:background="@null"
             android:hint="Enter Company Reg no"
-            android:padding="4dp"
-            android:textSize="16sp"
+            android:padding="@dimen/dp4"
+            android:textSize="@dimen/dp14"
             app:layout_constraintBottom_toTopOf="@id/ccode_editText"
             app:layout_constraintEnd_toEndOf="@id/card"
             app:layout_constraintStart_toEndOf="@id/cname_View"
@@ -180,8 +192,8 @@
             android:layout_weight="1"
             android:background="@null"
             android:hint="Enter Company code"
-            android:padding="4dp"
-            android:textSize="16sp"
+            android:padding="@dimen/dp4"
+            android:textSize="@dimen/dp14"
             app:layout_constraintBottom_toBottomOf="@id/card"
             app:layout_constraintEnd_toEndOf="@id/card"
             app:layout_constraintStart_toEndOf="@id/cname_View"

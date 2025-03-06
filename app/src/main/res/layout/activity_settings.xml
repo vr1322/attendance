@@ -21,30 +21,36 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-            <!-- Back Button & Title -->
+            <!-- Back Button and Title -->
             <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/back"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
                     android:layout_gravity="top|left"
                     android:clickable="true"
-                    android:elevation="6dp"
-                    android:padding="10dp"
+                    android:padding="@dimen/dp11"
                     android:src="@drawable/chevron_left" />
 
                 <TextView
                     android:id="@+id/settext"
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Settings"
-                    android:textSize="20sp" />
+                    android:fontFamily="@font/inter_bold"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/dp20" />
+
             </LinearLayout>
 
             <!-- CardView Container -->
@@ -56,9 +62,9 @@
                 android:layout_marginStart="@dimen/dp15"
                 android:layout_marginEnd="@dimen/dp15"
                 android:layout_marginBottom="@dimen/dp25"
-                app:cardCornerRadius="@dimen/dp20"
+                app:cardCornerRadius="@dimen/dp16"
                 android:foreground="?attr/selectableItemBackground"
-                app:cardElevation="6dp">
+                app:cardElevation="@dimen/dp8">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -104,7 +110,7 @@
                         android:drawableLeft="@drawable/ic_set_para"
                         android:drawableRight="@drawable/ic_rb_arrow"
                         android:drawablePadding="@dimen/dp20"
-                        android:paddingLeft="10dp"
+                        android:paddingLeft="@dimen/dp10"
                         android:text="Set Parameters"
                         android:textSize="@dimen/dp12"
                         android:fontFamily="@font/inter_bold"
@@ -117,7 +123,7 @@
                         android:text="Not Set"
                         android:textColor="@color/black"
                         android:elevation="@dimen/dp20"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/dp12"
                         android:layout_marginStart="@dimen/dp190"
                         android:layout_marginTop="@dimen/dp18" />
                 </FrameLayout>
@@ -136,7 +142,7 @@
                             android:drawableLeft="@drawable/ic_clock"
                             android:drawableRight="@drawable/ic_rb_arrow"
                             android:drawablePadding="@dimen/dp20"
-                            android:paddingLeft="10dp"
+                            android:paddingLeft="@dimen/dp10"
                             android:text="Working Hours"
                             android:textSize="@dimen/dp12"
                             android:fontFamily="@font/inter_bold"
@@ -149,7 +155,7 @@
                             android:text="Not Set"
                             android:textColor="@color/black"
                             android:elevation="@dimen/dp20"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/dp12"
                             android:layout_marginStart="@dimen/dp200"
                             android:layout_marginTop="@dimen/dp18" />
                     </FrameLayout>
@@ -168,7 +174,7 @@
                             android:drawableLeft="@drawable/ic_currency"
                             android:drawableRight="@drawable/ic_rb_arrow"
                             android:drawablePadding="@dimen/dp20"
-                            android:paddingLeft="10dp"
+                            android:paddingLeft="@dimen/dp10"
                             android:text="Set Currency"
                             android:textSize="@dimen/dp12"
                             android:fontFamily="@font/inter_bold"
@@ -183,7 +189,7 @@
                             android:elevation="@dimen/dp20"
                             android:text="Not Set"
                             android:textColor="@color/black"
-                            android:textSize="14sp" />
+                            android:textSize="@dimen/dp12" />
                     </FrameLayout>
 
                     <FrameLayout
@@ -200,7 +206,7 @@
                             android:drawableLeft="@drawable/ic_date_for"
                             android:drawableRight="@drawable/ic_rb_arrow"
                             android:drawablePadding="@dimen/dp20"
-                            android:paddingLeft="10dp"
+                            android:paddingLeft="@dimen/dp10"
                             android:text="Date Format"
                             android:textSize="@dimen/dp12"
                             android:fontFamily="@font/inter_bold"
@@ -213,7 +219,7 @@
                             android:text="Not Set"
                             android:elevation="@dimen/dp20"
                             android:textColor="@color/black"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/dp12"
                             android:layout_marginStart="@dimen/dp180"
                             android:layout_marginTop="@dimen/dp18" />
                     </FrameLayout>
@@ -235,9 +241,9 @@
                         android:drawableLeft="@drawable/ic_cd"
                         android:drawableRight="@drawable/ic_rb_arrow"
                         android:drawablePadding="@dimen/dp20"
-                        android:paddingLeft="10dp"
+                        android:paddingLeft="@dimen/dp10"
                         android:text="Clear Data"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/dp12"
                         android:fontFamily="@font/inter_bold"
                         android:gravity="center|start" />
                 </LinearLayout>
