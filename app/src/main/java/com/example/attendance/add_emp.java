@@ -35,7 +35,7 @@ public class add_emp extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        backButton = findViewById(R.id.backButton);
+        backButton = findViewById(R.id.back);
         etEmployeeName = findViewById(R.id.et_employee_name);
         etEmployeeId = findViewById(R.id.et_employee_id);
         etDateOfBirth = findViewById(R.id.et_date_of_birth);
@@ -44,7 +44,7 @@ public class add_emp extends AppCompatActivity {
         icCalendarJoining = findViewById(R.id.ic_calendar_joining);
         etDesignation = findViewById(R.id.ad_emp_design);
         etPhone = findViewById(R.id.add_emp_number);
-        etAddress = findViewById(R.id.addd_emp_address);
+        etAddress = findViewById(R.id.add_emp_address);
         etEmail = findViewById(R.id.email);
         etPassword = findViewById(R.id.pass);
         etBasicPay = findViewById(R.id.basicPay);
