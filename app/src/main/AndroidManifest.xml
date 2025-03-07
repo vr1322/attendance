@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Permissions for location access -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-
-    <!-- Google Play Services (required for maps & geofencing) -->
-    <uses-feature android:name="android.hardware.location.gps"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Google Play Services (required for maps & geofencing) -->
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:allowBackup="true"
@@ -19,11 +16,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Attendance"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".EmployeeHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SupervisorHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ManagerHomeActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g"/>
+            android:value="AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g" />
 
         <activity
             android:name=".MapsActivity"
@@ -49,15 +56,12 @@
         <activity
             android:name=".CreateAdminActivity"
             android:exported="false" />
-
         <activity
             android:name=".add_emp"
             android:exported="false" />
-
         <activity
             android:name=".update_admin"
             android:exported="false" />
-
         <activity
             android:name=".salary_calculation"
             android:exported="false" />
@@ -70,8 +74,6 @@
         <activity
             android:name=".emp_list"
             android:exported="false" />
-
-
         <activity
             android:name=".settings"
             android:exported="false" />
@@ -79,7 +81,6 @@
             android:name=".home"
             android:exported="false"
             tools:ignore="Instantiatable" />
-
         <activity
             android:name=".EmployeeDetailsActivity"
             android:exported="false" />
