@@ -1,5 +1,6 @@
 package com.example.attendance;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -12,10 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class CreateAdminActivity extends AppCompatActivity {
 
-    private EditText etName, etDesignation, etEmail, etPassword, etConfirmPassword;
+    private EditText etName, cp_code, etEmail, etPassword, etConfirmPassword;
     private CheckBox checkShowPassword;
     private ImageButton btnSubmit;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +25,7 @@ public class CreateAdminActivity extends AppCompatActivity {
 
         // Initialize UI elements
         etName = findViewById(R.id.ca_name);
-        etDesignation = findViewById(R.id.ca_designation);
+        cp_code = findViewById(R.id.cp_code);
         etEmail = findViewById(R.id.ca_email);
         etPassword = findViewById(R.id.ca_password);
         etConfirmPassword = findViewById(R.id.ca_cfpassword);
@@ -49,12 +51,12 @@ public class CreateAdminActivity extends AppCompatActivity {
 
     private void validateAndSubmit() {
         String name = etName.getText().toString().trim();
-        String designation = etDesignation.getText().toString().trim();
+        String cpcode = cp_code.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        if (name.isEmpty() || designation.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+        if (name.isEmpty() || cpcode.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(this, "All fields are required!", Toast.LENGTH_SHORT).show();
             return;
         }

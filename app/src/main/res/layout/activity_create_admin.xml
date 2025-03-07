@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp50"
             android:gravity="center"
-            android:text="Create Admin\nAccount"
+            android:text="Create Company\nAccount"
             android:textColor="#063F5D"
             android:textSize="32sp"
             android:textStyle="bold"
@@ -54,16 +54,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Welcome to,"
+                    android:text="Welcome,"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Company Name"
-                    android:textSize="20sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -71,14 +64,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:hint="Enter Name" />
+                    android:hint="Enter Company Name" />
 
                 <EditText
-                    android:id="@+id/ca_designation"
+                    android:id="@+id/cp_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:hint="Enter Designation" />
+                    android:hint="Enter Company Code(Short Form)" />
 
                 <!-- Email Input -->
                 <EditText

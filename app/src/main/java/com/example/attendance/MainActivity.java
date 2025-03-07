@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox checkShowPassword;
     private ImageButton btnSubmit;
     private TextView tvForgot;
-    private Button btnCreateAdmin;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -34,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         checkShowPassword = findViewById(R.id.check_show_password);
         btnSubmit = findViewById(R.id.btn_submit);
         tvForgot = findViewById(R.id.tv_forgot);
-        btnCreateAdmin = findViewById(R.id.btn_create_admin);
 
         checkShowPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -58,11 +56,6 @@ public class MainActivity extends AppCompatActivity {
         tvForgot.setOnClickListener(v -> {
             Toast.makeText(MainActivity.this, "Forgot Password Clicked", Toast.LENGTH_SHORT).show();
             // Implement forgot password logic
-        });
-
-        btnCreateAdmin.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CreateAdminActivity.class);
-            startActivity(intent);
         });
     }
 }

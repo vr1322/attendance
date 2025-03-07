@@ -17,7 +17,7 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp50"
+        android:layout_marginTop="@dimen/dp70"
         android:gravity="center"
         android:text="Account\nVerification"
         android:textColor="#063F5D"
@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp15"
-        android:layout_marginTop="@dimen/dp50"
+        android:layout_marginTop="@dimen/dp100"
         android:layout_marginRight="@dimen/dp15"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
@@ -69,7 +69,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ADMIN LOGIN"
+                android:text="LOGIN"
                 android:textColor="@color/black"
                 android:fontFamily="@font/inter_bold"
                 android:layout_gravity="center"
@@ -134,46 +134,6 @@
         android:elevation="12dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="@+id/cardView" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginRight="@dimen/dp15"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        android:layout_marginBottom="@dimen/dp30"
-        android:layout_marginTop="@dimen/dp35"
-        android:layout_marginLeft="@dimen/dp15"
-        app:cardBackgroundColor="#9DDAFA"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Don't have Admin Account yet?"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/dp15"
-            android:layout_marginTop="@dimen/dp30"
-            android:layout_marginBottom="@dimen/dp30" />
-        
-        <Button
-            android:id="@+id/btn_create_admin"
-            android:layout_width="@dimen/dp300"
-            android:layout_height="@dimen/dp60"
-            android:background="@drawable/circle_bg"
-            android:layout_marginTop="@dimen/dp60"
-            android:layout_marginBottom="@dimen/dp40"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/dp16"
-            android:text="CREATE ADMIN ACCOUNT"/>
-
-
-    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,46 +1,44 @@
 package com.example.attendance;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class main_home extends AppCompatActivity {
 
-    private Button btnAdminLogin, btnManSupLogin, btnEmployeeLogin;
+    private Button btn_rg_cp;
+    private ImageButton btn_submit;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_home);
 
-        btnAdminLogin = findViewById(R.id.btn_admin_login);
-        btnManSupLogin = findViewById(R.id.btn_man_sup_login);
-        btnEmployeeLogin = findViewById(R.id.btn_employe_login);
+        btn_submit = findViewById(R.id.btn_submit);
+        btn_rg_cp = findViewById(R.id.rg_cp_btn);
 
-        btnAdminLogin.setOnClickListener(new View.OnClickListener() {
+        btn_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(main_home.this, MainActivity.class);
                 startActivity(intent);
             }
         });
-
-        btnManSupLogin.setOnClickListener(new View.OnClickListener() {
+        btn_rg_cp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(main_home.this, ManagerSupervisorLoginActivity.class);
+                Intent intent = new Intent(main_home.this, CreateAdminActivity.class);
                 startActivity(intent);
             }
         });
 
-        btnEmployeeLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(main_home.this, Employee_Login.class);
-                startActivity(intent);
-            }
-        });
+
     }
 }
