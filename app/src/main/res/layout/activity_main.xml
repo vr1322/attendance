@@ -17,11 +17,11 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp50"
+        android:layout_marginTop="@dimen/dp70"
         android:gravity="center"
         android:text="Account\nVerification"
         android:textColor="#063F5D"
-        android:textSize="32sp"
+        android:textSize="@dimen/dp32"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -36,10 +36,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp15"
-        android:layout_marginTop="@dimen/dp50"
+        android:layout_marginTop="@dimen/dp80"
         android:layout_marginRight="@dimen/dp15"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="@dimen/dp16"
+        app:cardElevation="@dimen/dp8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2">
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="@dimen/dp20">
 
             <!-- Welcome Text -->
             <TextView
@@ -56,20 +56,20 @@
                 android:layout_height="wrap_content"
                 android:text="Welcome to,"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="@dimen/dp18"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Company Name"
-                android:textSize="20sp"
+                android:textSize="@dimen/dp16"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ADMIN LOGIN"
+                android:text="LOGIN"
                 android:textColor="@color/black"
                 android:fontFamily="@font/inter_bold"
                 android:layout_gravity="center"
@@ -78,28 +78,43 @@
                 android:textSize="@dimen/dp20"/>
 
             <!-- Email Input -->
-            <EditText
-                android:id="@+id/et_email"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/dp10"
                 android:hint="Email Id"
-                android:inputType="textEmailAddress" />
+                app:boxStrokeColor="@color/blue"
+                app:hintTextColor="@color/blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Password Input -->
-            <EditText
-                android:id="@+id/et_password"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/dp10"
                 android:hint="Password"
-                android:inputType="textPassword" />
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/blue"
+                app:hintTextColor="@color/blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Show Password & Forget -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/dp10"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -107,17 +122,21 @@
                     android:id="@+id/check_show_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Show Password" />
+                    android:text="Show Password"
+                    android:textSize="@dimen/dp14"
+                    android:textColor="@color/black"
+                    android:buttonTint="@color/blue"/>
 
                 <TextView
                     android:id="@+id/tv_forgot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="@dimen/dp18"
                     android:layout_weight="1"
                     android:gravity="end"
                     android:text="Forget Password?"
+                    android:textSize="@dimen/dp15"
                     android:textColor="@android:color/holo_red_light" />
             </LinearLayout>
         </LinearLayout>
@@ -126,54 +145,14 @@
     <!-- Circular Submit Button (Overlapping Bottom Right of Card) -->
     <ImageButton
         android:id="@+id/btn_submit"
-        android:layout_width="62dp"
-        android:layout_height="62dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="-35dp"
+        android:layout_width="@dimen/dp62"
+        android:layout_height="@dimen/dp62"
+        android:layout_marginEnd="@dimen/dp16"
+        android:layout_marginBottom="-40dp"
         android:background="@drawable/check_right"
-        android:elevation="12dp"
+        android:elevation="@dimen/dp12"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="@+id/cardView" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginRight="@dimen/dp15"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        android:layout_marginBottom="@dimen/dp30"
-        android:layout_marginTop="@dimen/dp35"
-        android:layout_marginLeft="@dimen/dp15"
-        app:cardBackgroundColor="#9DDAFA"
-        app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Don't have Admin Account yet?"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/dp15"
-            android:layout_marginTop="@dimen/dp30"
-            android:layout_marginBottom="@dimen/dp30" />
-        
-        <Button
-            android:id="@+id/btn_create_admin"
-            android:layout_width="@dimen/dp300"
-            android:layout_height="@dimen/dp60"
-            android:background="@drawable/circle_bg"
-            android:layout_marginTop="@dimen/dp60"
-            android:layout_marginBottom="@dimen/dp40"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:textSize="@dimen/dp16"
-            android:text="CREATE ADMIN ACCOUNT"/>
-
-
-    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

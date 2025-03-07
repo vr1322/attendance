@@ -1,40 +1,531 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true">
 
-    <EditText
-        android:id="@+id/nameEditText"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name" />
+        android:background="@drawable/gradient_bg">
 
-    <EditText
-        android:id="@+id/designationEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Designation" />
+        <!-- Back Button and Title -->
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/phoneEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Phone Number" />
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="@dimen/dp40"
+                android:layout_height="@dimen/dp40"
+                android:layout_gravity="top|left"
+                android:clickable="true"
+                android:padding="@dimen/dp11"
+                android:src="@drawable/chevron_left" />
 
-    <ImageView
-        android:id="@+id/photoImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_profile" />
+            <TextView
+                android:id="@+id/updt_emp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Update Employee"
+                android:fontFamily="@font/inter_bold"
+                android:textStyle="bold"
+                android:textSize="@dimen/dp20" />
 
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp" />
+        </LinearLayout>
 
-</LinearLayout>
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/photoImageView"
+            android:layout_width="@dimen/dp90"
+            android:layout_height="@dimen/dp90"
+            android:src="@drawable/ic_profile"
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/cardView"
+            android:layout_marginTop="@dimen/dp60"
+            android:elevation="@dimen/dp10"/>
+
+        <!-- CardView for Employee Details -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="@dimen/dp325"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp65"
+            app:cardCornerRadius="@dimen/dp16"
+            app:cardElevation="@dimen/dp8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dp16">
+
+                <!-- Employee Name Input -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp40"
+                    android:layout_marginBottom="@dimen/dp10"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Employee Name: "
+                        android:textSize="@dimen/dp14"
+                        android:fontFamily="@font/inter_bold"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/nameEditText"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="Enter Name"
+                        android:padding="@dimen/dp3"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="@dimen/dp14" />
+                </LinearLayout>
+
+                <!-- Employee ID Input -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp16"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Employee ID: "
+                        android:textSize="@dimen/dp14"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/inter_bold"/>
+
+                    <EditText
+                        android:id="@+id/et_employee_id"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="Enter ID"
+                        android:fontFamily="@font/inter_bold"
+                        android:padding="@dimen/dp3"
+                        android:textSize="@dimen/dp14" />
+                </LinearLayout>
+
+                <!-- Date of Birth and Joining Date -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date of Birth"
+                        android:textSize="@dimen/dp14"
+                        android:fontFamily="@font/inter_bold"
+                        android:textStyle="bold"/>
+
+                    <!-- Calendar icon for Date of Birth -->
+                    <ImageView
+                        android:id="@+id/ic_calendar_dob"
+                        android:layout_width="@dimen/dp24"
+                        android:layout_height="@dimen/dp24"
+                        android:layout_marginStart="@dimen/dp8"
+                        android:src="@drawable/ic_calendar" />
+
+                    <!-- EditText for Date of Birth -->
+                    <EditText
+                        android:id="@+id/et_date_of_birth"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:hint="Select Date of Birth"
+                        android:padding="@dimen/dp3"
+                        android:layout_marginStart="@dimen/dp10"
+                        android:textSize="@dimen/dp14"
+                        android:fontFamily="@font/inter_bold"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <!-- Joining Date -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Joining Date"
+                        android:textSize="@dimen/dp14"
+                        android:fontFamily="@font/inter_bold"
+                        android:textStyle="bold"/>
+
+                    <!-- Calendar icon for Joining Date -->
+                    <ImageView
+                        android:id="@+id/ic_calendar_joining"
+                        android:layout_width="@dimen/dp24"
+                        android:layout_height="@dimen/dp24"
+                        android:layout_marginStart="@dimen/dp8"
+                        android:src="@drawable/ic_calendar" />
+
+                    <!-- EditText for Joining Date -->
+                    <EditText
+                        android:id="@+id/et_joining_date"
+                        android:layout_width="@dimen/dp0"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:hint="Select Joining Date"
+                        android:padding="@dimen/dp3"
+                        android:layout_marginStart="@dimen/dp10"
+                        android:textSize="@dimen/dp14"
+                        android:fontFamily="@font/inter_bold"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="@dimen/dp325"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp24"
+            app:cardCornerRadius="@dimen/dp16"
+            app:cardElevation="@dimen/dp8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.492"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+
+
+            <!-- Designation Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="@dimen/dp290"
+                android:layout_height="@dimen/dp55"
+                android:layout_marginTop="@dimen/dp20"
+                android:layout_marginStart="@dimen/dp20"
+                android:hint="Designation"
+                android:background="@drawable/btn_bg"
+                app:hintTextAppearance="@style/FloatingHintStyle">
+
+                <EditText
+                    android:id="@+id/designationEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="top|center"
+                    android:background="@null"
+                    android:textSize="@dimen/dp14"
+                    android:drawableRight="@drawable/ic_designation"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/dp20"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Mobile Number Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="@dimen/dp290"
+                android:layout_height="@dimen/dp55"
+                android:layout_marginTop="@dimen/dp85"
+                android:layout_marginStart="@dimen/dp20"
+                android:hint="Mobile Number"
+                android:background="@drawable/btn_bg"
+                app:hintTextAppearance="@style/FloatingHintStyle">
+
+                <EditText
+                    android:id="@+id/phoneEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="top|center"
+                    android:background="@null"
+                    android:drawableRight="@drawable/ic_phone"
+                    android:textSize="@dimen/dp14"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:paddingStart="@dimen/dp20"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Address Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="@dimen/dp290"
+                android:layout_height="@dimen/dp55"
+                android:layout_marginTop="@dimen/dp150"
+                android:layout_marginStart="@dimen/dp20"
+                android:hint="Address"
+                android:background="@drawable/btn_bg"
+                app:hintTextAppearance="@style/FloatingHintStyle">
+
+                <EditText
+                    android:id="@+id/add_emp_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="top|center"
+                    android:background="@null"
+                    android:textSize="@dimen/dp14"
+                    android:drawableRight="@drawable/ic_address"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/dp20" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Branch Input (Dropdown) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="@dimen/dp290"
+                android:layout_height="@dimen/dp55"
+                android:layout_marginTop="@dimen/dp215"
+                android:layout_marginBottom="@dimen/dp20"
+                android:layout_marginStart="@dimen/dp20"
+                android:background="@drawable/btn_bg"
+                android:hint="Branch"
+                app:hintTextAppearance="@style/FloatingHintStyle">
+
+                <AutoCompleteTextView
+                    android:id="@+id/add_emp_branch"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="top|center"
+                    android:background="@null"
+                    android:textSize="@dimen/dp14"
+                    android:drawableRight="@drawable/ic_company_branch"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/dp20"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView3"
+            android:layout_width="@dimen/dp325"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp24"
+            app:cardCornerRadius="@dimen/dp16"
+            app:cardElevation="@dimen/dp8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView2">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="@dimen/dp19"
+                android:layout_marginTop="@dimen/dp10"
+                android:text="Credentials"
+                android:fontFamily="@font/inter_bold"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dp18" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="@dimen/dp290"
+                android:layout_height="@dimen/dp50"
+                android:layout_marginTop="@dimen/dp40"
+                android:layout_marginStart="@dimen/dp20"
+                android:hint="Enter Email"
+                android:background="@drawable/btn_bg"
+                app:hintTextAppearance="@style/FloatingHintStyle">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="top|center"
+                    android:background="@null"
+                    android:textSize="@dimen/dp14"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/dp20" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="@dimen/dp290"
+                android:layout_height="@dimen/dp50"
+                android:layout_marginTop="@dimen/dp100"
+                android:layout_marginStart="@dimen/dp20"
+                android:layout_marginBottom="@dimen/dp20"
+                android:hint="Enter password"
+                android:background="@drawable/btn_bg"
+                app:hintTextAppearance="@style/FloatingHintStyle">
+
+                <EditText
+                    android:id="@+id/pass"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="top|center"
+                    android:background="@null"
+                    android:textSize="@dimen/dp14"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/dp20" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView4"
+            android:layout_width="@dimen/dp325"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/dp16"
+            app:cardElevation="@dimen/dp8"
+            android:layout_marginTop="@dimen/dp24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dp14">
+
+                <!-- Salary Payment Info Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Salary Payment Info"
+                    android:fontFamily="@font/inter_bold"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp16" />
+
+                <!-- Basic Pay Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
+                    android:text="Basic Pay"
+                    android:textSize="@dimen/dp14"
+                    android:layout_marginTop="@dimen/dp8"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/basicPay"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:hint="0.0"
+                    android:textSize="@dimen/dp14"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/btn_bg"
+                    android:paddingStart="@dimen/dp20" />
+
+                <!-- Payment Type Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Payment Type"
+                    android:textSize="@dimen/dp14"
+                    android:fontFamily="@font/inter_bold"
+                    android:layout_marginTop="@dimen/dp8"
+                    android:textColor="#888888" />
+
+                <RadioGroup
+                    android:id="@+id/paymentTypeGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radio_per_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="@dimen/dp14"
+                        android:text="Per Day" />
+
+                    <RadioButton
+                        android:id="@+id/radio_monthly"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/inter_bold"
+                        android:textSize="@dimen/dp14"
+                        android:text="Monthly" />
+                </RadioGroup>
+
+                <!-- Overtime Allowance Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OverTime Allowance"
+                    android:fontFamily="@font/inter_bold"
+                    android:textSize="@dimen/dp14"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp50"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/btn_bg"
+                    android:padding="@dimen/dp10"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:id="@+id/overtimeAllowance"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="0.0"
+                        android:textSize="@dimen/dp14"
+                        android:gravity="center_vertical"
+                        android:background="@android:color/transparent"
+                        android:paddingStart="@dimen/dp20"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/ hours"
+                        android:textSize="@dimen/dp14"
+                        android:textColor="#888888" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="@dimen/dp200"
+            android:layout_height="@dimen/dp50"
+            android:layout_marginTop="@dimen/dp20"
+            android:layout_marginBottom="@dimen/dp20"
+            android:background="@drawable/button"
+            android:text="Save"
+            android:textSize="@dimen/dp18"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardView4" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

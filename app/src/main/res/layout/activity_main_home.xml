@@ -1,80 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
-    tools:context=".main_home">
-
-    <TextView
-        android:id="@+id/textView3"
+    android:fillViewport="true">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:fontFamily="@font/inter_bold"
-        android:gravity="center"
-        android:text="Welcome"
-        android:textColor="@color/black"
-        android:textSize="@dimen/dp50"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_bg"
+        tools:context=".MainActivity">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp20"
-        android:layout_marginRight="@dimen/dp20"
-        app:cardBackgroundColor="#9DDAFA"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.644"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.294">
+        <!-- Account Verification Title -->
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp70"
+            android:gravity="center"
+            android:text="Company\nVerification"
+            android:textColor="#063F5D"
+            android:textSize="@dimen/dp32"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/btn_admin_login"
-            android:layout_width="@dimen/dp300"
-            android:layout_height="@dimen/dp60"
-            android:layout_gravity="top|center"
-            android:layout_marginTop="@dimen/dp20"
-            android:layout_marginBottom="@dimen/dp20"
-            android:background="@drawable/circle_bg"
-            android:text="ADMIN LOGIN"
-            android:textSize="@dimen/dp16"
-            android:textStyle="bold" />
+        <!-- Profile Icon (Overlapping Card) -->
 
-        <Button
-            android:id="@+id/btn_man_sup_login"
-            android:layout_width="@dimen/dp300"
-            android:layout_height="@dimen/dp60"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp20"
-            android:layout_marginBottom="@dimen/dp20"
-            android:background="@drawable/circle_bg"
-            android:text="MANAGER/SUPERVISOR LOGIN"
-            android:textSize="@dimen/dp16"
-            android:textStyle="bold" />
+        <!-- CardView for Employee Details -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:layout_marginTop="@dimen/dp80"
+            android:layout_marginRight="@dimen/dp15"
+            app:cardCornerRadius="@dimen/dp16"
+            app:cardElevation="@dimen/dp8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-        <Button
-            android:id="@+id/btn_employe_login"
-            android:layout_width="@dimen/dp300"
-            android:layout_height="@dimen/dp60"
-            android:layout_gravity="bottom|center"
-            android:layout_marginTop="@dimen/dp200"
-            android:layout_marginBottom="@dimen/dp20"
-            android:background="@drawable/circle_bg"
-            android:text="EMPLOYEE LOGIN"
-            android:textSize="@dimen/dp16"
-            android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/dp20">
+
+                <!-- Welcome Text -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Welcome  ,"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp20"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PLease do your company verification."
+                    android:textSize="@dimen/dp14"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Enter Company Code"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp30"
+                    android:textSize="@dimen/dp14"/>
+
+                <!-- Email Input -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp10"
+                    android:layout_marginBottom="@dimen/dp30"
+                    android:hint="Company Code"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/blue"
+                    app:hintTextColor="@color/blue">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cp_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:drawableRight="@drawable/ic_company"/>
+                </com.google.android.material.textfield.TextInputLayout>
 
 
-    </androidx.cardview.widget.CardView>
+                <!-- Password Input -->
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Circular Submit Button (Overlapping Bottom Right of Card) -->
+        <ImageButton
+            android:id="@+id/btn_submit"
+            android:layout_width="@dimen/dp62"
+            android:layout_height="@dimen/dp62"
+            android:layout_marginEnd="@dimen/dp16"
+            android:layout_marginBottom="-40dp"
+            android:background="@drawable/check_right"
+            android:elevation="@dimen/dp12"
+            app:layout_constraintBottom_toBottomOf="@+id/cardView"
+            app:layout_constraintEnd_toEndOf="@+id/cardView" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginRight="@dimen/dp15"
+            app:cardCornerRadius="@dimen/dp16"
+            app:cardElevation="@dimen/dp8"
+            android:layout_marginBottom="@dimen/dp30"
+            android:layout_marginTop="@dimen/dp35"
+            android:layout_marginLeft="@dimen/dp15"
+            app:cardBackgroundColor="#9DDAFA"
+            app:layout_constraintTop_toBottomOf="@+id/cardView">
+
+            <TextView
+                android:id="@+id/not_rg_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Haven't Register yet?"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/dp15"
+                android:layout_marginTop="@dimen/dp30"
+                android:layout_marginBottom="@dimen/dp30" />
+
+            <Button
+                android:id="@+id/rg_cp_btn"
+                android:layout_width="@dimen/dp300"
+                android:layout_height="@dimen/dp60"
+                android:background="@drawable/circle_bg"
+                android:layout_marginTop="@dimen/dp60"
+                android:layout_marginBottom="@dimen/dp40"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:textSize="@dimen/dp16"
+                android:text="Register Company"/>
+
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

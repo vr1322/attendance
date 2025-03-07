@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -19,9 +20,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp50"
             android:gravity="center"
-            android:text="Create Admin\nAccount"
+            android:text="Create Company\nAccount"
             android:textColor="#063F5D"
-            android:textSize="32sp"
+            android:textSize="@dimen/dp32"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -37,8 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp15"
             android:layout_marginRight="@dimen/dp15"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
+            app:cardCornerRadius="@dimen/dp16"
+            app:cardElevation="@dimen/dp8"
             android:layout_marginTop="@dimen/dp30"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,70 +49,104 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="@dimen/dp20">
 
                 <!-- Welcome Text -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Welcome to,"
+                    android:text="Welcome ,"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/dp24"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Company Name"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/ca_name"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="Enter Name" />
+                    android:layout_marginTop="@dimen/dp10"
+                    android:hint="Enter Company Name"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/blue"
+                    app:hintTextColor="@color/blue">
 
-                <EditText
-                    android:id="@+id/ca_designation"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ca_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="Enter Designation" />
+                    android:layout_marginTop="@dimen/dp10"
+                    android:hint="Enter Company Code(Short Form)"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/blue"
+                    app:hintTextColor="@color/blue">
 
-                <!-- Email Input -->
-                <EditText
-                    android:id="@+id/ca_email"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cp_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/dp10"
                     android:hint="Enter Email Id"
-                    android:inputType="textEmailAddress" />
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/blue"
+                    app:hintTextColor="@color/blue">
 
-                <!-- Password Input -->
-                <EditText
-                    android:id="@+id/ca_password"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ca_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/dp10"
                     android:hint="Enter Password"
-                    android:inputType="textPassword" />
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/blue"
+                    app:hintTextColor="@color/blue">
 
-                <EditText
-                    android:id="@+id/ca_cfpassword"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ca_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/dp10"
                     android:hint="Enter Confirm Password"
-                    android:inputType="textPassword" />
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/blue"
+                    app:hintTextColor="@color/blue">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/ca_cfpassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <CheckBox
                     android:id="@+id/check_show_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Show Password" />
+                    android:layout_marginTop="@dimen/dp10"
+                    android:text="Show Password"
+                    android:textSize="@dimen/dp14"
+                    android:textColor="@color/black"
+                    android:buttonTint="@color/blue" />
 
 
                 <TextView
@@ -119,7 +154,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp10"
                     android:text="Note: Only single Admin account exists per company and hence you are not allowed to create multiple admin accounts."
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp12"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -127,12 +163,12 @@
         <!-- Circular Submit Button (Overlapping Bottom Right of Card) -->
         <ImageButton
             android:id="@+id/btn_submit"
-            android:layout_width="62dp"
-            android:layout_height="62dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="-35dp"
+            android:layout_width="@dimen/dp62"
+            android:layout_height="@dimen/dp62"
+            android:layout_marginEnd="@dimen/dp16"
+            android:layout_marginBottom="-40dp"
             android:background="@drawable/check_right"
-            android:elevation="12dp"
+            android:elevation="@dimen/dp12"
             app:layout_constraintBottom_toBottomOf="@+id/cardView"
             app:layout_constraintEnd_toEndOf="@+id/cardView" />
 
