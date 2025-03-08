@@ -51,4 +51,7 @@ dependencies {
     implementation(libs.drawerlayout)
     implementation (libs.play.services.location)
     implementation (libs.play.services.maps)
+    implementation (libs.glide)
+    annotationProcessor (libs.compiler)
+
 }

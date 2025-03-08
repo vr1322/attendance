@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Add Employee"
+                android:text="Update Profile"
                 android:fontFamily="@font/inter_bold"
                 android:textStyle="bold"
                 android:textSize="@dimen/dp20" />
@@ -77,7 +77,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/userImage"
+            android:id="@+id/profilePic"
             android:layout_width="@dimen/dp90"
             android:layout_height="@dimen/dp90"
             android:src="@drawable/ic_profile"
@@ -93,7 +93,7 @@
             android:id="@+id/cname_View"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp55"
+            android:layout_marginTop="@dimen/dp60"
             android:layout_marginEnd="@dimen/dp180"
             android:elevation="@dimen/dp10"
             android:text="Company Name :"
@@ -153,7 +153,7 @@
             app:layout_constraintTop_toBottomOf="@id/ccode_View" />
 
         <EditText
-            android:id="@+id/cname_editText"
+            android:id="@+id/companyName"
             android:layout_width="@dimen/dp190"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp50"
@@ -163,13 +163,13 @@
             android:hint="Enter Company Name"
             android:padding="@dimen/dp4"
             android:textSize="@dimen/dp14"
-            app:layout_constraintBottom_toTopOf="@id/creg_editText"
+            app:layout_constraintBottom_toTopOf="@id/companyRegNo"
             app:layout_constraintEnd_toEndOf="@id/card"
             app:layout_constraintStart_toEndOf="@id/cname_View"
             app:layout_constraintTop_toTopOf="@id/card" />
 
         <EditText
-            android:id="@+id/creg_editText"
+            android:id="@+id/companyRegNo"
             android:layout_width="@dimen/dp180"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp10"
@@ -178,13 +178,13 @@
             android:hint="Enter Company Reg no"
             android:padding="@dimen/dp4"
             android:textSize="@dimen/dp14"
-            app:layout_constraintBottom_toTopOf="@id/ccode_editText"
+            app:layout_constraintBottom_toTopOf="@id/companyCode"
             app:layout_constraintEnd_toEndOf="@id/card"
             app:layout_constraintStart_toEndOf="@id/cname_View"
-            app:layout_constraintTop_toBottomOf="@id/cname_editText" />
+            app:layout_constraintTop_toBottomOf="@id/companyName" />
 
         <EditText
-            android:id="@+id/ccode_editText"
+            android:id="@+id/companyCode"
             android:layout_width="@dimen/dp190"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp18"
@@ -197,7 +197,7 @@
             app:layout_constraintBottom_toBottomOf="@id/card"
             app:layout_constraintEnd_toEndOf="@id/card"
             app:layout_constraintStart_toEndOf="@id/cname_View"
-            app:layout_constraintTop_toBottomOf="@id/creg_editText" />
+            app:layout_constraintTop_toBottomOf="@id/companyRegNo" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card2"
@@ -205,15 +205,16 @@
             android:layout_height="@dimen/dp350"
             android:layout_marginTop="@dimen/dp18"
             app:cardCornerRadius="@dimen/dp20"
-            app:layout_constraintBottom_toTopOf="@id/updt_btn"
+            app:layout_constraintBottom_toTopOf="@id/updateBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card"
             app:srcCompat="@drawable/round_ic" />
 
 
+
         <EditText
-            android:id="@+id/admin_editText"
+            android:id="@+id/adminName"
             android:layout_width="@dimen/dp290"
             android:layout_height="@dimen/dp50"
             android:elevation="@dimen/dp10"
@@ -223,30 +224,29 @@
             android:hint="Admin Name"
             android:inputType="text"
             android:paddingStart="@dimen/dp20"
-            app:layout_constraintBottom_toTopOf="@id/desig_editText"
+            app:layout_constraintBottom_toTopOf="@id/designation"
             app:layout_constraintEnd_toEndOf="@id/card2"
             app:layout_constraintStart_toStartOf="@id/card2"
             app:layout_constraintTop_toTopOf="@id/card2" />
 
         <EditText
-            android:id="@+id/desig_editText"
+            android:id="@+id/designation"
             android:layout_width="@dimen/dp290"
             android:layout_height="@dimen/dp50"
             android:elevation="@dimen/dp10"
-
             android:background="@drawable/btn_bg"
             android:drawableRight="@drawable/ic_designation"
             android:ems="20"
             android:hint="Desigmation"
             android:inputType="text"
             android:paddingStart="@dimen/dp20"
-            app:layout_constraintBottom_toTopOf="@id/email_editText"
+            app:layout_constraintBottom_toTopOf="@id/adminEmail"
             app:layout_constraintEnd_toEndOf="@id/card2"
             app:layout_constraintStart_toStartOf="@id/card2"
-            app:layout_constraintTop_toBottomOf="@id/admin_editText" />
+            app:layout_constraintTop_toBottomOf="@id/adminName" />
 
         <EditText
-            android:id="@+id/email_editText"
+            android:id="@+id/adminEmail"
             android:layout_width="@dimen/dp290"
             android:layout_height="@dimen/dp50"
             android:elevation="@dimen/dp10"
@@ -257,13 +257,13 @@
             android:hint="E-mail ID"
             android:inputType="textEmailAddress"
             android:paddingStart="@dimen/dp20"
-            app:layout_constraintBottom_toTopOf="@id/phone_editText"
+            app:layout_constraintBottom_toTopOf="@id/mobileNo"
             app:layout_constraintEnd_toEndOf="@id/card2"
             app:layout_constraintStart_toStartOf="@id/card2"
-            app:layout_constraintTop_toBottomOf="@id/desig_editText" />
+            app:layout_constraintTop_toBottomOf="@id/designation" />
 
         <EditText
-            android:id="@+id/phone_editText"
+            android:id="@+id/mobileNo"
             android:layout_width="@dimen/dp290"
             android:layout_height="@dimen/dp50"
             android:elevation="@dimen/dp10"
@@ -273,13 +273,13 @@
             android:hint="Mobile No"
             android:inputType="phone"
             android:paddingStart="@dimen/dp20"
-            app:layout_constraintBottom_toTopOf="@id/address_editText"
+            app:layout_constraintBottom_toTopOf="@id/address"
             app:layout_constraintEnd_toEndOf="@id/card2"
             app:layout_constraintStart_toStartOf="@id/card2"
-            app:layout_constraintTop_toBottomOf="@id/email_editText" />
+            app:layout_constraintTop_toBottomOf="@id/adminEmail" />
 
         <EditText
-            android:id="@+id/address_editText"
+            android:id="@+id/address"
             android:layout_width="@dimen/dp290"
             android:layout_height="@dimen/dp50"
             android:elevation="@dimen/dp10"
@@ -292,10 +292,10 @@
             app:layout_constraintBottom_toBottomOf="@id/card2"
             app:layout_constraintEnd_toEndOf="@id/card2"
             app:layout_constraintStart_toStartOf="@id/card2"
-            app:layout_constraintTop_toBottomOf="@id/phone_editText" />
+            app:layout_constraintTop_toBottomOf="@id/mobileNo" />
 
         <Button
-            android:id="@+id/updt_btn"
+            android:id="@+id/updateBtn"
             android:layout_width="@dimen/dp200"
             android:layout_height="@dimen/dp50"
             android:layout_marginTop="@dimen/dp10"

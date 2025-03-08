@@ -2,8 +2,10 @@ package com.example.attendance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -24,9 +26,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MainActivity extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvForgot;
     private ProgressDialog progressDialog;
 
-    private static final String LOGIN_URL = "http://192.168.168.239/ems_api/login.php"; // Change to your actual API URL
+    private static final String LOGIN_URL = "http://192.168.168.239/ems_api/login.php"; // Ensure this URL is correct
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Logging in...");
+        progressDialog.setCancelable(false);
 
         checkShowPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -93,16 +93,36 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Log.d("LoginRequest", "Sending login request: " + jsonParams.toString());
+
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, jsonParams,
                 response -> {
                     progressDialog.dismiss();
+                    Log.d("LoginResponse", "Response received: " + response.toString());
+
                     try {
                         String status = response.getString("status");
 
                         if (status.equals("success")) {
                             JSONObject user = response.getJSONObject("user");
                             String role = user.getString("role");
+                            String companyCode = user.optString("company_code", ""); // Get company_code
 
+                            Log.d("CompanyCode", "Received from API: " + companyCode);
+
+                            if (!companyCode.isEmpty()) {
+                                // Save company code to SharedPreferences
+                                SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString("company_code", companyCode);
+                                editor.apply();
+
+                                Log.d("CompanyCode", "Saved to SharedPreferences: " + companyCode);
+                            } else {
+                                Log.e("CompanyCode", "Company code missing in API response!");
+                            }
+
+                            // Navigate to the appropriate home screen based on role
                             Intent intent;
                             switch (role) {
                                 case "admin":
@@ -126,15 +146,19 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(MainActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            String errorMessage = response.optString("message", "Invalid credentials");
+                            Log.e("LoginError", "Server error message: " + errorMessage);
+                            Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        Log.e("LoginError", "JSON parsing error: " + e.getMessage());
                         Toast.makeText(MainActivity.this, "Invalid Server Response!", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {
                     progressDialog.dismiss();
+                    Log.e("LoginError", "Network error: " + error.toString());
                     Toast.makeText(MainActivity.this, "Failed to connect to server!", Toast.LENGTH_SHORT).show();
                 });
 
