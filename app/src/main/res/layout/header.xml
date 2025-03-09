@@ -1,47 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="230dp"
+    android:layout_height="@dimen/dp230"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/gradient_bg"
     android:gravity="bottom"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp"
-    android:paddingLeft="70dp">
+    android:paddingTop="@dimen/dp20"
+    android:paddingBottom="@dimen/dp20">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:cardCornerRadius="50dp"
-        app:cardElevation="0dp"
-        android:backgroundTint="#D1D1D1" >
+        android:layout_width="@dimen/dp90"
+        android:layout_height="@dimen/dp90"
+        app:cardCornerRadius="@dimen/dp50"
+        app:cardElevation="@dimen/dp1"
+        android:backgroundTint="#D1D1D1"
+        android:layout_marginStart="@dimen/dp50">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/ic_profile"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profilePic"
+            android:layout_width="@dimen/dp90"
+            android:layout_height="@dimen/dp90"
+            android:src="@drawable/ic_profile"
+            android:background="@android:color/transparent"
+            app:civ_border_width="@dimen/dp3"
+            app:civ_border_color="@color/white" />
 
     </androidx.cardview.widget.CardView>
 
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/companyName"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Profile"
-        android:textSize="30dp"
+        android:text="Company Name"
+        android:textSize="@dimen/dp14"
         android:textColor="@color/black"
         android:textStyle="bold"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:fontFamily="@font/inter_bold"/>
+        android:layout_marginTop="@dimen/dp10"
+        android:layout_marginEnd="@dimen/dp60"
+        android:layout_marginBottom="@dimen/dp5"
+        android:fontFamily="@font/inter_bold"
+        android:layout_marginStart="@dimen/dp40"/>
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/designation"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Post"
-        android:textSize="24dp"
+        android:text="Designation"
+        android:textSize="@dimen/dp14"
         android:textColor="#565555"
-        android:fontFamily="@font/inter_bold"/>
+        android:fontFamily="@font/inter_bold"
+        android:layout_marginStart="@dimen/dp55" />
 
 </LinearLayout>
