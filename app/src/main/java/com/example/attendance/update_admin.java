@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -27,16 +29,21 @@ import com.bumptech.glide.Glide;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class update_admin extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
-    private ImageView back, logout_iv, profilePic;
+    private CircleImageView profilePic;
     private EditText companyCodeField, companyName, companyRegNo, adminName, designation, adminEmail, mobileNo, address;
     private Button updateBtn;
-    private String companyCode;
+    private ImageView back, logout_iv;
+    private String companyCode, base64Image = "";
     private TextView updttext, logut;
     private Uri imageUri;
     private String apiUrlFetch = "http://192.168.168.239/ems_api/get_admin_profile.php";
@@ -48,11 +55,7 @@ public class update_admin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_admin);
 
-        back = findViewById(R.id.back);
-        updttext = findViewById(R.id.updttext);
-        logut = findViewById(R.id.logout);
         profilePic = findViewById(R.id.profilePic);
-        logout_iv = findViewById(R.id.logout_iv);
         companyCodeField = findViewById(R.id.companyCode);
         companyName = findViewById(R.id.companyName);
         companyRegNo = findViewById(R.id.companyRegNo);
@@ -62,27 +65,28 @@ public class update_admin extends AppCompatActivity {
         mobileNo = findViewById(R.id.mobileNo);
         address = findViewById(R.id.address);
         updateBtn = findViewById(R.id.updateBtn);
+        updttext = findViewById(R.id.updttext);
+        logut = findViewById(R.id.logout);
+        back = findViewById(R.id.back);
+        logout_iv = findViewById(R.id.logout_iv);
 
         SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
-        companyCode = sharedPreferences.getString("company_code", "").trim();  // Trim to remove unwanted spaces
+        companyCode = sharedPreferences.getString("company_code", "").trim();
 
-        if (companyCode.isEmpty()) {
-            Log.e("CompanyCode", "Company code is missing! Trying to re-fetch...");
-            Toast.makeText(this, "Company code is missing!", Toast.LENGTH_SHORT).show();
-        } else {
-            companyCodeField.setText(companyCode);
-            Log.d("CompanyCode", "Retrieved from SharedPreferences: " + companyCode);
-            fetchAdminDetails();  // ✅ Call fetchAdminDetails() AFTER setting companyCode
-        }
-
-
+        // Set Click Listeners
         back.setOnClickListener(view -> startActivity(new Intent(update_admin.this, settings.class)));
         updttext.setOnClickListener(view -> startActivity(new Intent(update_admin.this, settings.class)));
         logout_iv.setOnClickListener(view -> startActivity(new Intent(update_admin.this, MainActivity.class)));
         logut.setOnClickListener(view -> startActivity(new Intent(update_admin.this, MainActivity.class)));
-        // Make profilePic act as the choose button
-        profilePic.setOnClickListener(view -> openFileChooser());
 
+        if (companyCode.isEmpty()) {
+            Toast.makeText(this, "Company code is missing!", Toast.LENGTH_SHORT).show();
+        } else {
+            companyCodeField.setText(companyCode);
+            fetchAdminDetails();
+        }
+
+        profilePic.setOnClickListener(view -> openFileChooser());
         updateBtn.setOnClickListener(view -> updateAdminDetails());
     }
 
@@ -136,7 +140,17 @@ public class update_admin extends AppCompatActivity {
                     progressDialog.dismiss();
                     try {
                         JSONObject jsonObject = new JSONObject(response);
-                        Toast.makeText(update_admin.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        String status = jsonObject.getString("status");
+                        String message = jsonObject.getString("message");
+
+                        if (status.equals("success")) {
+                            Toast.makeText(update_admin.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                            if (message.contains("Profile picture uploaded")) {
+                                Toast.makeText(update_admin.this, "Profile picture uploaded!", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(update_admin.this, "Update failed: " + message, Toast.LENGTH_SHORT).show();
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Toast.makeText(update_admin.this, "Update failed!", Toast.LENGTH_SHORT).show();
@@ -156,6 +170,12 @@ public class update_admin extends AppCompatActivity {
                 params.put("admin_email", adminEmail.getText().toString());
                 params.put("mobile_no", mobileNo.getText().toString());
                 params.put("address", address.getText().toString());
+
+                // Attach Base64 encoded image
+                if (!base64Image.isEmpty()) {
+                    params.put("profile_picture", base64Image);
+                }
+
                 return params;
             }
         };
@@ -176,6 +196,21 @@ public class update_admin extends AppCompatActivity {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             profilePic.setImageURI(imageUri);
+            base64Image = getBase64FromUri(imageUri);
         }
+    }
+
+
+    private String getBase64FromUri(Uri imageUri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

@@ -2,6 +2,7 @@ package com.example.attendance;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log; // Import for debugging
 import android.view.View;
@@ -85,8 +86,21 @@ public class main_home extends AppCompatActivity {
                         String message = response.getString("message");
 
                         if (status.equals("success")) {
+                            String companyNameStr = response.optString("company_name", "Unknown Company"); // ✅ Fetch company_name
+
                             Toast.makeText(main_home.this, "Company Verified!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(main_home.this, MainActivity.class));
+
+                            // ✅ Store company name in SharedPreferences
+                            SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("company_name", companyNameStr);
+                            editor.apply();
+
+                            // ✅ Pass company_name to MainActivity
+                            Intent intent = new Intent(main_home.this, MainActivity.class);
+                            intent.putExtra("company_name", companyNameStr);
+                            startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(main_home.this, message, Toast.LENGTH_SHORT).show();
                         }
@@ -107,7 +121,6 @@ public class main_home extends AppCompatActivity {
                 });
 
         requestQueue.add(request);
-
-
     }
+
 }

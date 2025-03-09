@@ -1,5 +1,6 @@
 package com.example.attendance;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,8 +19,6 @@ import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -31,11 +30,12 @@ public class MainActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
     private CheckBox checkShowPassword;
     private ImageButton btnSubmit;
-    private TextView tvForgot;
+    private TextView tvForgot, companyNameTextView;
     private ProgressDialog progressDialog;
 
     private static final String LOGIN_URL = "http://192.168.168.239/ems_api/login.php"; // Ensure this URL is correct
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +46,16 @@ public class MainActivity extends AppCompatActivity {
         checkShowPassword = findViewById(R.id.check_show_password);
         btnSubmit = findViewById(R.id.btn_submit);
         tvForgot = findViewById(R.id.tv_forgot);
+        companyNameTextView = findViewById(R.id.companyName); // ✅ TextView for company name
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Logging in...");
         progressDialog.setCancelable(false);
+
+        // ✅ Load stored company name from SharedPreferences (if available)
+        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+        String storedCompanyName = sharedPreferences.getString("company_name", "Company Name Not Set");
+        companyNameTextView.setText(storedCompanyName); // ✅ Display company name on launch
 
         checkShowPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -106,21 +112,20 @@ public class MainActivity extends AppCompatActivity {
                         if (status.equals("success")) {
                             JSONObject user = response.getJSONObject("user");
                             String role = user.getString("role");
-                            String companyCode = user.optString("company_code", ""); // Get company_code
+                            String companyCode = user.optString("company_code", "");
+                            String companyNameStr = user.optString("company_name", "Unknown Company"); // ✅ Fetch company_name
 
-                            Log.d("CompanyCode", "Received from API: " + companyCode);
+                            Log.d("CompanyName", "Received from API: " + companyNameStr);
 
-                            if (!companyCode.isEmpty()) {
-                                // Save company code to SharedPreferences
-                                SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("company_code", companyCode);
-                                editor.apply();
+                            // ✅ Set company name in TextView
+                            companyNameTextView.setText(companyNameStr);
 
-                                Log.d("CompanyCode", "Saved to SharedPreferences: " + companyCode);
-                            } else {
-                                Log.e("CompanyCode", "Company code missing in API response!");
-                            }
+                            // ✅ Save company name & code to SharedPreferences
+                            SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("company_code", companyCode);
+                            editor.putString("company_name", companyNameStr); // ✅ Save company name
+                            editor.apply();
 
                             // Navigate to the appropriate home screen based on role
                             Intent intent;
@@ -143,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             intent.putExtra("email", email);
+                            intent.putExtra("company_name", companyNameStr); // ✅ Pass company_name to next activity
                             startActivity(intent);
                             finish();
                         } else {
