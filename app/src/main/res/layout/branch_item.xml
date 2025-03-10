@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/dp10"
+    app:cardCornerRadius="@dimen/dp16"
+    app:cardElevation="@dimen/dp6"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp16">
+
+        <!-- Branch Name -->
+        <TextView
+            android:id="@+id/branchName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Branch Name"
+            android:textSize="@dimen/dp14"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
+
+        <!-- Branch Address -->
+        <TextView
+            android:id="@+id/branchAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Branch Address"
+            android:textSize="@dimen/dp12"
+            android:textColor="@android:color/darker_gray"
+            android:layout_below="@id/branchName"
+            android:layout_marginTop="5dp" />
+
+        <!-- Latitude and Longitude -->
+        <TextView
+            android:id="@+id/branchLatLng"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latitude, Longitude"
+            android:textSize="@dimen/dp12"
+            android:textColor="@android:color/darker_gray"
+            android:layout_below="@id/branchAddress"
+            android:layout_marginTop="3dp" />
+
+        <!-- Radius -->
+        <TextView
+            android:id="@+id/branchRadius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="50 Meters Radius For Attendance"
+            android:textSize="@dimen/dp12"
+            android:textColor="@android:color/darker_gray"
+            android:layout_below="@id/branchLatLng"
+            android:layout_marginTop="3dp" />
+
+        <!-- Google Map Thumbnail -->
+        <ImageView
+            android:id="@+id/mapThumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp110"
+            android:layout_below="@id/branchRadius"
+            android:layout_marginTop="@dimen/dp10"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_map" />
+
+        <!-- Google Maps Redirect Button -->
+        <ImageView
+            android:id="@+id/openMapButton"
+            android:layout_width="@dimen/dp35"
+            android:layout_height="@dimen/dp35"
+            android:src="@drawable/ic_map"
+            android:contentDescription="Open in Google Maps"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@id/mapThumbnail"
+            android:layout_margin="@dimen/dp7"
+            android:padding="@dimen/dp4" />
+
+        <!-- Edit/Delete Menu (3 Dots) -->
+        <ImageView
+            android:id="@+id/menuOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_more_vert"
+            android:contentDescription="More Options"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/dp4" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
