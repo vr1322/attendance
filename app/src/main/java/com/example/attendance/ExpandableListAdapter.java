@@ -1,14 +1,19 @@
 package com.example.attendance;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.HashMap;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -80,30 +85,45 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         List<Employee> employees = childMap.get(groupList.get(groupPosition));
 
+        if (employees == null || employees.isEmpty()) {
+            TextView noEmployeesTextView = new TextView(context);
+            noEmployeesTextView.setText("No employees added");
+            noEmployeesTextView.setPadding(50, 10, 10, 10);
+            noEmployeesTextView.setTextSize(16);
+            noEmployeesTextView.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+            return noEmployeesTextView;
+        }
+
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_child, parent, false);
         }
 
-        if (employees == null || employees.isEmpty()) {
-            // If no employees, show the "No employees added" message in the child view
-            TextView noEmployeesTextView = new TextView(context);
-            noEmployeesTextView.setText("No employees added");
-            noEmployeesTextView.setPadding(50, 10, 10, 10); // Optional styling for the message
-            noEmployeesTextView.setTextSize(16); // Optional: You can style the message further here
-            noEmployeesTextView.setTextColor(context.getResources().getColor(android.R.color.darker_gray)); // Styling for message
-            return noEmployeesTextView;
+        Employee employee = employees.get(childPosition);
+
+        TextView nameTextView = convertView.findViewById(R.id.employee_name);
+        TextView detailsTextView = convertView.findViewById(R.id.employee_details);
+        CircleImageView profilePic = convertView.findViewById(R.id.profile_pic);
+
+        nameTextView.setText(employee.getName());
+        detailsTextView.setText(employee.getDesignation() + " " + employee.getId());
+
+        // ✅ Debugging: Print Profile Pic URL
+        String profilePicUrl = employee.getProfilePic();
+        Log.d("ProfilePicURL", "Employee: " + employee.getName() + ", URL: " + profilePicUrl);
+
+        if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+            Glide.with(context)
+                    .load(profilePicUrl)
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile)
+                    .into(profilePic);
         } else {
-            // Otherwise, show employee details
-            Employee employee = employees.get(childPosition);
-            TextView nameTextView = convertView.findViewById(R.id.employee_name);
-            TextView detailsTextView = convertView.findViewById(R.id.employee_details);
-
-            nameTextView.setText(employee.getName());
-            detailsTextView.setText(employee.getDesignation() + " " + employee.getId());
-
-            return convertView;
+            profilePic.setImageResource(R.drawable.ic_profile);
         }
+
+        return convertView;
     }
+
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
