@@ -9,17 +9,17 @@ public class Employee implements Serializable {
     private boolean isParkingAvailable;
     private boolean isParkingAssigned;
     private String phoneNumber;
-    private String photoUri;  // You can use URI if needed for images
+    private String profile_pic;  // ✅ Field for storing profile picture URI or URL
 
     // Constructor
-    public Employee(String name, String designation, String id, boolean isParkingAvailable, boolean isParkingAssigned, String phoneNumber, String photoUri) {
+    public Employee(String name, String designation, String id, boolean isParkingAvailable, boolean isParkingAssigned, String phoneNumber, String profile_pic) {
         this.name = name;
         this.designation = designation;
         this.id = id;
         this.isParkingAvailable = isParkingAvailable;
         this.isParkingAssigned = isParkingAssigned;
         this.phoneNumber = phoneNumber;
-        this.photoUri = photoUri;
+        this.profile_pic = profile_pic;
     }
 
     // Getter and Setter methods for all fields
@@ -71,11 +71,12 @@ public class Employee implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPhotoUri() {
-        return photoUri;
+    // ✅ Corrected Getter and Setter for profile_pic
+    public String getProfilePic() {
+        return profile_pic;
     }
 
-    public void setPhotoUri(String photoUri) {
-        this.photoUri = photoUri;
+    public void setProfilePic(String profile_pic) {
+        this.profile_pic = profile_pic;
     }
 }

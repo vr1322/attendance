@@ -32,6 +32,7 @@ public class add_emp extends AppCompatActivity {
     private EditText etEmployeeName, etEmployeeId, etDateOfBirth, etJoiningDate, etDesignation, etPhone, etAddress, etEmail, etPassword, etBasicPay, etOvertimeAllowance;
     private ImageView backButton, icCalendarDob, icCalendarJoining;
     private CircleImageView profilePic;
+    private TextView addemp_text;
     private AutoCompleteTextView etBranch;
     private RadioGroup paymentTypeGroup;
     private RadioButton perDay, monthly;
@@ -56,6 +57,7 @@ public class add_emp extends AppCompatActivity {
 
     private void initializeViews() {
         backButton = findViewById(R.id.back);
+        addemp_text = findViewById(R.id.add_emp_text);
         profilePic = findViewById(R.id.profilePic);
         etEmployeeName = findViewById(R.id.et_employee_name);
         etEmployeeId = findViewById(R.id.et_employee_id);
@@ -79,7 +81,8 @@ public class add_emp extends AppCompatActivity {
     }
 
     private void setClickListeners() {
-        backButton.setOnClickListener(v -> finish());
+        backButton.setOnClickListener(view -> startActivity(new Intent(add_emp.this, emp_list.class)));
+        addemp_text.setOnClickListener(view -> startActivity(new Intent(add_emp.this, emp_list.class)));
 
         icCalendarDob.setOnClickListener(v -> showDatePickerDialog(etDateOfBirth));
         icCalendarJoining.setOnClickListener(v -> showDatePickerDialog(etJoiningDate));
