@@ -38,6 +38,23 @@
             android:textStyle="bold"
             android:textSize="@dimen/dp20" />
 
+        <ImageView
+            android:id="@+id/search"
+            android:layout_width="@dimen/dp40"
+            android:layout_height="@dimen/dp40"
+            android:clickable="true"
+            android:src="@drawable/search"
+            android:padding="@dimen/dp7"
+            android:layout_marginStart="@dimen/dp100" />
+
+        <ImageView
+            android:id="@+id/download"
+            android:layout_width="@dimen/dp40"
+            android:layout_height="@dimen/dp40"
+            android:padding="@dimen/dp5"
+            android:layout_marginEnd="@dimen/dp5"
+            android:src="@drawable/ic_download" />
+
     </LinearLayout>
 
     <!-- Expandable List View -->
