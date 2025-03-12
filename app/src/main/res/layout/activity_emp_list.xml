@@ -1,12 +1,19 @@
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
-    tools:context=".MainActivity"
-    tools:ignore="HardcodedText">
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_bg"
+        tools:context=".MainActivity"
+        tools:ignore="HardcodedText">
+
+
 
     <!-- Header Section (Title) -->
     <LinearLayout
@@ -57,6 +64,8 @@
 
     </LinearLayout>
 
+
+
     <!-- Expandable List View -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -71,18 +80,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-        <ExpandableListView
-            android:id="@+id/expandableListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp15"
-            android:layout_marginBottom="@dimen/dp15"
-            android:background="@color/white"
-            android:divider="@android:color/darker_gray"
-            android:dividerHeight="@dimen/dp1"
-            android:scrollbars="vertical" />
+
+            <ExpandableListView
+                android:id="@+id/expandableListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp15"
+                android:layout_marginBottom="@dimen/dp15"
+                android:background="@color/white"
+                android:divider="@android:color/darker_gray"
+                android:dividerHeight="@dimen/dp1"
+                android:scrollbars="vertical" />
+
+
+
     </androidx.cardview.widget.CardView>
+
 
     <!-- Parent Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -154,4 +168,7 @@
         app:layout_constraintEnd_toStartOf="@+id/add_employee_fab"
         app:layout_constraintTop_toTopOf="@+id/add_employee_fab" />
 
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

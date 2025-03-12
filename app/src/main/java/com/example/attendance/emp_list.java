@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -86,6 +87,27 @@ public class emp_list extends AppCompatActivity {
         addEmployeeFab = findViewById(R.id.add_employee_fab);
         addAlarmText = findViewById(R.id.add_alarm_action_text);
         addPersonText = findViewById(R.id.add_person_action_text);
+
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Show loading spinner
+            swipeRefreshLayout.setRefreshing(true);
+
+            // Clear existing data to prevent duplication
+            listGroupTitles.clear();
+            listData.clear();
+
+            // Load updated data
+            loadBranchesAndEmployees();
+
+            // Delay for better UX before stopping refresh animation
+            expandableListView.postDelayed(() -> {
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(emp_list.this, "Data refreshed successfully", Toast.LENGTH_SHORT).show();
+            }, 1500);
+        });
+
 
 
         backbutton.setOnClickListener(view -> startActivity(new Intent(emp_list.this, home.class)));
@@ -185,6 +207,7 @@ public class emp_list extends AppCompatActivity {
                         }
 
                         adapter.notifyDataSetChanged();
+                        expandableListView.setNestedScrollingEnabled(true);
 
                     } catch (JSONException e) {
                         e.printStackTrace();

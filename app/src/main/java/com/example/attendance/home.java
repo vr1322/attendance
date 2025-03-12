@@ -109,11 +109,11 @@ public class home extends AppCompatActivity {
         // Assign Click Listeners
         assignClickListener(el_button, emp_list.class);
         assignClickListener(ab_Button, BranchListActivity.class);
-        assignClickListener(ma_Button, add_emp.class);
+        assignClickListener(ma_Button, attendance_report.class);
         assignClickListener(sal_Button, salary_calculation.class);
         assignClickListener(el_View, emp_list.class);
         assignClickListener(ab_View, BranchListActivity.class);
-        assignClickListener(ma_View, add_emp.class);
+        assignClickListener(ma_View, attendance_report.class);
         assignClickListener(sal_View, salary_calculation.class);
     }
 
