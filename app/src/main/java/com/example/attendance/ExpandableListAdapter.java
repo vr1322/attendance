@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,11 +21,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final List<String> groupList;
     private final HashMap<String, List<Employee>> childMap;
+    private final boolean isAttendanceReport;  // New flag for layout switching
 
-    public ExpandableListAdapter(Context context, List<String> groupList, HashMap<String, List<Employee>> childMap) {
+    // Constructor with flag for Attendance Report
+    public ExpandableListAdapter(Context context, List<String> groupList,
+                                 HashMap<String, List<Employee>> childMap, boolean isAttendanceReport) {
         this.context = context;
         this.groupList = groupList;
         this.childMap = childMap;
+        this.isAttendanceReport = isAttendanceReport;  // Flag for different layout
     }
 
     @Override
@@ -47,7 +52,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public Object getChild(int groupPosition, int childPosition) {
         List<Employee> employees = childMap.get(groupList.get(groupPosition));
         if (employees == null || employees.isEmpty()) {
-            return "No employees added"; // Return message if no employees exist
+            return "No employees added";
         }
         return employees.get(childPosition);
     }
@@ -94,8 +99,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             return noEmployeesTextView;
         }
 
+        // Choose Layout based on `isAttendanceReport` flag
+        int layoutResource = isAttendanceReport ? R.layout.item_child_attendance : R.layout.item_child;
+
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_child, parent, false);
+            convertView = LayoutInflater.from(context).inflate(layoutResource, parent, false);
         }
 
         Employee employee = employees.get(childPosition);
@@ -107,23 +115,52 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         nameTextView.setText(employee.getName());
         detailsTextView.setText(employee.getDesignation() + " " + employee.getId());
 
-        // ✅ Debugging: Print Profile Pic URL
-        String profilePicUrl = employee.getProfilePic();
-        Log.d("ProfilePicURL", "Employee: " + employee.getName() + ", URL: " + profilePicUrl);
+        if (profilePic != null) {
+            String profilePicUrl = employee.getProfilePic();
+            Log.d("ProfilePicURL", "Employee: " + employee.getName() + ", URL: " + profilePicUrl);
 
-        if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
-            Glide.with(context)
-                    .load(profilePicUrl)
-                    .placeholder(R.drawable.ic_profile)
-                    .error(R.drawable.ic_profile)
-                    .into(profilePic);
-        } else {
-            profilePic.setImageResource(R.drawable.ic_profile);
+            if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+                Glide.with(context)
+                        .load(profilePicUrl)
+                        .placeholder(R.drawable.ic_profile)
+                        .error(R.drawable.ic_profile)
+                        .into(profilePic);
+            } else {
+                profilePic.setImageResource(R.drawable.ic_profile);
+            }
         }
+
+        // Attendance Status (Only for Attendance Report)
+        if (isAttendanceReport) {
+            ImageView attendanceStatus = convertView.findViewById(R.id.attendance_status);
+            String status = employee.getAttendanceStatus();
+
+            Log.d("ATTENDANCE_STATUS", "Employee: " + employee.getName() + ", Status: " + status);
+
+            // Set icon based on status
+            switch (status) {
+                case "Present":
+                    attendanceStatus.setImageResource(R.drawable.ic_p);
+                    break;
+                case "Absent":
+                    attendanceStatus.setImageResource(R.drawable.ic_a);
+                    break;
+                case "Half Day":
+                    attendanceStatus.setImageResource(R.drawable.ic_hf);
+                    break;
+                case "Overtime":
+                    attendanceStatus.setImageResource(R.drawable.ic_ot);
+                    break;
+                case "Not Marked":
+                default:
+                    attendanceStatus.setImageResource(R.drawable.ic_nm);
+                    break;
+            }
+        }
+
 
         return convertView;
     }
-
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {

@@ -2,18 +2,17 @@ package com.example.attendance;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -27,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -70,8 +70,10 @@ public class attendance_report extends AppCompatActivity {
         loadBranchesAndEmployees();
         loadAttendanceData();
 
-        adapter = new ExpandableListAdapter(this, listGroupTitles, listData);
+        adapter = new ExpandableListAdapter(this, listGroupTitles, listData, true); // Attendance Report
         expandableListView.setAdapter(adapter);
+        setupEmployeeClickListeners();
+
 
         FloatingActionButton refreshFab = findViewById(R.id.refresh_fab);
         refreshFab.setOnClickListener(view -> refreshData());
@@ -115,6 +117,8 @@ public class attendance_report extends AppCompatActivity {
 
                                 // Check if profile_pic exists and is not null
                                 String profilePic = "http://192.168.168.239/ems_api/" + empObj.getString("profile_pic");
+                                String attendanceStatus = empObj.optString("attendance_status", "Not Marked");  // ✅ Correct Usage
+
 
                                 Employee employee = new Employee(
                                         empObj.getString("employee_name"),
@@ -123,7 +127,9 @@ public class attendance_report extends AppCompatActivity {
                                         false,  // Default value for isParkingAvailable
                                         false,  // Default value for isParkingAssigned
                                         empObj.getString("phone"),
-                                        profilePic
+                                        profilePic,
+                                        attendanceStatus,
+                                        branchName
                                 );
 
                                 employees.add(employee);
@@ -144,56 +150,84 @@ public class attendance_report extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
     // ==============================
-    // Load Attendance Data
-    // ==============================
+// Load Attendance Data
+// ==============================
     private void loadAttendanceData() {
         String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
-        String url = "http://192.168.168.239/ems_api/get_attendance.php?company_code=" + companyCode;
+        String url = GET_ATTENDANCE_URL + "?company_code=" + companyCode;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
+                    Log.d("ATTENDANCE_DATA", response.toString());  // ✅ Add this to verify data
+
                     try {
-                        attendanceData.clear();
+                        if (response.getString("status").equals("success")) {
+                            JSONArray attendanceArray = response.getJSONArray("attendance_data");
 
-                        JSONArray branchesArray = response.getJSONArray("branches");
+                            attendanceData.clear();
 
-                        for (int i = 0; i < branchesArray.length(); i++) {
-                            JSONObject branchObj = branchesArray.getJSONObject(i);
-                            String branchName = branchObj.getString("branch_name");
-
-                            JSONArray attendanceArray = branchObj.getJSONArray("attendance");
-                            List<Attendance> attendanceList = new ArrayList<>();
-
-                            for (int j = 0; j < attendanceArray.length(); j++) {
-                                JSONObject attObj = attendanceArray.getJSONObject(j);
+                            for (int i = 0; i < attendanceArray.length(); i++) {
+                                JSONObject attendanceObj = attendanceArray.getJSONObject(i);
 
                                 Attendance attendance = new Attendance(
-                                        attObj.getString("employee_id"),
-                                        attObj.getString("employee_name"),
-                                        attObj.getString("in_time"),
-                                        attObj.getString("out_time"),
-                                        attObj.getString("attendance_status"),
-                                        attObj.getString("geofenced_attendance"),
-                                        attObj.getString("date")
+                                        attendanceObj.getString("employee_id"),
+                                        attendanceObj.getString("employee_name"),
+                                        attendanceObj.getString("branch"),
+                                        attendanceObj.getString("in_time"),
+                                        attendanceObj.getString("out_time"),
+                                        attendanceObj.getString("attendance_status"),
+                                        attendanceObj.getString("geofenced_status"),
+                                        attendanceObj.getString("date")  // ✅ Added date handling
                                 );
 
-                                attendanceList.add(attendance);
+                                String branchName = attendanceObj.getString("branch");
+
+                                if (!attendanceData.containsKey(branchName)) {
+                                    attendanceData.put(branchName, new ArrayList<>());
+                                }
+
+                                attendanceData.get(branchName).add(attendance);
                             }
 
-                            attendanceData.put(branchName, attendanceList);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(this, response.getString("message"), Toast.LENGTH_SHORT).show();
                         }
-
-                        adapter.notifyDataSetChanged();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(attendance_report.this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(attendance_report.this, "Error parsing attendance data", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(attendance_report.this, "Error fetching data", Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(attendance_report.this, "Error fetching attendance data", Toast.LENGTH_SHORT).show());
 
         requestQueue.add(jsonObjectRequest);
     }
+
+
+    // ==============================
+// Update Employee Attendance Status
+// ==============================
+    private void updateEmployeeAttendanceStatus() {
+        for (String branch : listData.keySet()) {
+            List<Employee> employees = listData.get(branch);
+
+            for (Employee employee : employees) {
+                String employeeId = employee.getId();
+                if (attendanceData.containsKey(employeeId)) {
+                    List<Attendance> attendanceList = attendanceData.get(employeeId);
+
+                    if (!attendanceList.isEmpty()) {
+                        String latestStatus = attendanceList.get(0).getAttendanceStatus();  // Get the most recent status
+                        employee.setAttendanceStatus(latestStatus);  // ✅ Update status in Employee object
+                    }
+                }
+            }
+        }
+
+        adapter.notifyDataSetChanged();  // Refresh UI
+    }
+
 
     private void refreshData() {
         // Show a loading dialog for better UI
@@ -218,6 +252,189 @@ public class attendance_report extends AppCompatActivity {
 
         // Show success message
         Toast.makeText(this, "Data refreshed successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    // ==============================
+// OnClick - Mark Single Employee Attendance
+// ==============================
+    private void markSingleEmployeeAttendance(Employee employee) {
+        Intent intent = new Intent(attendance_report.this, MarkAttendanceActivity.class);
+        intent.putExtra("employee_id", employee.getId());
+        intent.putExtra("employee_name", employee.getName());
+        startActivity(intent);
+    }
+
+    // ==============================
+// OnLongClick - Initiate Multiple Employee Selection
+// ==============================
+    private void initiateMultipleEmployeeSelection() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Mark Multiple Employees")
+                .setMessage("Do you want to mark attendance for multiple employees?")
+                .setPositiveButton("Yes", (dialog, which) -> showBranchSelectionDialog())  // ➡️ Select Branch First
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // ==============================
+// Show Branch Selection Dialog
+// ==============================
+    private void showBranchSelectionDialog() {
+        String[] branchNames = listGroupTitles.toArray(new String[0]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Branch")
+                .setItems(branchNames, (dialog, which) -> {
+                    String selectedBranch = branchNames[which];
+                    showEmployeeSelectionDialog(selectedBranch);  // ➡️ Show Employees in Selected Branch
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // ==============================
+// Show Employee Selection Dialog
+// ==============================
+    private void showEmployeeSelectionDialog(String branch) {
+        List<Employee> branchEmployees = listData.get(branch);  // ✅ Show Employees from Selected Branch
+
+        boolean[] selectedItems = new boolean[branchEmployees.size()];
+        List<Employee> selectedEmployees = new ArrayList<>();
+
+        String[] employeeNames = new String[branchEmployees.size()];
+        for (int i = 0; i < branchEmployees.size(); i++) {
+            employeeNames[i] = branchEmployees.get(i).getName();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Employees")
+                .setMultiChoiceItems(employeeNames, selectedItems, (dialog, which, isChecked) -> {
+                    if (isChecked) {
+                        selectedEmployees.add(branchEmployees.get(which));
+                    } else {
+                        selectedEmployees.remove(branchEmployees.get(which));
+                    }
+                })
+                .setPositiveButton("Next", (dialog, which) -> {
+                    if (!selectedEmployees.isEmpty()) {
+                        showAttendanceStatusDialog(selectedEmployees);  // ➡️ Select Attendance Status
+                    } else {
+                        Toast.makeText(this, "Please select at least one employee.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // ==============================
+// Show Attendance Status Dialog
+// ==============================
+    private void showAttendanceStatusDialog(List<Employee> selectedEmployees) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Mark Attendance As")
+                .setItems(new String[]{"Present", "Absent", "Overtime", "Half Day"}, (dialog, which) -> {
+                    String status = "";
+
+                    switch (which) {
+                        case 0: status = "Present"; break;
+                        case 1: status = "Absent"; break;
+                        case 2: status = "Overtime"; break;
+                        case 3: status = "Half Day"; break;
+                    }
+
+                    showDateTimeDialog(selectedEmployees, status);  // ➡️ Select Date, In-Time, Out-Time
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // ==============================
+// Show Date, In-Time & Out-Time Picker
+// ==============================
+    private void showDateTimeDialog(List<Employee> selectedEmployees, String status) {
+        final Calendar calendar = Calendar.getInstance();
+
+        // Date Picker
+        DatePickerDialog datePicker = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            String selectedDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+
+            // In-Time Picker
+            TimePickerDialog inTimePicker = new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
+                String inTime = String.format("%02d:%02d:00", hourOfDay, minute);
+
+                // Out-Time Picker
+                TimePickerDialog outTimePicker = new TimePickerDialog(this, (view2, hourOfDay1, minute1) -> {
+                    String outTime = String.format("%02d:%02d:00", hourOfDay1, minute1);
+
+                    // ✅ Mark attendance with correct data
+                    markMultipleEmployeesAttendance(selectedEmployees, status, selectedDate, inTime, outTime);
+
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+
+                outTimePicker.setTitle("Select Out Time");
+                outTimePicker.show();
+
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+
+            inTimePicker.setTitle("Select In Time");
+            inTimePicker.show();
+
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePicker.setTitle("Select Date");
+        datePicker.show();
+    }
+
+    // ==============================
+// Mark Attendance for Selected Employees in Database
+// ==============================
+    private void markMultipleEmployeesAttendance(List<Employee> selectedEmployees, String status, String selectedDate, String inTime, String outTime) {
+        String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
+
+        for (Employee employee : selectedEmployees) {
+            String url = BASE_URL + "mark_attendance.php";
+
+            JSONObject postData = new JSONObject();
+            try {
+                postData.put("employee_id", employee.getId());
+                postData.put("employee_name", employee.getName());
+                postData.put("branch", employee.getBranch());
+                postData.put("company_code", companyCode);
+                postData.put("attendance_status", status);
+                postData.put("in_time", inTime);       // ✅ Correct In-Time
+                postData.put("out_time", outTime);     // ✅ Correct Out-Time
+                postData.put("date", selectedDate);    // ✅ Correct Date
+
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, postData,
+                        response -> Toast.makeText(this, "Attendance marked for " + employee.getName(), Toast.LENGTH_SHORT).show(),
+                        error -> Toast.makeText(this, "Error marking attendance for " + employee.getName(), Toast.LENGTH_SHORT).show()
+                );
+
+                requestQueue.add(request);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error adding time for " + employee.getName(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    // ==============================
+// Add Click Listeners for Employee Items
+// ==============================
+    private void setupEmployeeClickListeners() {
+        // OnClick - Mark Single Employee Attendance
+        expandableListView.setOnChildClickListener((parent, v, groupPosition, childPosition, id) -> {
+            Employee selectedEmployee = listData.get(listGroupTitles.get(groupPosition)).get(childPosition);
+            markSingleEmployeeAttendance(selectedEmployee);  // ✅ OnClick for Single Employee
+            return true;
+        });
+
+        // OnLongClick - Ask for Multiple Employee Selection
+        expandableListView.setOnItemLongClickListener((parent, view, position, id) -> {
+            initiateMultipleEmployeeSelection();  // ✅ Show dialog for multiple employee marking
+            return true;
+        });
     }
 
 
@@ -270,7 +487,7 @@ public class attendance_report extends AppCompatActivity {
         if (filteredBranches.isEmpty()) {
             Toast.makeText(this, "No matching employees found", Toast.LENGTH_SHORT).show();
         } else {
-            adapter = new ExpandableListAdapter(this, filteredBranches, filteredData);
+            adapter = new ExpandableListAdapter(this, filteredBranches, filteredData,true);
             expandableListView.setAdapter(adapter);
             Toast.makeText(this, "Search results displayed", Toast.LENGTH_SHORT).show();
         }

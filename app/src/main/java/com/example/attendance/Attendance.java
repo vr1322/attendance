@@ -12,10 +12,11 @@ public class Attendance {
     private String date;
 
     // Constructor
-    public Attendance(String employeeId, String employeeName, String inTime, String outTime,
+    public Attendance(String employeeId, String employeeName,String branch, String inTime, String outTime,
                       String attendanceStatus, String geofencedStatus, String date) {
         this.employeeId = employeeId;
         this.employeeName = employeeName;
+        this.branch = branch;
         this.inTime = inTime;
         this.outTime = outTime;
         this.attendanceStatus = attendanceStatus;

@@ -144,7 +144,7 @@ public class emp_list extends AppCompatActivity {
 
         loadBranchesAndEmployees();
 
-        adapter = new ExpandableListAdapter(this, listGroupTitles, listData);
+        adapter = new ExpandableListAdapter(this, listGroupTitles, listData, false); // Employee List
         expandableListView.setAdapter(adapter);
 
 
@@ -168,8 +168,7 @@ public class emp_list extends AppCompatActivity {
             addFab.startAnimation(rotateForward);
             addBranchFab.startAnimation(fabOpen);
             addEmployeeFab.startAnimation(fabOpen);
-            addFab.setImageResource(R.drawable.ic_close);
-            // Change to close icon
+            addFab.setImageResource(R.drawable.ic_close);// Change to close icon
         } else {
             addFab.startAnimation(rotateBackward);
             addBranchFab.startAnimation(fabClose);
@@ -206,6 +205,8 @@ public class emp_list extends AppCompatActivity {
 
                                 // Check if profile_pic exists and is not null
                                 String profilePic = "http://192.168.168.239/ems_api/" + empObj.getString("profile_pic");
+                                String attendanceStatus = "http://192.168.168.239/ems_api/" +empObj.optString("attendance_status", "Not Marked");  // ✅ Correct Usage
+
 
                                 Employee employee = new Employee(
                                         empObj.getString("employee_name"),
@@ -214,7 +215,10 @@ public class emp_list extends AppCompatActivity {
                                         false,  // Default value for isParkingAvailable
                                         false,  // Default value for isParkingAssigned
                                         empObj.getString("phone"),
-                                        profilePic
+                                        profilePic,
+                                        attendanceStatus,   // ✅ Correct Usage
+                                        branchName
+
                                 );
 
                                 employees.add(employee);
@@ -301,7 +305,7 @@ public class emp_list extends AppCompatActivity {
         if (filteredBranches.isEmpty()) {
             Toast.makeText(this, "No matching employees found", Toast.LENGTH_SHORT).show();
         } else {
-            adapter = new ExpandableListAdapter(this, filteredBranches, filteredData);
+            adapter = new ExpandableListAdapter(this, filteredBranches, filteredData,false);
             expandableListView.setAdapter(adapter);
             Toast.makeText(this, "Search results displayed", Toast.LENGTH_SHORT).show();
         }

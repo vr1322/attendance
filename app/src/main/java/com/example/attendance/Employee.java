@@ -10,9 +10,10 @@ public class Employee implements Serializable {
     private boolean isParkingAssigned;
     private String phoneNumber;
     private String profile_pic;  // ✅ Field for storing profile picture URI or URL
-
+    private String attendanceStatus;
+    private String branch; // New field for Attendance Report
     // Constructor
-    public Employee(String name, String designation, String id, boolean isParkingAvailable, boolean isParkingAssigned, String phoneNumber, String profile_pic) {
+    public Employee(String name, String designation, String id, boolean isParkingAvailable, boolean isParkingAssigned, String phoneNumber, String profile_pic, String attendanceStatus, String branch) {
         this.name = name;
         this.designation = designation;
         this.id = id;
@@ -20,6 +21,8 @@ public class Employee implements Serializable {
         this.isParkingAssigned = isParkingAssigned;
         this.phoneNumber = phoneNumber;
         this.profile_pic = profile_pic;
+        this.attendanceStatus = attendanceStatus;
+        this.branch = branch;  // 🔹 Initialize Branch
     }
 
     // Getter and Setter methods for all fields
@@ -78,5 +81,16 @@ public class Employee implements Serializable {
 
     public void setProfilePic(String profile_pic) {
         this.profile_pic = profile_pic;
+    }
+    // Setter method
+    public void setAttendanceStatus(String attendanceStatus) {
+        this.attendanceStatus = attendanceStatus;
+    }
+
+    public String getAttendanceStatus() {
+        return attendanceStatus;
+    }
+    public String getBranch() {
+        return branch;
     }
 }
