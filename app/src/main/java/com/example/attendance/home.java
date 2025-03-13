@@ -48,7 +48,7 @@ public class home extends AppCompatActivity {
     private CircleImageView profilePic;
     private TextView companyName, designation;
 
-    private String apiUrlFetch = "http://192.168.168.239/ems_api/get_admin_profile.php";
+    private String apiUrlFetch = "http://192.168.144.102/ems_api/get_admin_profile.php";
     private String companyCode = "";
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})

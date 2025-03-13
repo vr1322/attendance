@@ -46,8 +46,8 @@ public class update_admin extends AppCompatActivity {
     private String companyCode, base64Image = "";
     private TextView updttext, logut;
     private Uri imageUri;
-    private String apiUrlFetch = "http://192.168.168.239/ems_api/get_admin_profile.php";
-    private String apiUrlUpdate = "http://192.168.168.239/ems_api/update_admin_profile.php";
+    private String apiUrlFetch = "http://192.168.144.102/ems_api/get_admin_profile.php";
+    private String apiUrlUpdate = "http://192.168.144.102/ems_api/update_admin_profile.php";
 
     @SuppressLint("MissingInflatedId")
     @Override

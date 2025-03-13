@@ -64,7 +64,7 @@ public class emp_list extends AppCompatActivity {
     private List<String> listGroupTitles;
     private HashMap<String, List<Employee>> listData;
     private RequestQueue requestQueue;
-    private static final String BASE_URL = "http://192.168.168.239/ems_api/";
+    private static final String BASE_URL = "http://192.168.144.102/ems_api/";
     private static final String GET_BRANCHES_URL = BASE_URL + "get_branches_employees.php";
     private static final int STORAGE_PERMISSION_CODE = 100;
 
@@ -351,7 +351,7 @@ public class emp_list extends AppCompatActivity {
             String format = formats[which].toLowerCase(); // Lowercase for consistency
 
             try {
-                String downloadUrl = "http://192.168.168.239/ems_api/download_employee_list.php?"
+                String downloadUrl = "http://192.168.144.102/ems_api/download_employee_list.php?"
                         + "branch=" + URLEncoder.encode(branch, "UTF-8")
                         + "&format=" + format;
 
@@ -473,7 +473,7 @@ public class emp_list extends AppCompatActivity {
                 .setTitle("Delete Employee")
                 .setMessage("Do you really want to delete " + employeeName + "?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    String url = "http://192.168.168.239/ems_api/delete_employee.php?employee_id=" + employeeId;
+                    String url = "http://192.168.144.102/ems_api/delete_employee.php?employee_id=" + employeeId;
 
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                             response -> {

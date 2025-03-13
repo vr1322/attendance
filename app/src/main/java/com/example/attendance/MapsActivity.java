@@ -150,7 +150,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
-        StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.168.239/ems_api/get_branches.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.144.102/ems_api/get_branches.php",
                 response -> {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);

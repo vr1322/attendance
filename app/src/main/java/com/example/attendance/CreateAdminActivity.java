@@ -38,7 +38,7 @@ public class CreateAdminActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private RequestQueue requestQueue;
 
-    private static final String REGISTER_URL = "http://192.168.168.239/ems_api/register_admin.php";
+    private static final String REGISTER_URL = "http://192.168.144.102/ems_api/register_admin.php";
 
     @SuppressLint("MissingInflatedId")
     @Override

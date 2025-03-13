@@ -1,20 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MarkAttendanceActivity">
+    android:background="@drawable/gradient_bg"
+    tools:context=".settings">
 
-    <TextView
-        android:layout_width="@dimen/dp300"
-        android:layout_height="@dimen/dp200"
-        android:text="mark attendance"
-        android:textSize="@dimen/dp50"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        tools:ignore="MissingConstraints">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- Header Section (Title) -->
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp10">
+
+                <ImageView
+                    android:id="@+id/back"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:clickable="true"
+                    android:padding="@dimen/dp11"
+                    android:src="@drawable/chevron_left" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="left">
+
+                    <TextView
+                        android:id="@+id/employee_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Employee name"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/dp18"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/branch_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Branch name"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/dp14"/>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/search"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:clickable="true"
+                    android:src="@drawable/search"
+                    android:padding="@dimen/dp7" />
+
+                <ImageView
+                    android:id="@+id/download"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:clickable="true"
+                    android:src="@drawable/ic_download"
+                    android:padding="@dimen/dp5"/>
+            </LinearLayout>
+
+            <!-- Calendar Section -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp10"
+                app:cardCornerRadius="@dimen/dp16"
+                app:cardElevation="@dimen/dp4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:id="@+id/calendarGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp20"
+                app:mcv_showOtherDates="all"
+                app:mcv_tileSize="40dp"
+                app:mcv_selectionColor="@color/blue"/>
+
+
+
+            <!-- Mark Attendance Button -->
+            <Button
+                android:id="@+id/btn_mark_attendance"
+                android:layout_width="@dimen/dp300"
+                android:layout_height="@dimen/dp50"
+               android:layout_margin="@dimen/dp20"
+                android:background="@drawable/button"
+                android:text="Mark Attendance"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dp18"/>
+
+            <!-- Attendance Summary -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="@dimen/dp10"
+                android:layout_marginBottom="@dimen/dp20">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Present day"
+                        android:textColor="@color/green"
+                        android:textSize="@dimen/dp14" />
+
+                    <TextView
+                        android:id="@+id/present_count"
+                        android:text="0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/dp20"
+                        android:textColor="@color/green"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Half day"
+                        android:textColor="@color/orange"
+                        android:textSize="@dimen/dp14"/>
+
+                    <TextView
+                        android:id="@+id/halfday_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="@dimen/dp20"
+                        android:textColor="@color/orange"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Absent day"
+                        android:textColor="@color/red"
+                        android:textSize="@dimen/dp14"/>
+
+                    <TextView
+                        android:id="@+id/absent_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="@dimen/dp20"
+                        android:textColor="@color/red"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Overtime"
+                        android:textColor="@color/dark_blue"
+                        android:textSize="@dimen/dp14"/>
+
+                    <TextView
+                        android:id="@+id/overtime_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="@dimen/dp20"
+                        android:textColor="@color/dark_blue"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

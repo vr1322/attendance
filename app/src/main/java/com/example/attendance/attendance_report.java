@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +44,7 @@ public class attendance_report extends AppCompatActivity {
 
 
     private RequestQueue requestQueue;
-    private static final String BASE_URL = "http://192.168.168.239/ems_api/";
+    private static final String BASE_URL = "http://192.168.144.102/ems_api/";
     private static final String GET_BRANCHES_URL = BASE_URL + "get_branches_employees.php";
     private static final String GET_ATTENDANCE_URL = BASE_URL + "get_attendance.php";
 
@@ -116,7 +117,7 @@ public class attendance_report extends AppCompatActivity {
                                 JSONObject empObj = employeesArray.getJSONObject(j);
 
                                 // Check if profile_pic exists and is not null
-                                String profilePic = "http://192.168.168.239/ems_api/" + empObj.getString("profile_pic");
+                                String profilePic = "http://192.168.144.102/ems_api/" + empObj.getString("profile_pic");
                                 String attendanceStatus = empObj.optString("attendance_status", "Not Marked");  // ✅ Correct Usage
 
 
@@ -349,41 +350,126 @@ public class attendance_report extends AppCompatActivity {
     }
 
     // ==============================
-// Show Date, In-Time & Out-Time Picker
+// Show Date, In-Time & Out-Time Picker with Logic
+// ==============================
+    // ==============================
+// Show Date, In-Time & Out-Time Picker with Logic
 // ==============================
     private void showDateTimeDialog(List<Employee> selectedEmployees, String status) {
         final Calendar calendar = Calendar.getInstance();
+        final String[] finalStatus = {status};
 
         // Date Picker
         DatePickerDialog datePicker = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             String selectedDate = year + "-" + (month + 1) + "-" + dayOfMonth;
 
-            // In-Time Picker
-            TimePickerDialog inTimePicker = new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
-                String inTime = String.format("%02d:%02d:00", hourOfDay, minute);
+            // Check if attendance already marked
+            if (isAttendanceAlreadyMarked(selectedEmployees, selectedDate)) {
+                Toast.makeText(this, "Attendance already marked for " + selectedDate, Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                // Out-Time Picker
-                TimePickerDialog outTimePicker = new TimePickerDialog(this, (view2, hourOfDay1, minute1) -> {
-                    String outTime = String.format("%02d:%02d:00", hourOfDay1, minute1);
+            // In-Time Picker with Title
+            showTimePickerDialog("Select In Time", (view1, hourOfDay, minute) -> {
+                String inTime = formatTimeWithAMPM(hourOfDay, minute);
+
+                // Out-Time Picker with Title
+                showTimePickerDialog("Select Out Time", (view2, hourOfDay1, minute1) -> {
+                    String outTime = formatTimeWithAMPM(hourOfDay1, minute1);
+
+                    // Check if Out-Time is in the past
+                    if (isOutTimeExceeded(outTime)) {
+                        Toast.makeText(this, "Out-time exceeded. Attendance set to 'Not Marked'.", Toast.LENGTH_SHORT).show();
+                        finalStatus[0] = "Not Marked";
+                    }
 
                     // ✅ Mark attendance with correct data
-                    markMultipleEmployeesAttendance(selectedEmployees, status, selectedDate, inTime, outTime);
+                    markMultipleEmployeesAttendance(selectedEmployees, finalStatus[0], selectedDate, inTime, outTime);
 
-                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+                });
 
-                outTimePicker.setTitle("Select Out Time");
-                outTimePicker.show();
-
-            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-
-            inTimePicker.setTitle("Select In Time");
-            inTimePicker.show();
+            });
 
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 
         datePicker.setTitle("Select Date");
         datePicker.show();
     }
+
+    // ==============================
+// Custom Time Picker Dialog with Title
+// ==============================
+    private void showTimePickerDialog(String title, TimePickerDialog.OnTimeSetListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+
+        TimePicker timePicker = new TimePicker(this);
+        timePicker.setIs24HourView(false); // 12-hour format
+
+        builder.setView(timePicker);
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            listener.onTimeSet(timePicker, timePicker.getHour(), timePicker.getMinute());
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.show();
+    }
+
+    // ==============================
+// Format Time with AM/PM
+// ==============================
+    private String formatTimeWithAMPM(int hourOfDay, int minute) {
+        String amPm = (hourOfDay < 12) ? "AM" : "PM";
+        int hour = (hourOfDay == 0) ? 12 : (hourOfDay > 12) ? hourOfDay - 12 : hourOfDay;
+        return String.format("%02d:%02d %s", hour, minute, amPm);
+    }
+
+
+
+    // ==============================
+// Check if Attendance Already Marked
+// ==============================
+    private boolean isAttendanceAlreadyMarked(List<Employee> employees, String date) {
+        for (Employee employee : employees) {
+            if (attendanceData.containsKey(employee.getId())) {
+                List<Attendance> attendanceList = attendanceData.get(employee.getId());
+
+                for (Attendance attendance : attendanceList) {
+                    if (attendance.getDate().equals(date)) {
+                        return true; // Attendance already marked for this date
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // ==============================
+// Check if Out-Time is Exceeded
+// ==============================
+    private boolean isOutTimeExceeded(String outTime) {
+        Calendar currentTime = Calendar.getInstance();
+        Calendar outTimeCalendar = Calendar.getInstance();
+
+        String[] timeParts = outTime.split(" ");
+        String[] hourMinute = timeParts[0].split(":");
+
+        int outHour = Integer.parseInt(hourMinute[0]);
+        int outMinute = Integer.parseInt(hourMinute[1]);
+
+        if (timeParts[1].equalsIgnoreCase("PM") && outHour != 12) {
+            outHour += 12;
+        } else if (timeParts[1].equalsIgnoreCase("AM") && outHour == 12) {
+            outHour = 0; // Midnight correction
+        }
+
+        outTimeCalendar.set(Calendar.HOUR_OF_DAY, outHour);
+        outTimeCalendar.set(Calendar.MINUTE, outMinute);
+
+        return currentTime.after(outTimeCalendar); // True if current time > out-time
+    }
+
 
     // ==============================
 // Mark Attendance for Selected Employees in Database

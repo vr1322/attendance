@@ -32,6 +32,12 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    configurations.all {
+        resolutionStrategy {
+            force ("androidx.core:core:1.13.0")
+        }
+    }
+
 }
 
 dependencies {
@@ -39,9 +45,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.legacy.support.v4)
     implementation(libs.annotation)
     implementation(libs.volley)
+    implementation(libs.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -49,10 +55,10 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     implementation(libs.drawerlayout)
-    implementation (libs.play.services.location)
-    implementation (libs.play.services.maps)
-    implementation (libs.glide)
-    annotationProcessor (libs.compiler)
-    implementation (libs.circleimageview)
-
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
+    implementation(libs.circleimageview)
+    implementation(libs.material.calendarview)
 }

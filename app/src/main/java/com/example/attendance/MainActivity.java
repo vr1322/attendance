@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvForgot, companyNameTextView;
     private ProgressDialog progressDialog;
 
-    private static final String LOGIN_URL = "http://192.168.168.239/ems_api/login.php"; // Ensure this URL is correct
+    private static final String LOGIN_URL = "http://192.168.144.102/ems_api/login.php"; // Ensure this URL is correct
 
     @SuppressLint("MissingInflatedId")
     @Override

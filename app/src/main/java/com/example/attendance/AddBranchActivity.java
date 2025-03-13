@@ -116,7 +116,7 @@ public class AddBranchActivity extends AppCompatActivity {
     }
 
     private void saveBranchToDatabase(String name, String address, int radius) {
-        String apiUrl = "http://192.168.168.239/ems_api/save_branch.php";
+        String apiUrl = "http://192.168.144.102/ems_api/save_branch.php";
 
         StringRequest request = new StringRequest(Request.Method.POST, apiUrl,
                 response -> {

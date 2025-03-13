@@ -14,6 +14,7 @@ material = "1.12.0"
 activity = "1.9.2"
 constraintlayout = "2.1.4"
 legacySupportV4 = "1.0.0"
+materialCalendarview = "1.4.3"
 materialVersion = "1.11.0"
 navigationFragment = "2.8.5"
 annotation = "1.9.1"
@@ -23,6 +24,7 @@ carUiLib = "2.6.0"
 playServicesLocation = "21.3.0"
 playServicesMaps = "19.1.0"
 volley = "1.2.1"
+swiperefreshlayout = "1.1.0"
 
 [libraries]
 blurkit = { module = "io.alterac.blurkit:blurkit", version.ref = "blurkit" }
@@ -40,6 +42,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+material-calendarview = { module = "com.prolificinteractive:material-calendarview", version.ref = "materialCalendarview" }
 material-v1110 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationFragment" }
@@ -51,6 +54,7 @@ lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-lived
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

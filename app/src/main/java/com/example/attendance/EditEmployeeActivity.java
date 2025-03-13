@@ -42,7 +42,7 @@ public class EditEmployeeActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private ProgressDialog progressDialog;
 
-    private static final String BASE_URL = "http://192.168.168.239/ems_api/";
+    private static final String BASE_URL = "http://192.168.144.102/ems_api/";
     private static final String EDIT_EMPLOYEE_URL = BASE_URL + "edit_employee.php";
     private static final String GET_BRANCHES_URL = BASE_URL + "get_branches.php";
     private static final String GET_EMPLOYEE_DETAILS_URL = BASE_URL + "get_employee_details.php";
@@ -172,7 +172,7 @@ public class EditEmployeeActivity extends AppCompatActivity {
                             // ✅ CORRECT: Use Glide to load the image from URL
                             String profileImagePath = employee.optString("profile_pic", "").trim();
                             if (!profileImagePath.isEmpty()) {
-                                String imageUrl = "http://192.168.168.239/ems_api/" + profileImagePath;
+                                String imageUrl = "http://192.168.144.102/ems_api/" + profileImagePath;
                                 Glide.with(this)
                                         .load(imageUrl)
                                         .placeholder(R.drawable.ic_profile) // Set a default image

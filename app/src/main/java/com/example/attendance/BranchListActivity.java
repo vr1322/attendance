@@ -41,8 +41,8 @@ public class BranchListActivity extends AppCompatActivity implements BranchAdapt
     private FloatingActionButton fabAddBranch;
     private ImageView backButton;
 
-    private static final String GET_BRANCHES_URL = "http://192.168.168.239/ems_api/get_branches.php";
-    private static final String DELETE_BRANCH_URL = "http://192.168.168.239/ems_api/delete_branch.php";
+    private static final String GET_BRANCHES_URL = "http://192.168.144.102/ems_api/get_branches.php";
+    private static final String DELETE_BRANCH_URL = "http://192.168.144.102/ems_api/delete_branch.php";
     private static final String TAG = "BranchListActivity";
 
     @Override
