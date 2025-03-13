@@ -15,6 +15,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
@@ -68,6 +71,7 @@ public class emp_list extends AppCompatActivity {
     private FloatingActionButton addFab, addBranchFab, addEmployeeFab;
     private TextView addAlarmText, addPersonText;
     private boolean isOpen = false;
+    private Animation fabOpen, fabClose, rotateForward, rotateBackward;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -87,6 +91,10 @@ public class emp_list extends AppCompatActivity {
         addEmployeeFab = findViewById(R.id.add_employee_fab);
         addAlarmText = findViewById(R.id.add_alarm_action_text);
         addPersonText = findViewById(R.id.add_person_action_text);
+        fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close);
+        rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
+        rotateBackward = AnimationUtils.loadAnimation(this, R.anim.rotate_backward);
 
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
@@ -148,21 +156,30 @@ public class emp_list extends AppCompatActivity {
     }
 
 
-    private void toggleFabVisibility(boolean open) {
-        if (open) {
-            addBranchFab.show();
-            addEmployeeFab.show();
-            addAlarmText.setVisibility(View.VISIBLE);
-            addPersonText.setVisibility(View.VISIBLE);
-        } else {
-            addBranchFab.hide();
-            addEmployeeFab.hide();
-            addAlarmText.setVisibility(View.INVISIBLE);
-            addPersonText.setVisibility(View.INVISIBLE);
-        }
-        isOpen = open;
-    }
+    private void toggleFabVisibility(boolean show) {
+        int visibility = show ? View.VISIBLE : View.GONE;
 
+        addBranchFab.setVisibility(visibility);
+        addEmployeeFab.setVisibility(visibility);
+        addAlarmText.setVisibility(visibility);
+        addPersonText.setVisibility(visibility);
+
+        if (show) {
+            addFab.startAnimation(rotateForward);
+            addBranchFab.startAnimation(fabOpen);
+            addEmployeeFab.startAnimation(fabOpen);
+            addFab.setImageResource(R.drawable.ic_close);
+            // Change to close icon
+        } else {
+            addFab.startAnimation(rotateBackward);
+            addBranchFab.startAnimation(fabClose);
+            addEmployeeFab.startAnimation(fabClose);
+            addFab.setImageResource(R.drawable.ic_add);  // Change back to add icon
+        }
+
+        // Toggle the state
+        isOpen = show;
+    }
 
     private void loadBranchesAndEmployees() {
         String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");

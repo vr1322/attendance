@@ -137,6 +137,7 @@
         android:layout_marginEnd="@dimen/dp8"
         android:visibility="gone"
         android:text="Add Branch"
+        android:elevation="@dimen/dp20"
         app:layout_constraintBottom_toBottomOf="@+id/add_branch_fab"
         app:layout_constraintEnd_toStartOf="@+id/add_branch_fab"
         app:layout_constraintTop_toTopOf="@+id/add_branch_fab" />
@@ -164,6 +165,7 @@
         android:layout_marginEnd="@dimen/dp8"
         android:visibility="gone"
         android:text="Add Employee"
+        android:elevation="@dimen/dp20"
         app:layout_constraintBottom_toBottomOf="@+id/add_employee_fab"
         app:layout_constraintEnd_toStartOf="@+id/add_employee_fab"
         app:layout_constraintTop_toTopOf="@+id/add_employee_fab" />
