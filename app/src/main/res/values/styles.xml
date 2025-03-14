@@ -7,7 +7,7 @@
     </style>
 
 
-        <style name="CalendarTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <style name="CalendarTheme" parent="@style/Theme.Attendance">
             <item name="colorPrimary">@color/blue</item>
             <item name="colorPrimaryDark">@color/dark_blue</item>
             <item name="colorAccent">@color/green</item>

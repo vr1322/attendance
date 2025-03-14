@@ -130,6 +130,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             }
         }
 
+
         // Attendance Status (Only for Attendance Report)
         if (isAttendanceReport) {
             ImageView attendanceStatus = convertView.findViewById(R.id.attendance_status);
@@ -140,9 +141,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             // Set icon based on status
             switch (status) {
                 case "Present":
+                    Log.d("ICON_UPDATE", employee.getName() + ": Present Icon Set");
                     attendanceStatus.setImageResource(R.drawable.ic_p);
                     break;
                 case "Absent":
+                    Log.d("ICON_UPDATE", employee.getName() + ": Absent Icon Set");
                     attendanceStatus.setImageResource(R.drawable.ic_a);
                     break;
                 case "Half Day":
@@ -153,9 +156,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     break;
                 case "Not Marked":
                 default:
+                    Log.d("ICON_UPDATE", employee.getName() + ": Default (Not Marked) Icon Set");
                     attendanceStatus.setImageResource(R.drawable.ic_nm);
                     break;
-            }
+
+
+        }
+
         }
 
 

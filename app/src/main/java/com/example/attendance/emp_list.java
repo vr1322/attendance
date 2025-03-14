@@ -351,7 +351,7 @@ public class emp_list extends AppCompatActivity {
             String format = formats[which].toLowerCase(); // Lowercase for consistency
 
             try {
-                String downloadUrl = "http://192.168.144.102/ems_api/download_employee_list.php?"
+                String downloadUrl = "http://192.168.168.239/ems_api/download_employee_list.php?"
                         + "branch=" + URLEncoder.encode(branch, "UTF-8")
                         + "&format=" + format;
 
@@ -473,7 +473,7 @@ public class emp_list extends AppCompatActivity {
                 .setTitle("Delete Employee")
                 .setMessage("Do you really want to delete " + employeeName + "?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    String url = "http://192.168.144.102/ems_api/delete_employee.php?employee_id=" + employeeId;
+                    String url = "http://192.168.168.239/ems_api/delete_employee.php?employee_id=" + employeeId;
 
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                             response -> {
