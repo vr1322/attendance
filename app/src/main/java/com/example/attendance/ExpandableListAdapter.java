@@ -22,13 +22,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private final List<String> groupList;
     private final HashMap<String, List<Employee>> childMap;
     private final boolean isAttendanceReport;  // New flag for layout switching
-
+    private HashMap<String, List<Attendance>> attendanceData;
     // Constructor with flag for Attendance Report
-    public ExpandableListAdapter(Context context, List<String> groupList,
-                                 HashMap<String, List<Employee>> childMap, boolean isAttendanceReport) {
+    public ExpandableListAdapter(Context context,
+                                 List<String> groupList,
+                                 HashMap<String, List<Employee>> childMap,
+                                 HashMap<String, List<Attendance>> attendanceData,  // Corrected this line
+                                 boolean isAttendanceReport) {
         this.context = context;
         this.groupList = groupList;
         this.childMap = childMap;
+        this.attendanceData = attendanceData;
         this.isAttendanceReport = isAttendanceReport;  // Flag for different layout
     }
 
@@ -134,39 +138,41 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         // Attendance Status (Only for Attendance Report)
         if (isAttendanceReport) {
             ImageView attendanceStatus = convertView.findViewById(R.id.attendance_status);
-            String status = employee.getAttendanceStatus();
+            String status = employee.getAttendanceStatus().trim(); // Trim spaces
 
             Log.d("ATTENDANCE_STATUS", "Employee: " + employee.getName() + ", Status: " + status);
 
-            // Set icon based on status
-            switch (status) {
-                case "Present":
+            switch (status.toLowerCase()) {
+                case "present":
                     Log.d("ICON_UPDATE", employee.getName() + ": Present Icon Set");
                     attendanceStatus.setImageResource(R.drawable.ic_p);
                     break;
-                case "Absent":
+                case "absent":
                     Log.d("ICON_UPDATE", employee.getName() + ": Absent Icon Set");
                     attendanceStatus.setImageResource(R.drawable.ic_a);
                     break;
-                case "Half Day":
+                case "half day":
                     attendanceStatus.setImageResource(R.drawable.ic_hf);
                     break;
-                case "Overtime":
+                case "overtime":
                     attendanceStatus.setImageResource(R.drawable.ic_ot);
                     break;
-                case "Not Marked":
                 default:
                     Log.d("ICON_UPDATE", employee.getName() + ": Default (Not Marked) Icon Set");
-                    attendanceStatus.setImageResource(R.drawable.ic_nm);
+                    attendanceStatus.setImageResource(R.drawable.ic_nm); // Default icon
                     break;
-
-
+            }
         }
-
-        }
-
-
         return convertView;
+    }
+
+    public void resetAttendanceIcons() {
+        for (String branch : attendanceData.keySet()) {
+            for (Attendance employee : attendanceData.get(branch)) {
+                employee.setAttendanceStatus("");  // Clear status
+            }
+        }
+        notifyDataSetChanged(); // Refresh UI
     }
 
     @Override

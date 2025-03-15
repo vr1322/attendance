@@ -47,6 +47,7 @@ public class attendance_report extends AppCompatActivity {
     private List<String> listGroupTitles;
     private HashMap<String, List<Employee>> listData;
     private HashMap<String, List<Attendance>> attendanceData;
+    List<Attendance> attendanceList = new ArrayList<>(); // Add attendance data here if required
     private final Handler refreshHandler = new Handler();
     private Runnable refreshRunnable;
 
@@ -81,7 +82,10 @@ public class attendance_report extends AppCompatActivity {
         loadAttendanceData();     // Initial Load
         startAutoRefresh();       // Auto-Refresh Mechanism
 
-        adapter = new ExpandableListAdapter(this, listGroupTitles, listData, true); // Attendance Report
+// Ensure 'listData' is initialized as a List<Attendance>
+
+        adapter = new ExpandableListAdapter(this, listGroupTitles, listData, attendanceData, true);
+        // Attendance Report
         expandableListView.setAdapter(adapter);
         setupEmployeeClickListeners();
 
@@ -101,171 +105,203 @@ public class attendance_report extends AppCompatActivity {
     }
 
     private void loadBranchesAndEmployees() {
-        String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
-        String url = GET_BRANCHES_URL + "?company_code=" + companyCode;
+            String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
+            String url = GET_BRANCHES_URL + "?company_code=" + companyCode;
 
-        // ✅ Clear data at the start to prevent duplication
-        listGroupTitles.clear();
-        listData.clear();
+            // ✅ Clear data at the start to prevent duplication
+            listGroupTitles.clear();
+            listData.clear();
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    try {
-                        JSONArray branchesArray = response.getJSONArray("branches");
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    response -> {
+                        try {
+                            JSONArray branchesArray = response.getJSONArray("branches");
 
-                        for (int i = 0; i < branchesArray.length(); i++) {
-                            JSONObject branchObj = branchesArray.getJSONObject(i);
-                            String branchName = branchObj.getString("branch_name");
+                            for (int i = 0; i < branchesArray.length(); i++) {
+                                JSONObject branchObj = branchesArray.getJSONObject(i);
+                                String branchName = branchObj.getString("branch_name");
 
-                            // Ensure unique branch entries
-                            if (!listGroupTitles.contains(branchName)) {
-                                listGroupTitles.add(branchName);
-                            }
+                                // Ensure unique branch entries
+                                if (!listGroupTitles.contains(branchName)) {
+                                    listGroupTitles.add(branchName);
+                                }
 
-                            JSONArray employeesArray = branchObj.getJSONArray("employees");
-                            List<Employee> employees = new ArrayList<>();
+                                JSONArray employeesArray = branchObj.getJSONArray("employees");
+                                List<Employee> employees = new ArrayList<>();
 
-                            for (int j = 0; j < employeesArray.length(); j++) {
-                                JSONObject empObj = employeesArray.getJSONObject(j);
+                                for (int j = 0; j < employeesArray.length(); j++) {
+                                    JSONObject empObj = employeesArray.getJSONObject(j);
 
-                                String employeeId = empObj.getString("employee_id");
+                                    String employeeId = empObj.getString("employee_id");
 
-                                // ✅ Prevent duplicate employees
-                                boolean isDuplicate = false;
-                                for (Employee emp : employees) {
-                                    if (emp.getId().equals(employeeId)) {
-                                        isDuplicate = true;
-                                        break;
+                                    // ✅ Prevent duplicate employees
+                                    boolean isDuplicate = false;
+                                    for (Employee emp : employees) {
+                                        if (emp.getId().equals(employeeId)) {
+                                            isDuplicate = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!isDuplicate) {
+                                        Employee employee = new Employee(
+                                                empObj.getString("employee_name"),
+                                                empObj.getString("designation"),
+                                                empObj.getString("employee_id"),
+                                                false,
+                                                false,
+                                                empObj.getString("phone"),
+                                                BASE_URL + empObj.getString("profile_pic"),
+                                                "Not Marked",  // ✅ Set default status instead of API value
+                                                branchName
+                                        );
+
+                                        employees.add(employee);
                                     }
                                 }
 
-                                if (!isDuplicate) {
-                                    Employee employee = new Employee(
-                                            empObj.getString("employee_name"),
-                                            empObj.getString("designation"),
-                                            empObj.getString("employee_id"),
-                                            false,
-                                            false,
-                                            empObj.getString("phone"),
-                                            BASE_URL + empObj.getString("profile_pic"),
-                                            empObj.optString("attendance_status", "Not Marked"),
-                                            branchName
-                                    );
-
-                                    employees.add(employee);
-                                }
+                                listData.put(branchName, employees);
                             }
 
-                            listData.put(branchName, employees);
+                            adapter.notifyDataSetChanged();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(attendance_report.this, "Error parsing data", Toast.LENGTH_SHORT).show();
                         }
+                    },
+                    error -> Toast.makeText(attendance_report.this, "Error fetching data", Toast.LENGTH_SHORT).show());
 
-                        adapter.notifyDataSetChanged();
+            requestQueue.add(jsonObjectRequest);
+        }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(attendance_report.this, "Error parsing data", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> Toast.makeText(attendance_report.this, "Error fetching data", Toast.LENGTH_SHORT).show());
-
-        requestQueue.add(jsonObjectRequest);
-    }
-
-    // ==============================
+        // ==============================
 // Load Attendance Data with Synchronization
 // ==============================
-    private void loadAttendanceData() {
-        String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE)
-                .getString("company_code", "");
+        private void loadAttendanceData() {
+            String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        String url = GET_ATTENDANCE_URL + "?company_code=" + companyCode + "&date=" + currentDate;
+            String url = GET_ATTENDANCE_URL + "?company_code=" + companyCode + "&date=" + currentDate;
 
-        requestQueue.getCache().clear();  // Clear Cache to Ensure Updated Data
+            requestQueue.getCache().clear();
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                response -> {
-                    Log.d("ATTENDANCE_DATA", response.toString());
+            listGroupTitles.clear();
+            listData.clear();
+            attendanceData.clear();
 
-                    try {
-                        if (response.getString("status").equals("success")) {
-                            JSONArray attendanceArray = response.getJSONArray("attendance_data");
+            if (adapter == null) {
+                adapter = new ExpandableListAdapter(this, listGroupTitles, listData, attendanceData, true);
+                expandableListView.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
 
-                            attendanceData.clear();
-
-                            for (int i = 0; i < attendanceArray.length(); i++) {
-                                JSONObject attendanceObj = attendanceArray.getJSONObject(i);
-
-                                String outTime = attendanceObj.getString("out_time");
-                                String currentStatus = attendanceObj.getString("attendance_status");
-
-                                // Automatically update status if Out-Time Exceeded
-                                if (isOutTimeExceeded(outTime, currentStatus)) {
-                                    currentStatus = "Not Marked";
-                                }
-
-                                Attendance attendance = new Attendance(
-                                        attendanceObj.getString("employee_id"),
-                                        attendanceObj.getString("employee_name"),
-                                        attendanceObj.getString("branch"),
-                                        attendanceObj.getString("in_time"),
-                                        outTime,
-                                        currentStatus, // Updated Status
-                                        attendanceObj.getString("geofenced_status"),
-                                        attendanceObj.getString("date")
-                                );
-
-                                String branchName = attendanceObj.getString("branch");
-
-                                if (!attendanceData.containsKey(branchName)) {
-                                    attendanceData.put(branchName, new ArrayList<>());
-                                }
-
-                                attendanceData.get(branchName).add(attendance);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                    response -> {
+                        Log.d("ATTENDANCE_DATA", response.toString());
+                        try {
+                            if (response.getString("status").equals("error")) {
+                                Toast.makeText(this, "No attendance data found for today.", Toast.LENGTH_SHORT).show();
+                                attendanceData.clear();
+                                resetAllEmployeeStatus();
+                                adapter.notifyDataSetChanged();
+                                return;
                             }
 
-                            adapter.notifyDataSetChanged();  // Refresh UI
-                        } else {
-                            Toast.makeText(this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            if (response.getString("status").equals("success")) {
+                                JSONArray attendanceArray = response.getJSONArray("attendance_data");
+
+                                for (int i = 0; i < attendanceArray.length(); i++) {
+                                    JSONObject attendanceObj = attendanceArray.getJSONObject(i);
+
+                                    String attendanceDate = attendanceObj.getString("date").trim();  // ✅ Trim added
+                                    if (!attendanceDate.equals(currentDate.trim())) {
+                                        continue;  // ✅ Skip previous dates
+                                    }
+
+                                    String outTime = attendanceObj.getString("out_time");
+                                    String employeeName = attendanceObj.getString("employee_name");
+                                    String currentStatus = attendanceObj.getString("attendance_status");
+
+                                    if (isOutTimeExceeded(attendanceDate, outTime) && !currentStatus.equals("Present")) {
+                                        currentStatus = "Not Marked";
+                                    }
+
+                                    Attendance attendance = new Attendance(
+                                            attendanceObj.getString("employee_id"),
+                                            employeeName,
+                                            attendanceObj.getString("branch"),
+                                            attendanceObj.getString("in_time"),
+                                            outTime,
+                                            currentStatus,
+                                            attendanceObj.getString("geofenced_status"),
+                                            attendanceDate
+                                    );
+
+                                    String branchName = attendanceObj.getString("branch");
+                                    if (!attendanceData.containsKey(branchName)) {
+                                        attendanceData.put(branchName, new ArrayList<>());
+                                    }
+                                    attendanceData.get(branchName).add(attendance);
+                                }
+
+                                updateEmployeeAttendanceStatus();
+                            } else {
+                                Toast.makeText(this, "No attendance data found for today.", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }, error -> Log.e("API_ERROR", "Error fetching attendance data"));
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(attendance_report.this, "Error parsing attendance data", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> Toast.makeText(attendance_report.this, "Error fetching attendance data", Toast.LENGTH_SHORT).show());
+            requestQueue.add(jsonObjectRequest);
+        }
 
-        requestQueue.add(jsonObjectRequest);
+
+    // Reset All Employee Attendance Status
+// ==============================
+    private void resetAllEmployeeStatus() {
+        for (String branch : listData.keySet()) {
+            List<Employee> employees = listData.get(branch);
+            for (Employee employee : employees) {
+                employee.setAttendanceStatus("Not Marked");  // ✅ Reset each employee's status
+                Log.d("ICON_UPDATE", employee.getName() + ": 'Not Marked' Icon Set"); // ✅ Log reset
+            }
+        }
     }
 
     // ==============================
 // Improved Out-Time Handling
 // ==============================
-    // Updated Method to Check Out-Time and Update Status
-    private boolean isOutTimeExceeded(String outTime, String currentStatus) {
-        if (TextUtils.isEmpty(outTime)) return false;
-
-        Calendar currentTime = Calendar.getInstance();
-        Calendar outTimeCalendar = Calendar.getInstance();
+// Updated Method to Check Out-Time and Update Status
+    private boolean isOutTimeExceeded(String attendanceDate, String outTime) {
+        if (TextUtils.isEmpty(outTime) || TextUtils.isEmpty(attendanceDate)) return false;
 
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-            Date outTimeDate = sdf.parse(outTime);
-            outTimeCalendar.setTime(outTimeDate);
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.getDefault());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-            if (currentTime.after(outTimeCalendar) && currentStatus.equals("Present")) {
-                Log.d("OUTTIME", "Out-Time Exceeded - Marking as 'Not Marked'");
-                return true; // Out-Time Exceeded
+            Date currentDate = new Date();
+            String currentDateStr = dateFormat.format(currentDate);
+
+            // Check if the attendance date matches today
+            if (!attendanceDate.equals(currentDateStr)) {
+                return false;
             }
+
+            // Combine today's date with outTime
+            String fullOutTimeStr = currentDateStr + " " + outTime;
+            Date outTimeDate = dateTimeFormat.parse(fullOutTimeStr);
+
+            // Compare with current time
+            return currentDate.after(outTimeDate);
+
         } catch (ParseException e) {
             Log.e("ERROR", "Time Parsing Error: " + e.getMessage());
         }
-
-        return false; // Out-Time Not Exceeded
+        return false;
     }
-
-
 
 
     // ==============================
@@ -274,29 +310,23 @@ public class attendance_report extends AppCompatActivity {
     private void updateEmployeeAttendanceStatus() {
         for (String branch : listData.keySet()) {
             List<Employee> employees = listData.get(branch);
-
             for (Employee employee : employees) {
                 String employeeId = employee.getId();
-
                 if (attendanceData.containsKey(branch)) {
-                    List<Attendance> attendanceList = attendanceData.get(branch);
-
-                    for (Attendance attendance : attendanceList) {
+                    for (Attendance attendance : attendanceData.get(branch)) {
                         if (attendance.getEmployeeId().equals(employeeId)) {
-                            if (isOutTimeExceeded(attendance.getInTime(), attendance.getOutTime())) {
-                                employee.setAttendanceStatus("Not Marked");
-                            } else {
-                                employee.setAttendanceStatus(attendance.getAttendanceStatus());
-                            }
-
+                            employee.setAttendanceStatus(attendance.getAttendanceStatus());
+                            Log.d("ATTENDANCE_STATUS", "Employee: " + employee.getName() + ", Status: " + attendance.getAttendanceStatus());
+                            break;  // ✅ Break to avoid overwriting correct status
                         }
                     }
                 }
             }
         }
-
         adapter.notifyDataSetChanged();
     }
+
+
 
 
     // ==============================
@@ -304,44 +334,32 @@ public class attendance_report extends AppCompatActivity {
 // ==============================
     private void startAutoRefresh() {
         final Handler handler = new Handler();
-        final int refreshInterval = 5 * 60 * 1000; // 5 minutes
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                loadAttendanceData(); // Refresh Data
-                updateEmployeeAttendanceStatus();  // ✅ Auto-Update Status Here
-                handler.postDelayed(this, refreshInterval); // Repeat every 5 minutes
+                refreshData();
+                loadAttendanceData();
+                handler.postDelayed(this, 5 * 60 * 1000);
             }
-        }, refreshInterval);
+        }, 5 * 60 * 1000);
     }
 
 
 
     private void refreshData() {
-        // Show a loading dialog for better UI
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Refreshing Data")
-                .setMessage("Please wait while data is being refreshed...")
-                .setCancelable(false);
+        builder.setTitle("Refreshing Data").setMessage("Please wait...").setCancelable(false);
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        // Clear data to avoid duplication
         listGroupTitles.clear();
         listData.clear();
         attendanceData.clear();
 
-        // Reload data from the database
         loadBranchesAndEmployees();
         loadAttendanceData();
-        updateEmployeeAttendanceStatus();  // ✅ Update Status on Manual Refresh
-
-        // Dismiss the dialog after data is loaded
+        updateEmployeeAttendanceStatus();
         expandableListView.postDelayed(dialog::dismiss, 1500);
-
-        // Show success message
-        Toast.makeText(this, "Data refreshed successfully", Toast.LENGTH_SHORT).show();
     }
 
     // ==============================
@@ -457,7 +475,7 @@ public class attendance_report extends AppCompatActivity {
 
         // Date Picker
         DatePickerDialog datePicker = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-            String selectedDate = year + "-" + (month + 1) + "-" + dayOfMonth;
+            String selectedDate = year + "-" + String.format("%02d", month + 1) + "-" + String.format("%02d", dayOfMonth);
 
             // Check if attendance already marked
             if (isAttendanceAlreadyMarked(selectedEmployees, selectedDate)) {
@@ -473,12 +491,11 @@ public class attendance_report extends AppCompatActivity {
                 showTimePickerDialog("Select Out Time", (view2, hourOfDay1, minute1) -> {
                     String outTime = formatTimeWithAMPM(hourOfDay1, minute1);
 
-                    // Check if Out-Time is in the past
-                    if (isOutTimeExceeded(inTime, outTime)) {
+                    // ✅ Updated Out-Time Check with Date Validation
+                    if (isOutTimeExceeded(selectedDate, outTime)) {
                         Toast.makeText(this, "Out-time exceeded. Attendance set to 'Not Marked'.", Toast.LENGTH_SHORT).show();
                         finalStatus[0] = "Not Marked";
                     }
-
 
                     // ✅ Mark attendance with correct data
                     markMultipleEmployeesAttendance(selectedEmployees, finalStatus[0], selectedDate, inTime, outTime);
@@ -492,6 +509,7 @@ public class attendance_report extends AppCompatActivity {
         datePicker.setTitle("Select Date");
         datePicker.show();
     }
+
 
     // ==============================
 // Custom Time Picker Dialog with Title
@@ -562,7 +580,7 @@ public class attendance_report extends AppCompatActivity {
                 // Add geofenced_status logic
                 int geofencedStatus = 0; // Default to 0
                 if (!TextUtils.isEmpty(inTime) && !TextUtils.isEmpty(outTime)) {
-                    geofencedStatus = isOutTimeExceeded(inTime, outTime) ? 1 : 0; // 1 = Exceeded, 0 = Normal
+                    geofencedStatus = isOutTimeExceeded(selectedDate , outTime) ? 1 : 0; // 1 = Exceeded, 0 = Normal
 
                 }
 
@@ -653,7 +671,7 @@ public class attendance_report extends AppCompatActivity {
         if (filteredBranches.isEmpty()) {
             Toast.makeText(this, "No matching employees found", Toast.LENGTH_SHORT).show();
         } else {
-            adapter = new ExpandableListAdapter(this, filteredBranches, filteredData,true);
+            adapter = new ExpandableListAdapter(this, filteredBranches, filteredData, attendanceData, true);
             expandableListView.setAdapter(adapter);
             Toast.makeText(this, "Search results displayed", Toast.LENGTH_SHORT).show();
         }

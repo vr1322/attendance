@@ -8,7 +8,7 @@ public class Attendance {
     private String inTime;
     private String outTime;
     private String attendanceStatus;
-    private String geofencedStatus;
+    private int geofencedStatus;
     private String date;
 
     // Constructor
@@ -20,7 +20,7 @@ public class Attendance {
         this.inTime = inTime;
         this.outTime = outTime;
         this.attendanceStatus = attendanceStatus;
-        this.geofencedStatus = geofencedStatus;
+        this.geofencedStatus = Integer.parseInt(geofencedStatus);
         this.date = date;
     }
 
@@ -49,7 +49,7 @@ public class Attendance {
         return attendanceStatus;
     }
 
-    public String getGeofencedStatus() {
+    public int getGeofencedStatus() {
         return geofencedStatus;
     }
 
@@ -82,7 +82,7 @@ public class Attendance {
         this.attendanceStatus = attendanceStatus;
     }
 
-    public void setGeofencedStatus(String geofencedStatus) {
+    public void setGeofencedStatus(int geofencedStatus) {
         this.geofencedStatus = geofencedStatus;
     }
 
