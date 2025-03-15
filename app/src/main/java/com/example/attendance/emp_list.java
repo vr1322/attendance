@@ -63,8 +63,9 @@ public class emp_list extends AppCompatActivity {
     private ExpandableListAdapter adapter;
     private List<String> listGroupTitles;
     private HashMap<String, List<Employee>> listData;
+    private HashMap<String, List<Attendance>> attendanceData;
     private RequestQueue requestQueue;
-    private static final String BASE_URL = "http://192.168.144.102/ems_api/";
+    private static final String BASE_URL = "https://devonix.io/ems_api/";
     private static final String GET_BRANCHES_URL = BASE_URL + "get_branches_employees.php";
     private static final int STORAGE_PERMISSION_CODE = 100;
 
@@ -144,7 +145,7 @@ public class emp_list extends AppCompatActivity {
 
         loadBranchesAndEmployees();
 
-        adapter = new ExpandableListAdapter(this, listGroupTitles, listData, false); // Employee List
+        adapter = new ExpandableListAdapter(this, listGroupTitles, listData, attendanceData, false); // Employee List
         expandableListView.setAdapter(adapter);
 
 
@@ -184,18 +185,23 @@ public class emp_list extends AppCompatActivity {
         String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
         String url = GET_BRANCHES_URL + "?company_code=" + companyCode;
 
+        // ✅ Clear data at the start to prevent duplication
+        listGroupTitles.clear();
+        listData.clear();
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
-                        listGroupTitles.clear();
-                        listData.clear();
-
                         JSONArray branchesArray = response.getJSONArray("branches");
 
                         for (int i = 0; i < branchesArray.length(); i++) {
                             JSONObject branchObj = branchesArray.getJSONObject(i);
                             String branchName = branchObj.getString("branch_name");
-                            listGroupTitles.add(branchName);
+
+                            // Ensure unique branch entries
+                            if (!listGroupTitles.contains(branchName)) {
+                                listGroupTitles.add(branchName);
+                            }
 
                             JSONArray employeesArray = branchObj.getJSONArray("employees");
                             List<Employee> employees = new ArrayList<>();
@@ -203,32 +209,38 @@ public class emp_list extends AppCompatActivity {
                             for (int j = 0; j < employeesArray.length(); j++) {
                                 JSONObject empObj = employeesArray.getJSONObject(j);
 
-                                // Check if profile_pic exists and is not null
-                                String profilePic = "http://192.168.168.239/ems_api/" + empObj.getString("profile_pic");
-                                String attendanceStatus = "http://192.168.168.239/ems_api/" +empObj.optString("attendance_status", "Not Marked");  // ✅ Correct Usage
+                                String employeeId = empObj.getString("employee_id");
 
+                                // ✅ Prevent duplicate employees
+                                boolean isDuplicate = false;
+                                for (Employee emp : employees) {
+                                    if (emp.getId().equals(employeeId)) {
+                                        isDuplicate = true;
+                                        break;
+                                    }
+                                }
 
-                                Employee employee = new Employee(
-                                        empObj.getString("employee_name"),
-                                        empObj.getString("designation"),
-                                        empObj.getString("employee_id"),
-                                        false,  // Default value for isParkingAvailable
-                                        false,  // Default value for isParkingAssigned
-                                        empObj.getString("phone"),
-                                        profilePic,
-                                        attendanceStatus,   // ✅ Correct Usage
-                                        branchName
+                                if (!isDuplicate) {
+                                    Employee employee = new Employee(
+                                            empObj.getString("employee_name"),
+                                            empObj.getString("designation"),
+                                            empObj.getString("employee_id"),
+                                            false,
+                                            false,
+                                            empObj.getString("phone"),
+                                            BASE_URL + empObj.getString("profile_pic"),
+                                            null,
+                                            branchName
+                                    );
 
-                                );
-
-                                employees.add(employee);
+                                    employees.add(employee);
+                                }
                             }
 
                             listData.put(branchName, employees);
                         }
 
                         adapter.notifyDataSetChanged();
-                        expandableListView.setNestedScrollingEnabled(true);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -239,6 +251,7 @@ public class emp_list extends AppCompatActivity {
 
         requestQueue.add(jsonObjectRequest);
     }
+
 
     private void requestStoragePermission() {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -305,7 +318,7 @@ public class emp_list extends AppCompatActivity {
         if (filteredBranches.isEmpty()) {
             Toast.makeText(this, "No matching employees found", Toast.LENGTH_SHORT).show();
         } else {
-            adapter = new ExpandableListAdapter(this, filteredBranches, filteredData,false);
+            adapter = new ExpandableListAdapter(this, filteredBranches, filteredData,attendanceData,false);
             expandableListView.setAdapter(adapter);
             Toast.makeText(this, "Search results displayed", Toast.LENGTH_SHORT).show();
         }
@@ -351,7 +364,7 @@ public class emp_list extends AppCompatActivity {
             String format = formats[which].toLowerCase(); // Lowercase for consistency
 
             try {
-                String downloadUrl = "http://192.168.168.239/ems_api/download_employee_list.php?"
+                String downloadUrl = "https://devonix.io/ems_api/download_employee_list.php?"
                         + "branch=" + URLEncoder.encode(branch, "UTF-8")
                         + "&format=" + format;
 
@@ -473,7 +486,7 @@ public class emp_list extends AppCompatActivity {
                 .setTitle("Delete Employee")
                 .setMessage("Do you really want to delete " + employeeName + "?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    String url = "http://192.168.168.239/ems_api/delete_employee.php?employee_id=" + employeeId;
+                    String url = "https://devonix.io/ems_api/delete_employee.php?employee_id=" + employeeId;
 
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                             response -> {

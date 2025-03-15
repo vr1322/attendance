@@ -46,7 +46,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
     private ImageView backiv , searchiv;
 
 
-    private static final String BASE_URL = "http://192.168.144.102/ems_api/";
+    private static final String BASE_URL = "https://devonix.io/ems_api/";
     private static final String GET_ALL_ATTENDANCE_URL = BASE_URL + "get_all_attendance.php";
     private static final String GET_ATTENDANCE_SUMMARY_URL = BASE_URL + "get_attendance_summary.php";
     private static final String SEARCH_ATTENDANCE_URL = BASE_URL + "search_attendance.php";

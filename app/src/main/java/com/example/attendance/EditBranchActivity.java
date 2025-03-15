@@ -33,7 +33,7 @@ public class EditBranchActivity extends AppCompatActivity {
     private int branchId;
     private String companyCode;
 
-    private static final String BASE_URL = "http://192.168.144.102/ems_api/";
+    private static final String BASE_URL = "https://devonix.io/ems_api/";
     private static final String GET_BRANCH_URL = BASE_URL + "get_branch_by_id.php";  // New API
     private static final String UPDATE_BRANCH_URL = BASE_URL + "edit_branch.php";
 

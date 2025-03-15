@@ -40,8 +40,8 @@ public class add_emp extends AppCompatActivity {
     private Bitmap bitmap;
     private ProgressDialog progressDialog;
 
-    private static final String ADD_EMPLOYEE_URL = "http://192.168.144.102/ems_api/add_employee.php";
-    private static final String BASE_URL = "http://192.168.144.102/ems_api/";
+    private static final String ADD_EMPLOYEE_URL = "https://devonix.io/ems_api/add_employee.php";
+    private static final String BASE_URL = "https://devonix.io/ems_api/";
     private static final String GET_BRANCHES_URL = BASE_URL + "get_branches.php";
 
 
@@ -246,7 +246,7 @@ public class add_emp extends AppCompatActivity {
 
         // Make API request
         String finalProfileImageBase6 = profileImageBase64;
-        StringRequest request = new StringRequest(Request.Method.POST, "http://192.168.144.102/ems_api/add_employee.php",
+        StringRequest request = new StringRequest(Request.Method.POST, "https://devonix.io/ems_api/add_employee.php",
                 response -> {
                     progressDialog.dismiss();
                     try {

@@ -36,7 +36,7 @@ public class main_home extends AppCompatActivity {
     private RequestQueue requestQueue;
 
     // ✅ Change IP for Emulator: Use `10.0.2.2` instead of `192.168.168.239` if testing on Android Emulator.
-    private static final String VERIFY_URL = "http://192.168.144.102/ems_api/verify_company.php";
+    private static final String VERIFY_URL = "https://devonix.io/ems_api/verify_company.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
