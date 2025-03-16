@@ -1,10 +1,291 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".EmployeeHomeActivity">
+    android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_bg">
+
+    <ImageView
+        android:id="@+id/emp_profile"
+        android:layout_width="@dimen/dp40"
+        android:layout_height="@dimen/dp40"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/ic_profile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/at_View"
+        android:layout_width="@dimen/dp155"
+        android:layout_height="@dimen/dp100"
+        android:layout_marginTop="@dimen/dp90"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_effect"
+        app:cardCornerRadius="@dimen/dp30"
+        app:layout_constraintBottom_toTopOf="@id/constraint"
+        app:layout_constraintEnd_toStartOf="@id/sal_View"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ma_View" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/lm_View"
+        android:layout_width="@dimen/dp155"
+        android:layout_height="@dimen/dp100"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginTop="@dimen/dp30"
+        android:foreground="@drawable/ripple_effect"
+        app:cardCornerRadius="@dimen/dp30"
+        app:layout_constraintBottom_toTopOf="@id/sal_View"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ma_View"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ma_View"
+        android:layout_width="@dimen/dp155"
+        android:layout_height="@dimen/dp100"
+        android:layout_marginTop="@dimen/dp120"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_effect"
+        app:cardCornerRadius="@dimen/dp30"
+        app:layout_constraintBottom_toTopOf="@id/at_View"
+        app:layout_constraintEnd_toStartOf="@id/lm_View"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_mark_attendance"
+        android:layout_width="@dimen/dp90"
+        android:layout_height="@dimen/dp90"
+        android:layout_marginTop="@dimen/dp80"
+        android:background="@drawable/ripple_btn"
+        android:clickable="true"
+        android:elevation="@dimen/dp10"
+        app:layout_constraintBottom_toBottomOf="@id/ma_View"
+        app:layout_constraintEnd_toEndOf="@+id/ma_View"
+        app:layout_constraintStart_toStartOf="@+id/ma_View"
+        app:layout_constraintTop_toTopOf="@+id/ma_View"
+        app:srcCompat="@drawable/mark_icon" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/sal_View"
+        android:layout_width="@dimen/dp155"
+        android:layout_height="@dimen/dp100"
+        android:layout_marginBottom="@dimen/dp50"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_effect"
+        app:cardCornerRadius="@dimen/dp30"
+        app:layout_constraintBottom_toTopOf="@id/constraint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/at_View"
+        app:layout_constraintTop_toBottomOf="@id/lm_View" />
+
+        <ImageButton
+            android:id="@+id/btn_attend_track"
+            android:layout_width="98dp"
+            android:layout_height="116dp"
+            android:layout_marginBottom="@dimen/dp80"
+            android:background="@drawable/ripple_btn"
+            android:clickable="true"
+            android:elevation="@dimen/dp10"
+            app:layout_constraintBottom_toBottomOf="@+id/at_View"
+            app:layout_constraintEnd_toEndOf="@+id/at_View"
+            app:layout_constraintStart_toStartOf="@+id/at_View"
+            app:layout_constraintTop_toTopOf="@id/at_View"
+            app:srcCompat="@drawable/attend_icon" />
+
+    <ImageButton
+        android:id="@+id/btn_sal_detail"
+        android:layout_width="@dimen/dp90"
+        android:layout_height="@dimen/dp90"
+        android:layout_marginTop="@dimen/dp80"
+        android:background="@drawable/ripple_btn"
+        android:clickable="true"
+        android:elevation="@dimen/dp10"
+        app:layout_constraintBottom_toBottomOf="@id/sal_View"
+        app:layout_constraintEnd_toEndOf="@+id/sal_View"
+        app:layout_constraintStart_toStartOf="@+id/sal_View"
+        app:layout_constraintTop_toTopOf="@+id/sal_View"
+        app:srcCompat="@drawable/ic_salary" />
+
+    <ImageButton
+        android:id="@+id/btn_leave_manage"
+        android:layout_width="@dimen/dp90"
+        android:layout_height="@dimen/dp90"
+        android:layout_marginBottom="@dimen/dp80"
+        android:background="@drawable/ripple_btn"
+        android:clickable="true"
+        android:elevation="@dimen/dp10"
+        app:layout_constraintBottom_toBottomOf="@+id/lm_View"
+        app:layout_constraintEnd_toEndOf="@+id/lm_View"
+        app:layout_constraintStart_toStartOf="@+id/lm_View"
+        app:layout_constraintTop_toTopOf="@id/lm_View"
+        app:srcCompat="@drawable/ic_leave" />
+
+    <TextView
+        android:id="@+id/el_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp15"
+        android:fontFamily="@font/inter_bold"
+        android:text="Mark Attendance"
+        android:textSize="@dimen/dp15"
+        app:layout_constraintBottom_toBottomOf="@+id/ma_View"
+        app:layout_constraintEnd_toEndOf="@+id/ma_View"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toStartOf="@+id/ma_View"
+        app:layout_constraintTop_toTopOf="@+id/ma_View"
+        app:layout_constraintVertical_bias="0.27" />
+
+    <TextView
+        android:id="@+id/ab_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp15"
+        android:fontFamily="@font/inter_bold"
+        android:includeFontPadding="false"
+        android:text="Leave Management"
+        android:textSize="@dimen/dp15"
+        app:layout_constraintBottom_toBottomOf="@+id/lm_View"
+        app:layout_constraintEnd_toEndOf="@+id/lm_View"
+        app:layout_constraintStart_toStartOf="@+id/lm_View"
+        app:layout_constraintTop_toTopOf="@+id/lm_View"
+        app:layout_constraintVertical_bias="0.75" />
+
+    <TextView
+        android:id="@+id/ma_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp15"
+        android:fontFamily="@font/inter_bold"
+        android:text="Attendence Tracking"
+        android:textSize="@dimen/dp15"
+        app:layout_constraintBottom_toBottomOf="@+id/at_View"
+        app:layout_constraintEnd_toEndOf="@+id/at_View"
+        app:layout_constraintHorizontal_bias="0.59"
+        app:layout_constraintStart_toStartOf="@+id/at_View"
+        app:layout_constraintTop_toTopOf="@+id/at_View"
+        app:layout_constraintVertical_bias="0.682" />
+
+    <TextView
+        android:id="@+id/sal_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp12"
+        android:elevation="@dimen/dp15"
+        android:fontFamily="@font/inter_bold"
+        android:text="Salary Details"
+        android:textSize="@dimen/dp15"
+        app:layout_constraintBottom_toBottomOf="@+id/sal_View"
+        app:layout_constraintEnd_toEndOf="@+id/sal_View"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="@+id/sal_View"
+        app:layout_constraintTop_toTopOf="@+id/sal_View"
+        app:layout_constraintVertical_bias="0.105" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint"
+        android:layout_width="@dimen/dp360"
+        android:layout_height="@dimen/dp300"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/at_View">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card1"
+            android:layout_width="@dimen/dp330"
+            android:layout_height="@dimen/dp275"
+            app:cardCornerRadius="@dimen/dp30"
+            app:layout_constraintBottom_toBottomOf="@+id/constraint"
+            app:layout_constraintEnd_toEndOf="@+id/constraint"
+            app:layout_constraintHorizontal_bias="0.483"
+            app:layout_constraintStart_toStartOf="@+id/constraint"
+            app:layout_constraintTop_toTopOf="@+id/constraint" />
+
+        <Button
+            android:id="@+id/advance_paybt"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp45"
+            android:background="@drawable/btn_bg"
+            android:drawableLeft="@drawable/chevron_right"
+            android:elevation="@dimen/dp20"
+            android:fontFamily="@font/inter_bold"
+            android:paddingLeft="@dimen/dp10"
+            android:text="Advance payment"
+            android:textAlignment="center"
+            android:textSize="@dimen/dp14"
+            app:layout_constraintBottom_toBottomOf="@+id/card1"
+            app:layout_constraintEnd_toEndOf="@+id/card1"
+            app:layout_constraintHorizontal_bias="0.637"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/card1"
+            app:layout_constraintVertical_bias="0.083" />
+
+        <Button
+            android:id="@+id/ot_request"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp45"
+            android:layout_marginTop="@dimen/dp8"
+            android:background="@drawable/btn_bg"
+            android:drawableLeft="@drawable/chevron_right"
+            android:fontFamily="@font/inter_bold"
+            android:paddingLeft="@dimen/dp10"
+            android:text="Overtime Request"
+            android:textAlignment="center"
+            android:textSize="@dimen/dp14"
+            app:layout_constraintBottom_toBottomOf="@+id/card1"
+            app:layout_constraintEnd_toEndOf="@+id/advance_paybt"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/advance_paybt"
+            app:layout_constraintTop_toBottomOf="@+id/advance_paybt"
+            app:layout_constraintVertical_bias="0.068" />
+
+        <Button
+            android:id="@+id/btn_useapp"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp45"
+            android:background="@drawable/btn_bg"
+            android:drawableLeft="@drawable/chevron_right"
+            android:fontFamily="@font/inter_bold"
+            android:paddingLeft="@dimen/dp10"
+            android:text="How to use App"
+            android:textAlignment="center"
+            android:textSize="@dimen/dp14"
+            app:layout_constraintBottom_toBottomOf="@+id/card1"
+            app:layout_constraintEnd_toEndOf="@+id/help_btn"
+            app:layout_constraintStart_toStartOf="@+id/help_btn"
+            app:layout_constraintTop_toBottomOf="@+id/help_btn" />
+
+        <Button
+            android:id="@+id/help_btn"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp45"
+            android:background="@drawable/btn_bg"
+            android:drawableLeft="@drawable/chevron_right"
+            android:fontFamily="@font/inter_bold"
+            android:paddingStart="@dimen/dp10"
+            android:text="@string/help_support"
+            android:textAlignment="center"
+            android:textSize="@dimen/dp14"
+            app:layout_constraintBottom_toBottomOf="@+id/card1"
+            app:layout_constraintEnd_toEndOf="@+id/ot_request"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/ot_request"
+            app:layout_constraintTop_toBottomOf="@+id/ot_request"
+            app:layout_constraintVertical_bias="0.229" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
