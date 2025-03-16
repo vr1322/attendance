@@ -111,7 +111,7 @@ public class update_admin extends AppCompatActivity {
                             mobileNo.setText(data.getString("mobile_no"));
                             address.setText(data.getString("address"));
 
-                            String profileUrl = data.getString("profile_picture");
+                            String profileUrl =  data.getString("profile_picture");
                             if (!profileUrl.isEmpty()) {
                                 Glide.with(this).load(profileUrl).into(profilePic);
                             }

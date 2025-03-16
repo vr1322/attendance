@@ -83,8 +83,10 @@ public class Employee implements Serializable {
         this.profile_pic = profile_pic;
     }
     // Setter method
-    public void setAttendanceStatus(String attendanceStatus) {
-        this.attendanceStatus = attendanceStatus;
+    public void setAttendanceStatus(String status) {
+
+            this.attendanceStatus = status;
+
     }
 
     public String getAttendanceStatus() {

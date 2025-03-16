@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
 
     private TextView employeeName, branchName,presentCount, absentCount, halfdayCount, overtimeCount;
     private ImageView backiv , searchiv;
+    private Button btnMarkAttendance;
 
 
     private static final String BASE_URL = "https://devonix.io/ems_api/";
@@ -65,6 +67,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         absentCount = findViewById(R.id.absent_count);
         halfdayCount = findViewById(R.id.halfday_count);
         overtimeCount = findViewById(R.id.overtime_count);
+        btnMarkAttendance = findViewById(R.id.btn_mark_attendance);
 
         // Fetch Employee Name & Branch from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
@@ -76,6 +79,10 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         branchName.setText(branch);
 
         backiv.setOnClickListener(view -> startActivity(new Intent(MarkAttendanceActivity.this, attendance_report.class)));
+        btnMarkAttendance.setOnClickListener(view -> {
+            AttendanceDetailsBottomSheet bottomSheet = new AttendanceDetailsBottomSheet();
+            bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
+        });
         searchiv.setOnClickListener(v -> showDatePicker());
         // Load Attendance Data from Database
 

@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="attendance_status">
+        <item>Present</item>
+        <item>Half Day</item>
+        <item>Absent</item>
+        <item>Overtime</item>
+    </string-array>
+</resources>

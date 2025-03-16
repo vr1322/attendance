@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingBottom="16dp"
+            android:text="Attendance Details"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_ic"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <!-- NAME -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DetailLabel"
+                    android:text="NAME :" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    style="@style/DetailValue" />
+            </LinearLayout>
+
+            <!-- DATE (Editable) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DetailLabel"
+                    android:text="DATE :" />
+
+                <EditText
+                    android:id="@+id/et_date"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="Enter Date"
+                    android:focusable="false"
+                    android:clickable="true"
+                    style="@style/DetailValue" />
+            </LinearLayout>
+
+            <!-- INTIME (Editable) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DetailLabel"
+                    android:text="INTIME :" />
+
+                <EditText
+                    android:id="@+id/et_intime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="Enter In-Time"
+                    android:focusable="false"
+                    android:clickable="true"
+                    style="@style/DetailValue" />
+            </LinearLayout>
+
+            <!-- OUTTIME (Editable) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DetailLabel"
+                    android:text="OUTTIME :" />
+
+                <EditText
+                    android:id="@+id/et_outtime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="Enter Out-Time"
+                    android:focusable="false"
+                    android:clickable="true"
+                    style="@style/DetailValue" />
+            </LinearLayout>
+
+            <!-- OVERTIME (Editable) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/DetailLabel"
+                    android:text="OVERTIME :" />
+
+                <EditText
+                    android:id="@+id/et_overtime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="Enter Overtime"
+                    android:focusable="false"
+                    android:clickable="true"
+                    style="@style/DetailValue" />
+            </LinearLayout>
+
+            <!-- DAY COUNT AS -->
+            <TextView
+                style="@style/DetailLabel"
+                android:text="DAY COUNT AS :" />
+
+            <Spinner
+                android:id="@+id/spinner_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/spinner_bg"
+                android:entries="@array/attendance_status" />
+        </LinearLayout>
+
+        <!-- EDIT BUTTON -->
+        <Button
+            android:id="@+id/btn_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button"
+            android:text="EDIT"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</ScrollView>

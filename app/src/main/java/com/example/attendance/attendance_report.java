@@ -152,7 +152,7 @@ public class attendance_report extends AppCompatActivity {
                                                 false,
                                                 empObj.getString("phone"),
                                                 BASE_URL + empObj.getString("profile_pic"),
-                                                "Not Marked",  // ✅ Set default status instead of API value
+                                                "",  // ✅ Set default status instead of API value
                                                 branchName
                                         );
 
