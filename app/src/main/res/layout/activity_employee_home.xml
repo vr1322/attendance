@@ -93,8 +93,8 @@
 
         <ImageButton
             android:id="@+id/btn_attend_track"
-            android:layout_width="98dp"
-            android:layout_height="116dp"
+            android:layout_width="@dimen/dp90"
+            android:layout_height="@dimen/dp90"
             android:layout_marginBottom="@dimen/dp80"
             android:background="@drawable/ripple_btn"
             android:clickable="true"
