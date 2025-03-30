@@ -1,49 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    android:background="#F5F5F5">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp">
 
-    <!-- Header Text -->
     <TextView
-        android:id="@+id/tvAttendanceTitle"
+        android:id="@+id/locationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location: Not Available"
+        android:textSize="16sp"
+        android:padding="10dp"/>
+
+    <Button
+        android:id="@+id/markAttendanceBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mark Attendance"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#333"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp" />
+        android:padding="10dp"/>
 
-    <!-- Location Display -->
-    <TextView
-        android:id="@+id/tvLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Fetching location..."
-        android:textSize="16sp"
-        android:textColor="#555"
-        android:padding="10dp"
-        android:background="#FFF"
-        android:elevation="4dp"
-        android:layout_below="@id/tvAttendanceTitle"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:paddingVertical="15dp" />
 
-    <!-- Mark Attendance Button -->
-    <Button
-        android:id="@+id/btnMarkAttendance"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Mark Attendance"
-        android:background="@drawable/button"
-        android:textSize="18sp"
-        android:layout_below="@id/tvLocation"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:cornerRadius="10dp" />
-
-</RelativeLayout>
+</LinearLayout>
