@@ -1,197 +1,138 @@
 package com.example.attendance;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.attendance.databinding.ActivityEmpMarkAttendanceBinding;
-import com.google.android.gms.location.*;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 public class EmpMarkAttendanceActivity extends AppCompatActivity {
 
-    private ActivityEmpMarkAttendanceBinding binding;
+    private TextView tvEmployeeLocation, tvOfficeLocation, tvAttendanceStatus;
+    private Button btnMarkAttendance;
+
     private FusedLocationProviderClient fusedLocationClient;
-    private static final int LOCATION_PERMISSION_REQUEST = 1;
-    private static final String ATTENDANCE_URL = "https://devonix.io/ems_api/emp_mark_attendance.php";
-    private SharedPreferences sharedPreferences;
+    private double officeLat, officeLon;
+    private float allowedRadius = 100; // Radius in meters
+
+    private static final String OFFICE_LOCATION_URL = "https://yourdomain.com/get_office_location.php?company_code=1234";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityEmpMarkAttendanceBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_emp_mark_attendance);
 
-        // Initialize SharedPreferences
-        sharedPreferences = getSharedPreferences("EmployeeSession", Context.MODE_PRIVATE);
+        tvEmployeeLocation = findViewById(R.id.tv_employee_location);
+        tvOfficeLocation = findViewById(R.id.tv_office_location);
+        tvAttendanceStatus = findViewById(R.id.tv_attendance_status);
+        btnMarkAttendance = findViewById(R.id.btn_mark_attendance);
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Check session data before allowing attendance marking
-        if (!isSessionValid()) {
-            showSessionErrorDialog();
-            return;
-        }
+        fetchOfficeLocation(); // Step 1: Fetch office location from database
 
-        // Button click event to mark attendance
-        binding.markAttendanceBtn.setOnClickListener(v -> requestLocationPermission());
+        btnMarkAttendance.setOnClickListener(v -> markAttendance());
     }
 
-    // Check if SharedPreferences contains valid session data
-    private boolean isSessionValid() {
-        String employeeId = sharedPreferences.getString("employee_id", "");
-        String employeeName = sharedPreferences.getString("employee_name", "");
-        String companyCode = sharedPreferences.getString("company_code", "");
-        String branchName = sharedPreferences.getString("branch_name", "");
-
-        // Log session data for debugging
-        Log.d("EmployeeSession", "ID: " + employeeId + ", Name: " + employeeName + ", Company Code: " + companyCode + ", Branch: " + branchName);
-
-        return !employeeId.isEmpty() && !employeeName.isEmpty() && !companyCode.isEmpty() && !branchName.isEmpty();
-    }
-
-    private void requestLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
-        } else {
-            fetchCurrentLocation();
-        }
-    }
-
-    private void fetchCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-                    .addOnSuccessListener(location -> {
-                        if (location != null) {
-                            double latitude = location.getLatitude();
-                            double longitude = location.getLongitude();
-                            binding.locationText.setText("Lat: " + latitude + ", Lng: " + longitude);
-                            sendAttendanceToServer(latitude, longitude);
-                        } else {
-                            Toast.makeText(this, "Unable to fetch location. Try again.", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(this, "Error fetching location: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-        } else {
-            Toast.makeText(this, "Location permission is required!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void sendAttendanceToServer(final double latitude, final double longitude) {
+    // Step 1: Fetch Office Location from API
+    private void fetchOfficeLocation() {
         RequestQueue queue = Volley.newRequestQueue(this);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-        String currentDate = dateFormat.format(new Date());
-        String currentTime = timeFormat.format(new Date());
-
-        // Fetch session data again to ensure accuracy
-        String employeeId = sharedPreferences.getString("employee_id", "");
-        String employeeName = sharedPreferences.getString("employee_name", "");
-        String companyCode = sharedPreferences.getString("company_code", "");
-        String branchName = sharedPreferences.getString("branch_name", "");
-
-        if (employeeId.isEmpty() || employeeName.isEmpty() || companyCode.isEmpty() || branchName.isEmpty()) {
-            showSessionErrorDialog();
-            return;
-        }
-
-        Log.d("Attendance", "Sending Data: EmployeeID=" + employeeId + ", CompanyCode=" + companyCode + ", Branch=" + branchName);
-
-        StringRequest request = new StringRequest(Request.Method.POST, ATTENDANCE_URL,
+        StringRequest request = new StringRequest(Request.Method.GET, OFFICE_LOCATION_URL,
                 response -> {
-                    Log.d("AttendanceResponse", response);
                     try {
-                        JSONObject jsonResponse = new JSONObject(response);
-                        String status = jsonResponse.getString("status");
-                        String message = jsonResponse.getString("message");
-
-                        if ("success".equals(status)) {
-                            double distance = jsonResponse.optDouble("distance", 0.0);
-                            int geofencedStatus = jsonResponse.optInt("geofenced_status", 0);
-
-                            Toast.makeText(this, "Attendance Marked!\nDistance: " + distance + "m\nGeofenced: " + (geofencedStatus == 1 ? "Yes" : "No"), Toast.LENGTH_LONG).show();
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getBoolean("success")) {
+                            officeLat = jsonObject.getDouble("latitude");
+                            officeLon = jsonObject.getDouble("longitude");
+                            tvOfficeLocation.setText("Office Location: " + officeLat + ", " + officeLon);
+                            getEmployeeLocation();
                         } else {
-                            showErrorDialog("Attendance Failed", message);
+                            tvAttendanceStatus.setText("Office location not found.");
                         }
                     } catch (JSONException e) {
-                        showErrorDialog("Server Error", "Invalid response from server.");
-                        Log.e("AttendanceError", "JSON Parsing Error: " + e.getMessage());
+                        e.printStackTrace();
+                        tvAttendanceStatus.setText("Error parsing office location.");
                     }
                 },
                 error -> {
-                    Log.e("VolleyError", "Server Error: " + (error.getMessage() != null ? error.getMessage() : "Unknown error"));
-                    showErrorDialog("Server Error", "Failed to mark attendance. Please try again.");
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("employee_id", employeeId);
-                params.put("employee_name", employeeName);
-                params.put("company_code", companyCode);
-                params.put("branch", branchName);
-                params.put("in_time", currentTime);
-                params.put("date", currentDate);
-                params.put("attendance_status", "Present");
-                params.put("latitude", String.valueOf(latitude));
-                params.put("longitude", String.valueOf(longitude));
-                return params;
-            }
-        };
+                    tvAttendanceStatus.setText("Failed to fetch office location.");
+                    Log.e("VolleyError", error.toString());
+                });
 
         queue.add(request);
+    }
+
+    // Step 2: Fetch Employee Location using GPS
+    @SuppressLint("MissingPermission")
+    private void getEmployeeLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            return;
+        }
+
+        fusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                Location location = task.getResult();
+                if (location != null) {
+                    double empLat = location.getLatitude();
+                    double empLon = location.getLongitude();
+                    tvEmployeeLocation.setText("Current Location: " + empLat + ", " + empLon);
+
+                    // Step 3: Compare with Office Location
+                    float[] results = new float[1];
+                    Location.distanceBetween(empLat, empLon, officeLat, officeLon, results);
+                    float distance = results[0];
+
+                    if (distance <= allowedRadius) {
+                        tvAttendanceStatus.setText("You are within office area. Attendance can be marked.");
+                        btnMarkAttendance.setEnabled(true);
+                    } else {
+                        tvAttendanceStatus.setText("You are outside the office area.");
+                        btnMarkAttendance.setEnabled(false);
+                    }
+                } else {
+                    tvAttendanceStatus.setText("Unable to fetch location.");
+                }
+            }
+        });
+    }
+
+    private void markAttendance() {
+        Toast.makeText(this, "Attendance Marked Successfully!", Toast.LENGTH_SHORT).show();
+        // Here, add API call or database insertion code for attendance marking
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+        if (requestCode == 100) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                fetchCurrentLocation();
+                getEmployeeLocation();
             } else {
-                Toast.makeText(this, "Permission denied! Unable to mark attendance.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Location permission denied!", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    private void showSessionErrorDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("Session Error")
-                .setMessage("Employee session data is missing. Please log in again.")
-                .setPositiveButton("OK", (dialog, which) -> finish())
-                .setCancelable(false)
-                .show();
-    }
-
-    private void showErrorDialog(String title, String message) {
-        new AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("OK", null)
-                .show();
     }
 }

@@ -13,7 +13,7 @@ public class Employee implements Serializable {
     private String attendanceStatus;
     private String branch; // New field for Attendance Report
     // Constructor
-    public Employee(String name, String designation, String id, boolean isParkingAvailable, boolean isParkingAssigned, String phoneNumber, String profile_pic, String attendanceStatus, String branch) {
+    public Employee(String name, String designation, String id, boolean isParkingAvailable, boolean isParkingAssigned, String phone, String profile_pic, String attendanceStatus, String branch) {
         this.name = name;
         this.designation = designation;
         this.id = id;

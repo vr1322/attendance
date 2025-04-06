@@ -263,29 +263,29 @@
                     app:layout_constraintVertical_bias="0.068" />
 
                 <Button
-                    android:id="@+id/leave_managebt"
+                    android:id="@+id/cnt_empbt"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:background="@drawable/btn_bg"
                     android:drawableLeft="@drawable/chevron_right"
                     android:paddingLeft="@dimen/dp10"
-                    android:text="Leave management"
+                    android:text="Contact Employee"
                     android:textSize="@dimen/dp14"
                     android:fontFamily="@font/inter_bold"
                     android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="@+id/card1"
-                    app:layout_constraintEnd_toEndOf="@+id/assign_leavebt"
-                    app:layout_constraintStart_toStartOf="@+id/assign_leavebt"
-                    app:layout_constraintTop_toBottomOf="@+id/assign_leavebt" />
+                    app:layout_constraintEnd_toEndOf="@+id/leave_managbt"
+                    app:layout_constraintStart_toStartOf="@+id/leave_managbt"
+                    app:layout_constraintTop_toBottomOf="@+id/leave_managbt" />
 
                 <Button
-                    android:id="@+id/assign_leavebt"
+                    android:id="@+id/leave_managbt"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:background="@drawable/btn_bg"
                     android:drawableLeft="@drawable/chevron_right"
                     android:paddingStart="@dimen/dp10"
-                    android:text="assign leave "
+                    android:text="Leave management"
                     android:textSize="@dimen/dp14"
                     android:fontFamily="@font/inter_bold"
                     android:textAlignment="center"

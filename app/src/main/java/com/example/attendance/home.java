@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class home extends AppCompatActivity {
     private ImageButton el_button, ab_Button, ma_Button, sal_Button;
+    private Button ad_pay_btn, all_ot_btn, leave_manage_btn, cnt_emp_btn;
     private CardView el_View, ab_View, ma_View, sal_View;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -66,11 +68,24 @@ public class home extends AppCompatActivity {
         ab_View = findViewById(R.id.ab_View);
         ma_View = findViewById(R.id.ma_View);
         sal_View = findViewById(R.id.sal_View);
+        ad_pay_btn = findViewById(R.id.advance_paybt);
+        all_ot_btn = findViewById(R.id.allocate_otbt);
+        leave_manage_btn = findViewById(R.id.leave_managbt);
+        cnt_emp_btn = findViewById(R.id.cnt_empbt);
 
         // Setup Toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("E-Attendance");
+
+        all_ot_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Employee List Screen Open Karne Ka Intent
+                Intent intent = new Intent(home.this, EmployeeListActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // Setup Drawer Layout
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -115,6 +130,7 @@ public class home extends AppCompatActivity {
         assignClickListener(ab_View, BranchListActivity.class);
         assignClickListener(ma_View, attendance_report.class);
         assignClickListener(sal_View, salary_calculation.class);
+        assignClickListener(all_ot_btn, AllocateOtPage.class);
     }
 
     /**
