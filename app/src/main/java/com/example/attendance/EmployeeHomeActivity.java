@@ -3,6 +3,7 @@ package com.example.attendance;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -27,6 +28,8 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         ImageButton btnSalDetail = findViewById(R.id.btn_sal_detail);
         ImageButton btnLeaveManage = findViewById(R.id.btn_leave_manage);
 
+        Button otReq = findViewById(R.id.ot_request);
+
         // Setting up onClickListeners for navigation
         atView.setOnClickListener(v -> navigateTo(AttendanceTrackingActivity.class));
         lmView.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
@@ -37,6 +40,8 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         btnAttendTrack.setOnClickListener(v -> navigateTo(AttendanceTrackingActivity.class));
         btnSalDetail.setOnClickListener(v -> navigateTo(SalaryDetailsActivity.class));
         btnLeaveManage.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
+
+        otReq.setOnClickListener(v -> navigateTo(EmpOvertimeRequest.class));
     }
 
     private void navigateTo(Class<?> targetActivity) {
