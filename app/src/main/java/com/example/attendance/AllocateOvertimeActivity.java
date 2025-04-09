@@ -7,101 +7,116 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.SimpleDateFormat;
+import com.example.attendance.R;
+
 import java.util.Calendar;
-import java.util.Locale;
 
 public class AllocateOvertimeActivity extends AppCompatActivity {
 
-    private Button btnSelectDate, btnInTime, btnOutTime, btnSubmit;
-    private EditText etOvertimeHours;
-    private Spinner spinnerStatus;
+    EditText editTextDate, editTextInTime, editTextOutTime, etOvertimeHours;
+    Button btnSelectDate, btnInTime, btnOutTime, btnSubmit;
+    Spinner spinnerStatus;
 
-    private Calendar selectedDate = Calendar.getInstance();
-    private String inTime = "", outTime = "";
+    String selectedDate = "", inTime = "", outTime = "", overtimeHours = "", status = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_allocate_overtime); // Make sure this matches your XML filename
+        setContentView(R.layout.activity_allocate_overtime);
 
         // Initialize views
+        editTextDate = findViewById(R.id.editTextDate);
+        editTextInTime = findViewById(R.id.editTextInTime);
+        editTextOutTime = findViewById(R.id.editTextOutTime);
+        etOvertimeHours = findViewById(R.id.etOvertimeHours);
         btnSelectDate = findViewById(R.id.btnSelectDate);
         btnInTime = findViewById(R.id.btnInTime);
         btnOutTime = findViewById(R.id.btnOutTime);
         btnSubmit = findViewById(R.id.btnSubmit);
-        etOvertimeHours = findViewById(R.id.etOvertimeHours);
         spinnerStatus = findViewById(R.id.spinnerStatus);
 
-        // Spinner setup
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+        // Setup spinner
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 new String[]{"Overtime", "Normal"}
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerStatus.setAdapter(adapter);
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerStatus.setAdapter(statusAdapter);
 
         // Date Picker
-        btnSelectDate.setOnClickListener(v -> {
-            DatePickerDialog dialog = new DatePickerDialog(this,
-                    (view, year, month, dayOfMonth) -> {
-                        selectedDate.set(year, month, dayOfMonth);
-                        String dateString = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selectedDate.getTime());
-                        btnSelectDate.setText(dateString);
-                    },
-                    selectedDate.get(Calendar.YEAR),
-                    selectedDate.get(Calendar.MONTH),
-                    selectedDate.get(Calendar.DAY_OF_MONTH)
-            );
-            dialog.show();
-        });
+        btnSelectDate.setOnClickListener(view -> showDatePicker());
+        editTextDate.setOnClickListener(view -> showDatePicker());
 
-        // Time Pickers
-        btnInTime.setOnClickListener(v -> showTimePicker(true));
-        btnOutTime.setOnClickListener(v -> showTimePicker(false));
+        // In Time Picker
+        btnInTime.setOnClickListener(view -> showTimePicker(editTextInTime));
+        editTextInTime.setOnClickListener(view -> showTimePicker(editTextInTime));
+
+        // Out Time Picker
+        btnOutTime.setOnClickListener(view -> showTimePicker(editTextOutTime));
+        editTextOutTime.setOnClickListener(view -> showTimePicker(editTextOutTime));
 
         // Submit Button
-        btnSubmit.setOnClickListener(v -> handleSubmit());
+        btnSubmit.setOnClickListener(view -> handleSubmit());
     }
 
-    private void showTimePicker(boolean isInTime) {
-        Calendar calendar = Calendar.getInstance();
-        TimePickerDialog dialog = new TimePickerDialog(
-                this,
-                (view, hourOfDay, minute) -> {
-                    String time = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
-                    if (isInTime) {
-                        inTime = time;
-                        btnInTime.setText(time);
-                    } else {
-                        outTime = time;
-                        btnOutTime.setText(time);
-                    }
+    private void showDatePicker() {
+        final Calendar calendar = Calendar.getInstance();
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                AllocateOvertimeActivity.this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear);
+                    editTextDate.setText(selectedDate);
                 },
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                true
+                year, month, day
         );
-        dialog.show();
+        datePickerDialog.show();
+    }
+
+    private void showTimePicker(EditText targetEditText) {
+        final Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                AllocateOvertimeActivity.this,
+                (view, selectedHour, selectedMinute) -> {
+                    String time = String.format("%02d:%02d", selectedHour, selectedMinute);
+                    targetEditText.setText(time);
+                },
+                hour, minute, true
+        );
+        timePickerDialog.show();
     }
 
     private void handleSubmit() {
-        String date = btnSelectDate.getText().toString().trim();
-        String hours = etOvertimeHours.getText().toString().trim();
-        String status = spinnerStatus.getSelectedItem().toString();
+        // Get all input values
+        selectedDate = editTextDate.getText().toString().trim();
+        inTime = editTextInTime.getText().toString().trim();
+        outTime = editTextOutTime.getText().toString().trim();
+        overtimeHours = etOvertimeHours.getText().toString().trim();
+        status = spinnerStatus.getSelectedItem().toString();
 
-        if (date.isEmpty() || inTime.isEmpty() || outTime.isEmpty() || hours.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+        // Basic validation
+        if (selectedDate.isEmpty() || inTime.isEmpty() || outTime.isEmpty() || overtimeHours.isEmpty()) {
+            Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // You can now send these values to your backend or database
-        Toast.makeText(this, "Submitted:\nDate: " + date +
-                        "\nIn-Time: " + inTime +
-                        "\nOut-Time: " + outTime +
-                        "\nHours: " + hours +
-                        "\nStatus: " + status,
-                Toast.LENGTH_LONG).show();
+        // You can now use these values to send to your backend or database
+        // Example output:
+        String message = "Date: " + selectedDate +
+                "\nIn-Time: " + inTime +
+                "\nOut-Time: " + outTime +
+                "\nOvertime Hours: " + overtimeHours +
+                "\nStatus: " + status;
+
+        Toast.makeText(this, "Submitted:\n" + message, Toast.LENGTH_LONG).show();
+
+        // TODO: Add API call or database logic here
     }
 }
