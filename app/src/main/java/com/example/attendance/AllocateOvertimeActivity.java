@@ -2,12 +2,20 @@ package com.example.attendance;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AllocateOvertimeActivity extends AppCompatActivity {
 
@@ -72,29 +80,35 @@ public class AllocateOvertimeActivity extends AppCompatActivity {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 AllocateOvertimeActivity.this,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
-                    selectedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear);
-                    editTextDate.setText(selectedDate);
+                    String selectedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+                    editTextDate.setText(selectedDate); // Update the EditText with the selected date
                 },
                 year, month, day
         );
+
         datePickerDialog.show();
     }
 
+
     private void showTimePicker(EditText targetEditText) {
-        final Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(
                 AllocateOvertimeActivity.this,
                 (view, selectedHour, selectedMinute) -> {
-                    String time = String.format("%02d:%02d", selectedHour, selectedMinute);
-                    targetEditText.setText(time);
+                    String amPm = (selectedHour >= 12) ? "PM" : "AM";
+                    int hourIn12Format = (selectedHour == 0 || selectedHour == 12) ? 12 : selectedHour % 12;
+                    String selectedTime = String.format("%02d:%02d %s", hourIn12Format, selectedMinute, amPm);
+                    targetEditText.setText(selectedTime);
                 },
-                hour, minute, true
+                hour, minute, false // false to show 12-hour format in dialog
         );
+
         timePickerDialog.show();
     }
+
 
     private void handleSubmit() {
         // Get all input values
@@ -110,16 +124,42 @@ public class AllocateOvertimeActivity extends AppCompatActivity {
             return;
         }
 
-        // You can now use these values to send to your backend or database
-        // Example output:
-        String message = "Date: " + selectedDate +
-                "\nIn-Time: " + inTime +
-                "\nOut-Time: " + outTime +
-                "\nOvertime Hours: " + overtimeHours +
-                "\nStatus: " + status;
+        // Read employee data from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+        String employeeId = sharedPreferences.getString("employee_id", "");
+        String employeeName = sharedPreferences.getString("employee_name", "");
+        String branch = sharedPreferences.getString("branch", "");
 
-        Toast.makeText(this, "Submitted:\n" + message, Toast.LENGTH_LONG).show();
+        // API URL
+        String apiUrl = "https://devonix.io/ems_api/employee_overtime_attendance.php";
 
-        // TODO: Add API call or database logic here
+        // Send POST request using Volley
+        StringRequest request = new StringRequest(Request.Method.POST, apiUrl,
+                response -> {
+                    Toast.makeText(this, "Overtime Submitted Successfully!", Toast.LENGTH_LONG).show();
+                    finish(); // Optional: close activity
+                },
+                error -> {
+                    Toast.makeText(this, "Submission failed: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("employee_id", employeeId);
+                params.put("employee_name", employeeName);
+                params.put("branch", branch);
+                params.put("date", selectedDate);
+                params.put("in_time", inTime);
+                params.put("out_time", outTime);
+                params.put("overtime_hours", overtimeHours);
+                params.put("status", status);
+                return params;
+            }
+        };
+
+        // Add to request queue
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
     }
+
 }

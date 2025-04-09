@@ -104,7 +104,7 @@ public class ot_emp_list extends AppCompatActivity {
 
 // Ensure 'listData' is initialized as a List<Attendance>
 
-        adapter = new ExpandableListAdapter(this, listGroupTitles, listData, attendanceData, true);
+        adapter = new ExpandableListAdapter(this, listGroupTitles, listData, attendanceData, false);
         // Attendance Report
         expandableListView.setAdapter(adapter);
         setupEmployeeClickListeners();
@@ -172,7 +172,7 @@ public class ot_emp_list extends AppCompatActivity {
                                             false,
                                             empObj.getString("phone"),
                                             BASE_URL + empObj.getString("profile_pic"),
-                                            "",  // ✅ Set default status instead of API value
+                                            null,
                                             branchName
                                     );
 

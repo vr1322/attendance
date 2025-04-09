@@ -23,7 +23,11 @@ public class AllocateOtPage extends AppCompatActivity {
         btnViewRequest = findViewById(R.id.view_request);
 
         // Back Button
-        backButton.setOnClickListener(v -> finish()); // Close current activity
+        backButton.setOnClickListener(v -> {
+            // Navigate to Allocate Overtime Screen
+            Intent intent = new Intent(AllocateOtPage.this, home.class);
+            startActivity(intent);
+        }); // Close current activity
 
         // Allocate Overtime Button
         btnAllocateOt.setOnClickListener(v -> {
