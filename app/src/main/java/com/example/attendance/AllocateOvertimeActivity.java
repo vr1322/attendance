@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.attendance.R;
-
 import java.util.Calendar;
 
 public class AllocateOvertimeActivity extends AppCompatActivity {
@@ -16,6 +14,7 @@ public class AllocateOvertimeActivity extends AppCompatActivity {
     EditText editTextDate, editTextInTime, editTextOutTime, etOvertimeHours;
     Button btnSelectDate, btnInTime, btnOutTime, btnSubmit;
     Spinner spinnerStatus;
+    ImageButton backBtn; // Back Button
 
     String selectedDate = "", inTime = "", outTime = "", overtimeHours = "", status = "";
 
@@ -34,6 +33,10 @@ public class AllocateOvertimeActivity extends AppCompatActivity {
         btnOutTime = findViewById(R.id.btnOutTime);
         btnSubmit = findViewById(R.id.btnSubmit);
         spinnerStatus = findViewById(R.id.spinnerStatus);
+        backBtn = findViewById(R.id.back_btn); // Initialize back button
+
+        // Back button click
+        backBtn.setOnClickListener(v -> finish());
 
         // Setup spinner
         ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(

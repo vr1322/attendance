@@ -125,10 +125,10 @@
 
                     <Button
                         android:id="@+id/btnInTime"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp120"
                         android:layout_height="wrap_content"
                         android:background="@drawable/btn_bg"
-                        android:text="Pick" />
+                        android:text="Pick In Time" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -151,10 +151,10 @@
 
                     <Button
                         android:id="@+id/btnOutTime"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp120"
                         android:layout_height="wrap_content"
                         android:background="@drawable/btn_bg"
-                        android:text="Pick" />
+                        android:text="Pick out time" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
