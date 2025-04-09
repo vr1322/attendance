@@ -71,6 +71,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
 
         // Fetch Employee Name & Branch from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
+        String employeeId = sharedPreferences.getString("employee_id", "");
         String companyCode = sharedPreferences.getString("company_code", "");
         String empName = sharedPreferences.getString("employee_name", "").trim();
         String branch = sharedPreferences.getString("branch", "").trim();
@@ -410,4 +411,6 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }
