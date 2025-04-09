@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -101,6 +102,22 @@ public class home extends AppCompatActivity {
             if (item.getItemId() == R.id.settings) {
                 startActivity(new Intent(home.this, settings.class));
             }
+
+            if (item.getItemId() == R.id.logout) {
+                new AlertDialog.Builder(home.this)
+                        .setTitle("Logout")
+                        .setMessage("Do you really want to logout?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            Intent intent = new Intent(home.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
+            }
+
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });

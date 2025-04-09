@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -76,8 +77,11 @@ public class update_admin extends AppCompatActivity {
         // Set Click Listeners
         back.setOnClickListener(view -> startActivity(new Intent(update_admin.this, settings.class)));
         updttext.setOnClickListener(view -> startActivity(new Intent(update_admin.this, settings.class)));
-        logout_iv.setOnClickListener(view -> startActivity(new Intent(update_admin.this, MainActivity.class)));
-        logut.setOnClickListener(view -> startActivity(new Intent(update_admin.this, MainActivity.class)));
+        logout_iv.setOnClickListener(view -> showLogoutDialog());
+        logut.setOnClickListener(view -> showLogoutDialog());
+
+
+
 
         if (companyCode.isEmpty()) {
             Toast.makeText(this, "Company code is missing!", Toast.LENGTH_SHORT).show();
@@ -212,5 +216,18 @@ public class update_admin extends AppCompatActivity {
             e.printStackTrace();
         }
         return "";
+    }
+
+    private void showLogoutDialog() {
+        new AlertDialog.Builder(update_admin.this)
+                .setTitle("Logout")
+                .setMessage("Do you really want to logout?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Intent intent = new Intent(update_admin.this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 }

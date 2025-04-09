@@ -28,7 +28,7 @@ public class AllocateOtPage extends AppCompatActivity {
         // Allocate Overtime Button
         btnAllocateOt.setOnClickListener(v -> {
             // Navigate to Allocate Overtime Screen
-            Intent intent = new Intent(AllocateOtPage.this, AllocateOvertimeActivity.class);
+            Intent intent = new Intent(AllocateOtPage.this, ot_emp_list.class);
             startActivity(intent);
         });
 
