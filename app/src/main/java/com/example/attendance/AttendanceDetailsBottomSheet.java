@@ -2,7 +2,10 @@ package com.example.attendance;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +20,32 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
 public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
 
+    private static final String BASE_URL = "https://devonix.io/ems_api/";
+    private static final String GET_ALL_ATTENDANCE_URL = BASE_URL + "get_all_attendance.php";
+    private static final String MARK_ATTENDANCE_URL = BASE_URL + "mark_attendance.php";
+
     private TextView tvName;
     private EditText etDate, etInTime, etOutTime, etOvertime;
     private Spinner spinnerStatus;
     private Button btnEdit;
+    private RequestQueue requestQueue;
+    private SharedPreferences sharedPreferences;
 
     @Nullable
     @Override
@@ -43,8 +61,13 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         spinnerStatus = view.findViewById(R.id.spinner_status);
         btnEdit = view.findViewById(R.id.btn_edit);
 
-        // Populate data
-        loadAttendanceDetails();
+        // Initialize Volley RequestQueue
+        requestQueue = Volley.newRequestQueue(requireContext());
+
+        // Initialize SharedPreferences
+        sharedPreferences = requireActivity().getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
+        String empName = sharedPreferences.getString("employee_name", "").trim();
+        tvName.setText(empName);
 
         // Date and Time Pickers
         etDate.setOnClickListener(v -> showDatePickerDialog(etDate));
@@ -53,40 +76,86 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         etOvertime.setOnClickListener(v -> showOvertimePickerDialog());
 
         // Handle "Edit" button click
-        btnEdit.setOnClickListener(v -> updateAttendanceDetails());
+        btnEdit.setOnClickListener(v -> markAttendance());
 
         return view;
     }
 
-    private void loadAttendanceDetails() {
-        tvName.setText("John Smith");
-        etDate.setText("15 JAN 2025");
-        etInTime.setText("10:00 AM");
-        etOutTime.setText("07:00 PM");
-        etOvertime.setText("0 hrs");
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                requireContext(), R.array.attendance_status, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerStatus.setAdapter(adapter);
+    private void markAttendance() {
+        String employeeId = sharedPreferences.getString("employee_id", "");
+        String companyCode = sharedPreferences.getString("company_code", "");
+        String employeeName = sharedPreferences.getString("employee_name", "");
+        String branch = sharedPreferences.getString("branch", "");
+        String inTime = etInTime.getText().toString().trim();
+        String outTime = etOutTime.getText().toString().trim();
+        String status = spinnerStatus.getSelectedItem().toString();
+        String date = etDate.getText().toString().trim();
+        int geofencedStatus = 1; // Assuming employee is within geofence
+        Log.d("AttendanceDebug", "Employee ID: " + employeeId);
+        Log.d("AttendanceDebug", "Company Code: " + companyCode);
+        Log.d("AttendanceDebug", "Employee Name: " + employeeName);
+        Log.d("AttendanceDebug", "Branch: " + branch);
+        Log.d("AttendanceDebug", "Status: " + status);
+        Log.d("AttendanceDebug", "In Time: " + inTime);
+        Log.d("AttendanceDebug", "Out Time: " + outTime);
+        Log.d("AttendanceDebug", "Date: " + date);
 
-        spinnerStatus.setSelection(0);
+        if (employeeId.isEmpty() || companyCode.isEmpty() || employeeName.isEmpty() || branch.isEmpty() || status.isEmpty()) {
+            Toast.makeText(requireContext(), "All fields are required!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("employee_id", employeeId);
+            jsonBody.put("company_code", companyCode);
+            jsonBody.put("employee_name", employeeName);
+            jsonBody.put("branch", branch);
+            jsonBody.put("in_time", inTime);
+            jsonBody.put("out_time", outTime);
+            jsonBody.put("attendance_status", status);
+            jsonBody.put("geofenced_status", geofencedStatus);
+            jsonBody.put("date", date);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(requireContext(), "JSON Error!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, MARK_ATTENDANCE_URL, jsonBody,
+                response -> {
+                    try {
+                        boolean success = response.getString("status").equals("success");
+                        String message = response.getString("message");
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                        if (success) dismiss();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(requireContext(), "Response Error!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(requireContext(), "Network Error!", Toast.LENGTH_SHORT).show());
+
+        requestQueue.add(request);
     }
 
     // Date Picker Dialog
     private void showDatePickerDialog(EditText editText) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH); // 0-based
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         new DatePickerDialog(requireContext(), (view, selectedYear, selectedMonth, selectedDay) -> {
-            String selectedDate = selectedDay + " " + getMonthName(selectedMonth) + " " + selectedYear;
-            editText.setText(selectedDate);
+            // Ensure two-digit format for day and month
+            String formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+            editText.setText(formattedDate);
         }, year, month, day).show();
     }
 
-    // Time Picker Dialog with AM/PM Format
+
+    // Time Picker Dialog
     private void showTimePickerDialog(EditText editText) {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -97,7 +166,7 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
             int hourIn12Format = (selectedHour == 0 || selectedHour == 12) ? 12 : selectedHour % 12;
             String selectedTime = String.format("%02d:%02d %s", hourIn12Format, selectedMinute, amPm);
             editText.setText(selectedTime);
-        }, hour, minute, false).show();  // `false` for 12-hour format
+        }, hour, minute, false).show();
     }
 
     // NumberPicker for Overtime (Hours Only)
@@ -108,7 +177,7 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         Button btnConfirm = overtimeView.findViewById(R.id.btnConfirmOvertime);
 
         numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(12);  // Set max overtime limit (adjust if needed)
+        numberPicker.setMaxValue(12);
         numberPicker.setValue(0);
 
         btnConfirm.setOnClickListener(v -> {
@@ -130,4 +199,7 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         String selectedStatus = spinnerStatus.getSelectedItem().toString();
         Toast.makeText(requireContext(), "Attendance marked as: " + selectedStatus, Toast.LENGTH_SHORT).show();
     }
+
+
+
 }

@@ -18,6 +18,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -72,6 +73,27 @@ public class attendance_report extends AppCompatActivity {
         reportTxt = findViewById(R.id.attendence_txt);
         expandableListView = findViewById(R.id.expandableListView);
 
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Show loading spinner
+            swipeRefreshLayout.setRefreshing(true);
+
+            // Clear existing data to prevent duplication
+            listGroupTitles.clear();
+            listData.clear();
+
+            // Load updated data
+            loadBranchesAndEmployees();
+
+            // Delay for better UX before stopping refresh animation
+            expandableListView.postDelayed(() -> {
+                swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(attendance_report.this, "Data refreshed successfully", Toast.LENGTH_SHORT).show();
+            }, 1500);
+        });
+
+
         listGroupTitles = new ArrayList<>();
         listData = new HashMap<>();
         attendanceData = new HashMap<>();
@@ -80,7 +102,7 @@ public class attendance_report extends AppCompatActivity {
         // Load data for employees and attendance
         loadBranchesAndEmployees();
         loadAttendanceData();     // Initial Load
-        startAutoRefresh();       // Auto-Refresh Mechanism
+        startAutoRefresh();// Auto-Refresh Mechanism
 
 // Ensure 'listData' is initialized as a List<Attendance>
 
@@ -370,6 +392,7 @@ public class attendance_report extends AppCompatActivity {
         // Save Employee Name and Branch in SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("employee_id", employee.getId());
         editor.putString("employee_name", employee.getName());
         editor.putString("branch", employee.getBranch());
         editor.apply(); // Save data
