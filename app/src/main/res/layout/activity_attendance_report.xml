@@ -81,7 +81,7 @@
         <ExpandableListView
             android:id="@+id/expandableListView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp640"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp15"
             android:layout_marginBottom="@dimen/dp15"

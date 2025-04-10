@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import android.Manifest;
+import android.widget.AbsListView;
 
 
 public class emp_list extends AppCompatActivity {
@@ -99,6 +100,29 @@ public class emp_list extends AppCompatActivity {
 
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
+        // Enable SwipeRefresh only when scrolled to the top
+        expandableListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // No action needed here
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                boolean enable = false;
+
+                if (expandableListView != null && expandableListView.getChildCount() > 0) {
+                    // Check if the first visible item is at the top and fully visible
+                    boolean firstItemVisible = (firstVisibleItem == 0);
+                    boolean topOfFirstItemVisible = expandableListView.getChildAt(0).getTop() == 0;
+                    enable = firstItemVisible && topOfFirstItemVisible;
+                }
+
+                swipeRefreshLayout.setEnabled(enable);
+            }
+        });
+
+        // Set the refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Show loading spinner
             swipeRefreshLayout.setRefreshing(true);
@@ -110,12 +134,13 @@ public class emp_list extends AppCompatActivity {
             // Load updated data
             loadBranchesAndEmployees();
 
-            // Delay for better UX before stopping refresh animation
+            // Delay to stop refresh animation (for better UX)
             expandableListView.postDelayed(() -> {
                 swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(emp_list.this, "Data refreshed successfully", Toast.LENGTH_SHORT).show();
             }, 1500);
         });
+
 
 
 
