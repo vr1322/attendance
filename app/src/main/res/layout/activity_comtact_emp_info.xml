@@ -69,6 +69,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
                     android:text="Employee Name :- "
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
@@ -76,7 +77,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="emp name"
+                    android:text="Employee Name"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -90,13 +92,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Employee ID :- "
+                    android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="emp id"
+                    android:text="Employee Id"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -110,13 +114,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Branch :- "
+                    android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="branch Name"
+                    android:text="Branch Name"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -130,6 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Phone Number :- "
+                    android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
@@ -137,6 +144,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Phone Number"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -150,6 +158,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Email Id :- "
+                    android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
@@ -157,6 +166,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Email Id"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
