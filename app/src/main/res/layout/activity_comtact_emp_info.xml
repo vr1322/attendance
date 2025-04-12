@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    tools:context=".ComtactEmpInfo">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/dp40"
+            android:layout_height="@dimen/dp40"
+            android:layout_gravity="top|left"
+            android:clickable="true"
+            android:padding="@dimen/dp11"
+            android:src="@drawable/chevron_left" />
+
+        <TextView
+            android:id="@+id/emp_list_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/inter_bold"
+            android:text="Employee Contact Details"
+            android:textColor="@color/black"
+            android:textSize="@dimen/dp20"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
+        android:padding="@dimen/dp10"
+        app:cardCornerRadius="@dimen/dp25"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.075">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp10"
+                android:paddingTop="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Employee Name :- "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp16" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="emp name"
+                    android:textSize="@dimen/dp16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp10"
+                android:paddingTop="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Employee ID :- "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp16" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="emp id"
+                    android:textSize="@dimen/dp16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp10"
+                android:paddingTop="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Branch :- "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp16" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="branch Name"
+                    android:textSize="@dimen/dp16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp10"
+                android:paddingTop="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Phone Number :- "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp16" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Phone Number"
+                    android:textSize="@dimen/dp16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp10"
+                android:paddingTop="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Email Id :- "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp16" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Email Id"
+                    android:textSize="@dimen/dp16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp30"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/phone"
+                    android:layout_width="@dimen/dp290"
+                    android:layout_height="@dimen/dp45"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_bg"
+                    android:drawableLeft="@drawable/chevron_right"
+                    android:drawableRight="@drawable/ic_phone"
+                    android:paddingRight="@dimen/dp10"
+                    android:fontFamily="@font/inter_bold"
+                    android:paddingLeft="@dimen/dp10"
+                    android:layout_margin="@dimen/dp10"
+                    android:text="Phone"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/dp14" />
+
+                <Button
+                    android:id="@+id/message"
+                    android:layout_width="@dimen/dp290"
+                    android:layout_height="@dimen/dp45"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_bg"
+                    android:drawableRight=""
+                    android:layout_margin="@dimen/dp10"
+                    android:drawableLeft="@drawable/chevron_right"
+                    android:fontFamily="@font/inter_bold"
+                    android:paddingLeft="@dimen/dp10"
+                    android:text="Messgae"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/dp14" />
+
+                <Button
+                    android:id="@+id/whatsapp"
+                    android:layout_width="@dimen/dp290"
+                    android:layout_height="@dimen/dp45"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_bg"
+                    android:layout_margin="@dimen/dp10"
+                    android:drawableLeft="@drawable/chevron_right"
+                    android:fontFamily="@font/inter_bold"
+                    android:paddingLeft="@dimen/dp10"
+                    android:text="whatsapp"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/dp14" />
+
+                <Button
+                    android:id="@+id/email"
+                    android:layout_width="@dimen/dp290"
+                    android:layout_height="@dimen/dp45"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_bg"
+                    android:drawableLeft="@drawable/chevron_right"
+                    android:fontFamily="@font/inter_bold"
+                    android:paddingLeft="@dimen/dp10"
+                    android:text="email"
+                    android:layout_margin="@dimen/dp10"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/dp14" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
