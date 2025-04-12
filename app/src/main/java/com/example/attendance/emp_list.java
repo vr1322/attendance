@@ -291,7 +291,7 @@ public class emp_list extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission granted!", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Permission denied. File download may fail.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please allow storage permission in Settings for downloading.", Toast.LENGTH_LONG).show();
             }
         }
     }

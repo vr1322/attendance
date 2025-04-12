@@ -149,4 +149,12 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="help_support"><![CDATA[Help & Support]]></string>
+
+    <string-array name="user_roles">
+        <item>admin</item>
+        <item>employee</item>
+        <item>manager</item>
+        <item>supervisor</item>
+    </string-array>
+
 </resources>
