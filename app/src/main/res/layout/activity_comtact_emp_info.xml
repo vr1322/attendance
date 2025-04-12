@@ -69,15 +69,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_bold"
                     android:text="Employee Name :- "
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
                 <TextView
-                    android:id="@+id/employee_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="emp name"
+                    android:text="Employee Name"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -91,14 +92,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Employee ID :- "
+                    android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
                 <TextView
-                    android:id="@+id/employee_id"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="emp id"
+                    android:text="Employee Id"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -112,14 +114,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Branch :- "
+                    android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
                 <TextView
-                    android:id="@+id/branch_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="branch Name"
+                    android:text="Branch Name"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -133,15 +136,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Phone Number :- "
+                    android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
                 <TextView
-
-                    android:id="@+id/phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Phone Number"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -155,14 +158,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Email Id :- "
+                    android:fontFamily="@font/inter_bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
 
                 <TextView
-                    android:id="@+id/email_id"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Email Id"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dp16" />
             </LinearLayout>
 
@@ -173,7 +177,7 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/btn_call"
+                    android:id="@+id/phone"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
@@ -189,11 +193,13 @@
                     android:textSize="@dimen/dp14" />
 
                 <Button
-                    android:id="@+id/btn_message"
+                    android:id="@+id/message"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
                     android:background="@drawable/btn_bg"
+                    android:drawableRight="@drawable/ic_message"
+                    android:paddingRight="@dimen/dp10"
                     android:layout_margin="@dimen/dp10"
                     android:drawableLeft="@drawable/chevron_right"
                     android:fontFamily="@font/inter_bold"
@@ -203,11 +209,13 @@
                     android:textSize="@dimen/dp14" />
 
                 <Button
-                    android:id="@+id/btn_whatsapp"
+                    android:id="@+id/whatsapp"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
                     android:background="@drawable/btn_bg"
+                    android:drawableRight="@drawable/ic_whatsapp"
+                    android:paddingRight="@dimen/dp10"
                     android:layout_margin="@dimen/dp10"
                     android:drawableLeft="@drawable/chevron_right"
                     android:fontFamily="@font/inter_bold"
@@ -217,10 +225,12 @@
                     android:textSize="@dimen/dp14" />
 
                 <Button
-                    android:id="@+id/btn_email"
+                    android:id="@+id/email"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
+                    android:drawableRight="@drawable/ic_email"
+                    android:paddingRight="@dimen/dp10"
                     android:background="@drawable/btn_bg"
                     android:drawableLeft="@drawable/chevron_right"
                     android:fontFamily="@font/inter_bold"

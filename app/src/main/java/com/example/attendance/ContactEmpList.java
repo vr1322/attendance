@@ -231,7 +231,7 @@ public class ContactEmpList extends AppCompatActivity {
         listData.clear();
         attendanceData.clear();
 
-        loadBranchesAndEmployees();
+        loadBranchesAndEmployees();.
 
         expandableListView.postDelayed(dialog::dismiss, 1500);
     }
