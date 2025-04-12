@@ -52,7 +52,6 @@ public class ComtactEmpInfo extends AppCompatActivity {
         tvBranch = findViewById(R.id.branch_name);
         tvPhone = findViewById(R.id.phone_number);
         tvEmail = findViewById(R.id.email_id);
-
         btnCall = findViewById(R.id.btn_call);
         btnMessage = findViewById(R.id.btn_message);
         btnWhatsApp = findViewById(R.id.btn_whatsapp);
