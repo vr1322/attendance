@@ -1,6 +1,8 @@
 package com.example.attendance;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,12 +16,20 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 public class ComtactEmpInfo extends AppCompatActivity {
@@ -30,12 +40,13 @@ public class ComtactEmpInfo extends AppCompatActivity {
 
     String empName = "", empId = "", branch = "", phone = "", email = "";
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comtact_emp_info);
 
-        back = findViewById(R.id.);
+        back = findViewById(R.id.back);
         tvEmpName = findViewById(R.id.employee_name);
         tvEmpId = findViewById(R.id.employee_id);
         tvBranch = findViewById(R.id.branch_name);
@@ -47,98 +58,92 @@ public class ComtactEmpInfo extends AppCompatActivity {
         btnWhatsApp = findViewById(R.id.btn_whatsapp);
         btnEmail = findViewById(R.id.btn_email);
 
-        // Get employee ID from intent
-        empId = getIntent().getStringExtra("emp_id");
-        if (empId != null) {
-            fetchEmployeeDetails(empId);
-        } else {
-            Toast.makeText(this, "Employee ID not found", Toast.LENGTH_SHORT).show();
-        }
+        // Get SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+        String empId = sharedPreferences.getString("employee_id", "");
+        String empName = sharedPreferences.getString("employee_name", "");
+        String branch = sharedPreferences.getString("branch", "");
 
+        // Set Name, ID, Branch
+        tvEmpName.setText(empName);
+        tvEmpId.setText(empId);
+        tvBranch.setText(branch);
+
+        // Fetch Contact Info from Server
+        fetchContactDetails(empId);
+
+        // Back Button Click
         back.setOnClickListener(v -> finish());
-
-        btnCall.setOnClickListener(v -> {
-            if (!phone.isEmpty()) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + phone));
-                startActivity(intent);
-            }
-        });
-
-        btnMessage.setOnClickListener(v -> {
-            if (!phone.isEmpty()) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("sms:" + phone));
-                startActivity(intent);
-            }
-        });
-
-        btnWhatsApp.setOnClickListener(v -> {
-            if (!phone.isEmpty()) {
-                String url = "https://wa.me/" + phone;
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-            }
-        });
-
-        btnEmail.setOnClickListener(v -> {
-            if (!email.isEmpty()) {
-                Intent intent = new Intent(Intent.ACTION_SENDTO);
-                intent.setData(Uri.parse("mailto:" + email));
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Regarding...");
-                intent.putExtra(Intent.EXTRA_TEXT, "Hello " + empName + ",");
-                startActivity(intent);
-            }
-        });
     }
 
-    private void fetchEmployeeDetails(String empId) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                String apiUrl = "https://devonix.io/ems_api/get_employee_contact.php?employee_id=" + empId;
-                URL url = new URL(apiUrl);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
+    private void fetchContactDetails(String employeeId) {
+        String url = "https://devonix.io/ems_api/get_employee_contact.php";
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    response.append(line);
-                }
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        Log.d("EMP_CONTACT_RESPONSE", response); // Debug log
 
-                reader.close();
+                        JSONObject jsonObject = new JSONObject(response);
 
-                JSONObject json = new JSONObject(response.toString());
-                if (json.getBoolean("status")) {
-                    JSONObject data = json.getJSONObject("data");
+                        // ✅ Get boolean instead of string
+                        boolean success = jsonObject.getBoolean("success");
 
-                    empName = data.getString("name");
-                    branch = data.getString("branch");
-                    phone = data.getString("phone");
-                    email = data.getString("email");
+                        if (success) {
+                            String phone = jsonObject.getString("phone");
+                            String email = jsonObject.getString("email");
 
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        tvEmpName.setText(empName);
-                        tvEmpId.setText(empId);
-                        tvBranch.setText(branch);
-                        tvPhone.setText(phone);
-                        tvEmail.setText(email);
-                    });
-                } else {
-                    String message = json.getString("message");
-                    new Handler(Looper.getMainLooper()).post(() ->
-                            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-                    );
-                }
+                            tvPhone.setText(phone);
+                            tvEmail.setText(email);
 
-            } catch (Exception e) {
-                Log.e("FetchEmp", "Error: " + e.getMessage());
-                new Handler(Looper.getMainLooper()).post(() ->
-                        Toast.makeText(this, "Failed to fetch employee data", Toast.LENGTH_SHORT).show()
-                );
+                            // Action buttons
+                            btnCall.setOnClickListener(v -> {
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                intent.setData(Uri.parse("tel:" + phone));
+                                startActivity(intent);
+                            });
+
+                            btnMessage.setOnClickListener(v -> {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse("sms:" + phone));
+                                startActivity(intent);
+                            });
+
+                            btnWhatsApp.setOnClickListener(v -> {
+                                String urlWhatsapp = "https://api.whatsapp.com/send?phone=" + phone;
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(urlWhatsapp));
+                                startActivity(intent);
+                            });
+
+                            btnEmail.setOnClickListener(v -> {
+                                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                                        "mailto", email, null));
+                                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                            });
+
+                        } else {
+                            Toast.makeText(this, "Failed to fetch contact details", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing response", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Network error", Toast.LENGTH_SHORT).show()) {
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("employee_id", employeeId);
+                params.put("company_code", getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", ""));
+                return params;
             }
-        });
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
+
 }

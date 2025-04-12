@@ -74,6 +74,7 @@
                     android:textSize="@dimen/dp16" />
 
                 <TextView
+                    android:id="@+id/employee_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="emp name"
@@ -94,6 +95,7 @@
                     android:textSize="@dimen/dp16" />
 
                 <TextView
+                    android:id="@+id/employee_id"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="emp id"
@@ -114,6 +116,7 @@
                     android:textSize="@dimen/dp16" />
 
                 <TextView
+                    android:id="@+id/branch_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="branch Name"
@@ -134,6 +137,8 @@
                     android:textSize="@dimen/dp16" />
 
                 <TextView
+
+                    android:id="@+id/phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Phone Number"
@@ -154,6 +159,7 @@
                     android:textSize="@dimen/dp16" />
 
                 <TextView
+                    android:id="@+id/email_id"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:text="Email Id"
@@ -167,7 +173,7 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/phone"
+                    android:id="@+id/btn_call"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
@@ -183,12 +189,11 @@
                     android:textSize="@dimen/dp14" />
 
                 <Button
-                    android:id="@+id/message"
+                    android:id="@+id/btn_message"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
                     android:background="@drawable/btn_bg"
-                    android:drawableRight=""
                     android:layout_margin="@dimen/dp10"
                     android:drawableLeft="@drawable/chevron_right"
                     android:fontFamily="@font/inter_bold"
@@ -198,7 +203,7 @@
                     android:textSize="@dimen/dp14" />
 
                 <Button
-                    android:id="@+id/whatsapp"
+                    android:id="@+id/btn_whatsapp"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
@@ -212,7 +217,7 @@
                     android:textSize="@dimen/dp14" />
 
                 <Button
-                    android:id="@+id/email"
+                    android:id="@+id/btn_email"
                     android:layout_width="@dimen/dp290"
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
