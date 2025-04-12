@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
         btnSubmit.setOnClickListener(v -> loginUser());
 
         tvForgot.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "Forgot Password Clicked", Toast.LENGTH_SHORT).show();
-            // Implement forgot password logic
+            Intent intent = new Intent(MainActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
         });
     }
 
