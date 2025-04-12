@@ -188,7 +188,6 @@
                     android:layout_height="@dimen/dp45"
                     android:layout_gravity="center"
                     android:background="@drawable/btn_bg"
-                    android:drawableRight=""
                     android:layout_margin="@dimen/dp10"
                     android:drawableLeft="@drawable/chevron_right"
                     android:fontFamily="@font/inter_bold"
