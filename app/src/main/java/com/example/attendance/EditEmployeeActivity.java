@@ -34,6 +34,7 @@ public class EditEmployeeActivity extends AppCompatActivity {
     private EditText etEmployeeName, etEmployeeId, etDateOfBirth, etJoiningDate, etDesignation, etPhone, etAddress, etEmail, etPassword, etBasicPay, etOvertimeAllowance;
     private ImageView backButton, icCalendarDob, icCalendarJoining;
     private CircleImageView profilePic;
+    private Spinner spinnerRole;
     private TextView editEmpText;
     private AutoCompleteTextView etBranch;
     private RadioGroup paymentTypeGroup;
@@ -86,6 +87,7 @@ public class EditEmployeeActivity extends AppCompatActivity {
         etJoiningDate = findViewById(R.id.et_joining_date);
         icCalendarDob = findViewById(R.id.ic_calendar_dob);
         icCalendarJoining = findViewById(R.id.ic_calendar_joining);
+        spinnerRole = findViewById(R.id.spinner_role);
         etDesignation = findViewById(R.id.ad_emp_design);
         etPhone = findViewById(R.id.add_emp_number);
         etAddress = findViewById(R.id.add_emp_address);
@@ -99,6 +101,12 @@ public class EditEmployeeActivity extends AppCompatActivity {
         monthly = findViewById(R.id.radio_monthly);
         updateButton = findViewById(R.id.save_btn);
         progressDialog = new ProgressDialog(this);
+
+        // Setup role spinner
+        String[] roles = {"admin", "employee", "manager", "supervisor"};
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, roles);
+        roleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRole.setAdapter(roleAdapter);
     }
 
     private void setClickListeners() {
@@ -145,6 +153,15 @@ public class EditEmployeeActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("status").equals("success")) {
                             JSONObject employee = jsonObject.getJSONObject("employee");
+                            // Set role in spinner
+                            String role = employee.optString("role", "");
+                            ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinnerRole.getAdapter();
+                            if (adapter != null) {
+                                int spinnerPosition = adapter.getPosition(role);
+                                if (spinnerPosition >= 0) {
+                                    spinnerRole.setSelection(spinnerPosition);
+                                }
+                            }
 
                             // Print employee details to debug
                             Log.d("EMPLOYEE_DETAILS", employee.toString());
@@ -299,6 +316,7 @@ public class EditEmployeeActivity extends AppCompatActivity {
 
     private void updateEmployee() {
         String name = etEmployeeName.getText().toString().trim();
+        String role = spinnerRole.getSelectedItem().toString();
         String designation = etDesignation.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
@@ -343,6 +361,7 @@ public class EditEmployeeActivity extends AppCompatActivity {
                 params.put("dob", dob);
                 params.put("joining_date", joiningDate);
                 params.put("profile_image", profileImageBase64);
+                params.put("role", role);
                 return params;
             }
         };

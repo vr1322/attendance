@@ -32,6 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class add_emp extends AppCompatActivity {
     private EditText etEmployeeName, etEmployeeId, etDateOfBirth, etJoiningDate, etDesignation, etPhone, etAddress, etEmail, etPassword, etBasicPay, etOvertimeAllowance;
     private ImageView backButton, icCalendarDob, icCalendarJoining;
+    private Spinner spinnerRole;
     private CircleImageView profilePic;
     private TextView addemp_text;
     private AutoCompleteTextView etBranch;
@@ -66,6 +67,7 @@ public class add_emp extends AppCompatActivity {
         etJoiningDate = findViewById(R.id.et_joining_date);
         icCalendarDob = findViewById(R.id.ic_calendar_dob);
         icCalendarJoining = findViewById(R.id.ic_calendar_joining);
+        spinnerRole = findViewById(R.id.spinner_role);
         etDesignation = findViewById(R.id.ad_emp_design);
         etPhone = findViewById(R.id.add_emp_number);
         etAddress = findViewById(R.id.add_emp_address);
@@ -79,6 +81,19 @@ public class add_emp extends AppCompatActivity {
         monthly = findViewById(R.id.radio_monthly);
         saveButton = findViewById(R.id.save_btn);
         progressDialog = new ProgressDialog(this);
+
+        loadNextEmployeeId();// 👈 auto-generate ID when screen opens
+
+        if (spinnerRole.getSelectedItem().toString().equals("Select Role")) {
+            Toast.makeText(this, "Please select a valid role", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Setup role spinner
+        String[] roles = {"admin", "employee", "manager", "supervisor"};
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, roles);
+        roleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRole.setAdapter(roleAdapter);
+
     }
 
     private void setClickListeners() {
@@ -191,6 +206,41 @@ public class add_emp extends AppCompatActivity {
         }
     }
 
+    private void loadNextEmployeeId() {
+        String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
+
+        if (companyCode.isEmpty()) {
+            Toast.makeText(this, "Company code missing. Please login again.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = "https://devonix.io/ems_api/get_next_employee_id.php?company_code=" + companyCode;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getString("status").equals("success")) {
+                            String nextEmployeeId = jsonObject.getString("next_employee_id");
+                            etEmployeeId.setText(nextEmployeeId);
+                            etEmployeeId.setEnabled(false); // Optional: make EmployeeID non-editable
+                        } else {
+                            Toast.makeText(this, "Failed to load Employee ID", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing ID", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(this, "Network error!", Toast.LENGTH_SHORT).show();
+                });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+
 
     private void addEmployee() {
         // Retrieve company_code from SharedPreferences
@@ -202,7 +252,7 @@ public class add_emp extends AppCompatActivity {
             return;
         }
 
-        String employeeId = etEmployeeId.getText().toString().trim();
+        String employeeId = etEmployeeId.getText().toString();
         String name = etEmployeeName.getText().toString().trim();
         String designation = etDesignation.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
@@ -216,6 +266,7 @@ public class add_emp extends AppCompatActivity {
         String overtimeAllowance = etOvertimeAllowance.getText().toString().trim();
         String formattedDob = convertDateFormat(dob);
         String formattedJoiningDate = convertDateFormat(joiningDate);
+        String role = spinnerRole.getSelectedItem().toString();
 
         // Get selected payment type
         String paymentType = perDay.isChecked() ? "Per Day" : "Monthly";
@@ -288,6 +339,7 @@ public class add_emp extends AppCompatActivity {
                 params.put("profile_image", finalProfileImageBase6);
                 params.put("dob", formattedDob);
                 params.put("joining_date", formattedJoiningDate);
+                params.put("role", role);
                 return params;
             }
 

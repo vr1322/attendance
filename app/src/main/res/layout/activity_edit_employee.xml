@@ -50,7 +50,7 @@
             android:layout_height="@dimen/dp90"
             android:src="@drawable/ic_profile"
             android:background="@android:color/transparent"
-            android:layout_marginBottom="@dimen/dp150"
+            android:layout_marginBottom="@dimen/dp170"
             app:civ_border_width="@dimen/dp3"
             app:civ_border_color="@color/blue"
             app:layout_constraintTop_toBottomOf="@id/linearLayout"
@@ -212,6 +212,13 @@
                         android:fontFamily="@font/inter_bold"
                         android:textStyle="bold"/>
                 </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/spinner_role"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:entries="@array/user_roles" />
 
             </LinearLayout>
 

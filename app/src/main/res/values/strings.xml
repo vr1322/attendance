@@ -151,6 +151,7 @@
     <string name="help_support"><![CDATA[Help & Support]]></string>
 
     <string-array name="user_roles">
+        <item>Select Role</item> <!-- Hint -->
         <item>admin</item>
         <item>employee</item>
         <item>manager</item>
