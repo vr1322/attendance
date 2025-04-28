@@ -79,6 +79,8 @@ public class add_emp extends AppCompatActivity {
         monthly = findViewById(R.id.radio_monthly);
         saveButton = findViewById(R.id.save_btn);
         progressDialog = new ProgressDialog(this);
+
+        loadNextEmployeeId();// 👈 auto-generate ID when screen opens
     }
 
     private void setClickListeners() {
@@ -191,6 +193,41 @@ public class add_emp extends AppCompatActivity {
         }
     }
 
+    private void loadNextEmployeeId() {
+        String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
+
+        if (companyCode.isEmpty()) {
+            Toast.makeText(this, "Company code missing. Please login again.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = "https://devonix.io/ems_api/get_next_employee_id.php?company_code=" + companyCode;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getString("status").equals("success")) {
+                            String nextEmployeeId = jsonObject.getString("next_employee_id");
+                            etEmployeeId.setText(nextEmployeeId);
+                            etEmployeeId.setEnabled(false); // Optional: make EmployeeID non-editable
+                        } else {
+                            Toast.makeText(this, "Failed to load Employee ID", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing ID", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(this, "Network error!", Toast.LENGTH_SHORT).show();
+                });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
+    }
+
+
 
     private void addEmployee() {
         // Retrieve company_code from SharedPreferences
@@ -202,7 +239,7 @@ public class add_emp extends AppCompatActivity {
             return;
         }
 
-        String employeeId = etEmployeeId.getText().toString().trim();
+        String employeeId = etEmployeeId.getText().toString();
         String name = etEmployeeName.getText().toString().trim();
         String designation = etDesignation.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
