@@ -19,5 +19,5 @@ public class OvertimeRequest {
     public String getEmployeeName() { return employeeName; }
     public double getOvertimeHours() { return overtimeHours; }
     public double getOvertimeRate() { return overtimeRate; }
-    public double getTotalAmount() { return totalAmount; }.
+    public double getTotalAmount() { return totalAmount; }
 }

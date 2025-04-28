@@ -62,7 +62,7 @@ public class OvertimeAdapter extends RecyclerView.Adapter<OvertimeAdapter.ViewHo
             tvOvertimeRate = itemView.findViewById(R.id.tvOvertimeRate);
             tvTotalAmount = itemView.findViewById(R.id.tvTotalAmount);
             btnApprove = itemView.findViewById(R.id.btnApprove);
-            btnReject = itemView.findViewById(R.id.btnReject);.
+            btnReject = itemView.findViewById(R.id.btnReject);
         }
     }
 }
