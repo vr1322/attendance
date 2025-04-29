@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("company_code", companyCode);
                             editor.putString("company_name", companyNameStr); // ✅ Save company name
+                            editor.putString("email", email); // ✅ Add this line to save email
                             editor.apply();
 
                             // Navigate to the appropriate home screen based on role

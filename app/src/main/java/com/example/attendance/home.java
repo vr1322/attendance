@@ -67,7 +67,7 @@ public class home extends AppCompatActivity {
         // Setup Toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("E-Attendance");
+        getSupportActionBar().setTitle("Attendo");
 
         all_ot_btn.setOnClickListener(new View.OnClickListener() {
             @Override

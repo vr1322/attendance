@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    tools:context=".EmpOtbtn">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/dp40"
+            android:layout_height="@dimen/dp40"
+            android:layout_gravity="top|left"
+            android:clickable="true"
+            android:padding="@dimen/dp11"
+            android:src="@drawable/chevron_left" />
+
+        <TextView
+            android:id="@+id/settext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Overtime"
+            android:textColor="@color/black"
+            android:fontFamily="@font/inter_bold"
+            android:textStyle="bold"
+            android:textSize="@dimen/dp20" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card1"
+        android:layout_width="@dimen/dp330"
+        android:layout_height="@dimen/dp275"
+        app:cardCornerRadius="@dimen/dp30"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.161">
+
+        <Button
+            android:id="@+id/see_all_ot"
+            android:layout_width="@dimen/dp290"
+            android:layout_height="@dimen/dp45"
+            android:background="@drawable/btn_bg"
+            android:drawableLeft="@drawable/chevron_right"
+            android:elevation="@dimen/dp20"
+            android:fontFamily="@font/inter_bold"
+            android:paddingLeft="@dimen/dp10"
+            android:text="See Allocate Overtime"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="@dimen/dp20"
+            android:textAlignment="center"
+            android:textSize="@dimen/dp14" />
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
