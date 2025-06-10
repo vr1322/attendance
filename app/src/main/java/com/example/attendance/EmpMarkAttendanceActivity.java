@@ -36,8 +36,7 @@ public class EmpMarkAttendanceActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 101;
     private FusedLocationProviderClient fusedLocationClient;
 
-    TextView attendanceStatus;
-    Button markAttendanceButton;
+    private Button markButton;
 
     String employee_id, company_code, employee_name, branch_name;
 
@@ -48,8 +47,7 @@ public class EmpMarkAttendanceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emp_mark_attendance);
 
-        attendanceStatus = findViewById(R.id.attendanceStatus);
-        markAttendanceButton = findViewById(R.id.markAttendanceButton);
+        markButton = findViewById(R.id.markButton);
 
         // Retrieve company_code from SharedPreferences
         SharedPreferences sharedPref = getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
@@ -63,7 +61,7 @@ public class EmpMarkAttendanceActivity extends AppCompatActivity {
         getEmployeeDetails(email);
 
         // Set click listener for attendance marking
-        markAttendanceButton.setOnClickListener(v -> checkLocationPermission());
+        markButton.setOnClickListener(v -> checkLocationPermission());
 
         // Retrieve employee branch from database using email
         getEmployeeBranchFromDatabase(email);

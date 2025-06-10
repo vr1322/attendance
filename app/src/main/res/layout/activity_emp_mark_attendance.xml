@@ -1,22 +1,197 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="20dp"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MapsActivity">
 
-    <TextView
-        android:id="@+id/attendanceStatus"
-        android:text="Checking location..."
+
+
+    <!-- Google Maps Fragment -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guideline"/>
+    <!-- Back Button and Title -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:padding="10dp"
-        android:textColor="#000" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dp15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/markAttendanceButton"
-        android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="@dimen/dp50"
+            android:layout_height="@dimen/dp50"
+            android:layout_gravity="top|left"
+            android:clickable="true"
+            android:padding="@dimen/dp11"
+            android:src="@drawable/chevron_left" />
+    </LinearLayout>
+
+    <!-- Percentage Guideline for UI Separation -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mark Attendance"
-        android:enabled="false" />
-</LinearLayout>
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <!-- Branch Location Details -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0"
+        android:orientation="vertical"
+        android:padding="@dimen/dp16"
+        android:elevation="@dimen/dp15"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Branch Location Title -->
+        <TextView
+            android:id="@+id/branchLocationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Branch Location"
+            android:textStyle="bold"
+            android:textSize="@dimen/dp16"
+            android:textColor="#000000" />
+
+        <!-- Address Text -->
+        <TextView
+            android:id="@+id/branchAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dp14"
+            android:textColor="#666666"
+            android:paddingTop="@dimen/dp4"
+            android:text="Selected Branch Address will be Showned... " />
+
+        <!-- Radius Selection -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp8">
+
+            <TextView
+                android:id="@+id/Radius"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Radius : "
+                android:textSize="@dimen/dp14"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/radius_Value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50 meters"
+                android:textSize="@dimen/dp14"
+                android:textColor="#9DDAFA"
+                android:layout_marginStart="@dimen/dp8" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp8">
+
+            <TextView
+                android:id="@+id/intime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="In Time : "
+                android:textSize="@dimen/dp14"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/intimeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00 pm"
+                android:textSize="@dimen/dp14"
+                android:textColor="#9DDAFA"
+                android:layout_marginStart="@dimen/dp8" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp8">
+
+            <TextView
+                android:id="@+id/Outtime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Out time : "
+                android:textSize="@dimen/dp14"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/outtimeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00 pm"
+                android:textSize="@dimen/dp14"
+                android:textColor="#9DDAFA"
+                android:layout_marginStart="@dimen/dp8" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp8">
+
+            <TextView
+                android:id="@+id/Distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Distance : "
+                android:textSize="@dimen/dp14"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/distancevalue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Out Side Branch"
+                android:textSize="@dimen/dp14"
+                android:textColor="#9DDAFA"
+                android:layout_marginStart="@dimen/dp8" />
+        </LinearLayout>
+
+        <!-- Save Button -->
+        <Button
+            android:id="@+id/markButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MARK ATTENDANCE"
+            android:textSize="16sp"
+            android:background="@drawable/button"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#9DDAFA"
+            android:padding="@dimen/dp12"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/dp16" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

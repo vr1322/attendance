@@ -106,14 +106,21 @@ public class ManagerHomeActivity extends AppCompatActivity {
                         .setTitle("Logout")
                         .setMessage("Do you really want to logout?")
                         .setPositiveButton("Yes", (dialog, which) -> {
+                            // Clear shared preferences
+                            SharedPreferences preferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.clear();
+                            editor.apply();
+
+                            // Go back to login screen
                             Intent intent = new Intent(ManagerHomeActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
+                            finish();
                         })
-                        .setNegativeButton("No", (dialog, which) -> {
-                            dialog.dismiss();
-                        })
+                        .setNegativeButton("No", null)
                         .show();
+
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);

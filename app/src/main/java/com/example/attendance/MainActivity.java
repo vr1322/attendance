@@ -126,11 +126,12 @@ public class MainActivity extends AppCompatActivity {
                             editor.putString("company_code", companyCode);
                             editor.putString("company_name", companyNameStr); // ✅ Save company name
                             editor.putString("email", email); // ✅ Add this line to save email
+                            editor.putString("role", role);
                             editor.apply();
 
                             // Navigate to the appropriate home screen based on role
                             Intent intent;
-                            switch (role) {
+                            switch (role.toLowerCase()) {
                                 case "admin":
                                     intent = new Intent(MainActivity.this, home.class);
                                     break;
