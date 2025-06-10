@@ -145,7 +145,7 @@ public class home extends AppCompatActivity {
         assignClickListener(ab_View, BranchListActivity.class);
         assignClickListener(ma_View, attendance_report.class);
         assignClickListener(sal_View, salary_calculation.class);
-        assignClickListener(all_ot_btn, AllocateOtPage.class);
+        assignClickListener(all_ot_btn, AllocateOvertimeActivity.class);
     }
 
     /**
