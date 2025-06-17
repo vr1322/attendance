@@ -121,17 +121,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.getUiSettings().setCompassEnabled(true);
 
-        // Enable location if permission granted
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         }
         mMap.setMyLocationEnabled(true);
 
-        // Load existing branches
+        // 🔁 Check if editing a branch
+        double lat = getIntent().getDoubleExtra("lat", 0);
+        double lng = getIntent().getDoubleExtra("lng", 0);
+        int radius = getIntent().getIntExtra("radius", 50);
+
+        if (lat != 0 && lng != 0) {
+            selectedLocation = new LatLng(lat, lng);
+            selectedRadius = radius;
+            updateTempMarker(selectedLocation);
+            fetchAddress(selectedLocation);
+            updateSeekBar();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(selectedLocation, 15));
+        }
+
+        // 🔁 Also load other branches for context
         loadStoredBranches();
 
-        // Handle user tap to select a location
+        // Allow selecting new point
         mMap.setOnMapClickListener(latLng -> {
             selectedLocation = latLng;
             selectedRadius = 50;
@@ -140,6 +154,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             updateSeekBar();
         });
     }
+
 
     private void loadStoredBranches() {
         SharedPreferences prefs = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
@@ -172,7 +187,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     .title(name)
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))); // Green marker
 
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(branchLocation, 15));
+                            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(branchLocation, 15));
 
                             mMap.addCircle(new CircleOptions()
                                     .center(branchLocation)

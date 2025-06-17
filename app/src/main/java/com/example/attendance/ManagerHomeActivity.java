@@ -41,7 +41,7 @@ public class ManagerHomeActivity extends AppCompatActivity {
     private CircleImageView profilePic;
     private TextView companyName, designation;
 
-    private String apiUrlFetch = "https://devonix.io/ems_api/get_admin_profile.php";
+    private String apiUrlFetch = "https://devonix.io/ems_api/get_manager_profile.php";
     private String companyCode = "";
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
@@ -134,17 +134,16 @@ public class ManagerHomeActivity extends AppCompatActivity {
         designation = headerView.findViewById(R.id.designation);
 
         // Load Company Code from Shared Preferences
-        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);;
         String email = sharedPreferences.getString("email", "");
-        String companyCode = sharedPreferences.getString("company_code", "");
-        String companyName = sharedPreferences.getString("company_name", "");
+        companyCode = sharedPreferences.getString("company_code", "");
 
-
-        if (companyCode.isEmpty()) {
-            Toast.makeText(this, "Company code is missing!", Toast.LENGTH_SHORT).show();
+        if (companyCode.isEmpty() || email.isEmpty()) {
+            Toast.makeText(this, "Company code or email is missing!", Toast.LENGTH_SHORT).show();
         } else {
-            fetchAdminDetails();
+            fetchManagerDetails(companyCode, email);
         }
+
 
         // Assign Click Listeners
         assignClickListener(el_button, emp_list.class);
@@ -158,20 +157,22 @@ public class ManagerHomeActivity extends AppCompatActivity {
     }
 
     /**
-     * Fetches Admin details from API and updates the Nav Drawer Header.
+     * Fetches Manager details from API and updates the Nav Drawer Header.
      */
-    private void fetchAdminDetails() {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, apiUrlFetch + "?company_code=" + companyCode,
+    private void fetchManagerDetails(String companyCode, String email) {
+        String url = apiUrlFetch + "?company_code=" + companyCode + "&email=" + email;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 response -> {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("status").equals("success")) {
                             JSONObject data = jsonObject.getJSONObject("data");
 
-                            companyName.setText(data.getString("company_name"));
+                            companyName.setText(data.getString("employee_name")); // Or use "branch_name"
                             designation.setText(data.getString("designation"));
 
-                            String profileUrl = data.getString("profile_picture");
+                            String profileUrl = data.getString("profile_pic");
                             if (!profileUrl.isEmpty()) {
                                 Glide.with(this).load(profileUrl).into(profilePic);
                             }
@@ -183,10 +184,11 @@ public class ManagerHomeActivity extends AppCompatActivity {
                         Toast.makeText(ManagerHomeActivity.this, "Error parsing response!", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(ManagerHomeActivity.this, "Failed to fetch admin details!", Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(ManagerHomeActivity.this, "Failed to fetch manager details!", Toast.LENGTH_SHORT).show());
 
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
+
 
     /**
      * Helper method to assign click listeners to buttons and views.

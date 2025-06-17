@@ -33,6 +33,10 @@ public class EditBranchActivity extends AppCompatActivity {
     private int branchId;
     private String companyCode;
 
+    private double existingLat, existingLng;
+    private int existingRadius;
+
+
     private static final String BASE_URL = "https://devonix.io/ems_api/";
     private static final String GET_BRANCH_URL = BASE_URL + "get_branch_by_id.php";  // New API
     private static final String UPDATE_BRANCH_URL = BASE_URL + "edit_branch.php";
@@ -73,7 +77,11 @@ public class EditBranchActivity extends AppCompatActivity {
         editbranch_text.setOnClickListener(v -> finish());
         search.setOnClickListener(v -> {
             android.content.Intent intent = new Intent(EditBranchActivity.this, MapsActivity.class);
+            intent.putExtra("lat", existingLat);
+            intent.putExtra("lng", existingLng);
+            intent.putExtra("radius", existingRadius);  // Optional if you want to show circle size too
             mapActivityLauncher.launch(intent);
+
         });
 
 
@@ -87,6 +95,10 @@ public class EditBranchActivity extends AppCompatActivity {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                     String selectedAddress = result.getData().getStringExtra("selected_address");
                     String selectedRadius = result.getData().getStringExtra("selected_radius");
+
+                    // ✅ Add these lines:
+                    existingLat = result.getData().getDoubleExtra("selected_latitude", existingLat);
+                    existingLng = result.getData().getDoubleExtra("selected_longitude", existingLng);
 
                     if (selectedAddress != null) {
                         branchAddress.setText(selectedAddress);
@@ -102,6 +114,7 @@ public class EditBranchActivity extends AppCompatActivity {
         progressDialog.show();
         String url = GET_BRANCH_URL + "?branch_id=" + branchId + "&company_code=" + companyCode;
 
+
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -110,6 +123,11 @@ public class EditBranchActivity extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("status").equals("success")) {
                             JSONObject branchData = jsonObject.getJSONObject("branch");
+
+                            // ✅ Assign to class-level variables, not local
+                            existingLat = branchData.getDouble("latitude");
+                            existingLng = branchData.getDouble("longitude");
+                            existingRadius = branchData.getInt("radius");
 
                             branchName.setText(branchData.getString("branch_name"));
                             branchAddress.setText(branchData.getString("address"));
@@ -175,6 +193,10 @@ public class EditBranchActivity extends AppCompatActivity {
                 params.put("branch_name", name);
                 params.put("address", address);
                 params.put("radius", radius);
+
+                // ✅ Add these lines
+                params.put("latitude", String.valueOf(existingLat));
+                params.put("longitude", String.valueOf(existingLng));
                 return params;
             }
         };
