@@ -33,7 +33,6 @@ public class Attendance_details extends AppCompatActivity {
         etDate = findViewById(R.id.et_date);
         etInTime = findViewById(R.id.et_intime);
         etOutTime = findViewById(R.id.et_outtime);
-        etOvertime = findViewById(R.id.et_overtime);
         spinnerStatus = findViewById(R.id.spinner_status);
         btnEdit = findViewById(R.id.btn_edit);
 

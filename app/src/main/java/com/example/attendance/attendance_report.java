@@ -10,10 +10,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -458,13 +465,8 @@ public class attendance_report extends AppCompatActivity {
                 .show();
     }
 
-    // ==============================
-// Show Employee Selection Dialog
-// ==============================
     private void showEmployeeSelectionDialog(String branch) {
-        List<Employee> branchEmployees = listData.get(branch);  // ✅ Show Employees from Selected Branch
-
-        boolean[] selectedItems = new boolean[branchEmployees.size()];
+        List<Employee> branchEmployees = listData.get(branch);
         List<Employee> selectedEmployees = new ArrayList<>();
 
         String[] employeeNames = new String[branchEmployees.size()];
@@ -472,18 +474,67 @@ public class attendance_report extends AppCompatActivity {
             employeeNames[i] = branchEmployees.get(i).getName();
         }
 
+        // Inflate custom layout
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View dialogView = inflater.inflate(R.layout.dialog_employee_selector, null);
+        ListView listView = dialogView.findViewById(R.id.employee_list_view);
+        CheckBox selectAllCheckbox = dialogView.findViewById(R.id.select_all_checkbox);
+
+        boolean[] selectedItems = new boolean[employeeNames.length];
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice, employeeNames);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            selectedItems[position] = listView.isItemChecked(position);
+            if (selectedItems[position]) {
+                selectedEmployees.add(branchEmployees.get(position));
+            } else {
+                selectedEmployees.remove(branchEmployees.get(position));
+            }
+
+            // Sync "Select All" checkbox
+            boolean allSelected = true;
+            for (boolean b : selectedItems) {
+                if (!b) {
+                    allSelected = false;
+                    break;
+                }
+            }
+            selectAllCheckbox.setOnCheckedChangeListener(null);
+            selectAllCheckbox.setChecked(allSelected);
+            selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                for (int i = 0; i < listView.getCount(); i++) {
+                    listView.setItemChecked(i, isChecked);
+                    selectedItems[i] = isChecked;
+                }
+                selectedEmployees.clear();
+                if (isChecked) {
+                    selectedEmployees.addAll(branchEmployees);
+                }
+            });
+        });
+
+        // Select All checkbox click
+        selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            for (int i = 0; i < listView.getCount(); i++) {
+                listView.setItemChecked(i, isChecked);
+                selectedItems[i] = isChecked;
+            }
+            selectedEmployees.clear();
+            if (isChecked) {
+                selectedEmployees.addAll(branchEmployees);
+            }
+        });
+
+        // Build dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Employees")
-                .setMultiChoiceItems(employeeNames, selectedItems, (dialog, which, isChecked) -> {
-                    if (isChecked) {
-                        selectedEmployees.add(branchEmployees.get(which));
-                    } else {
-                        selectedEmployees.remove(branchEmployees.get(which));
-                    }
-                })
+                .setView(dialogView)
                 .setPositiveButton("Next", (dialog, which) -> {
                     if (!selectedEmployees.isEmpty()) {
-                        showAttendanceStatusDialog(selectedEmployees);  // ➡️ Select Attendance Status
+                        showAttendanceStatusDialog(selectedEmployees);
                     } else {
                         Toast.makeText(this, "Please select at least one employee.", Toast.LENGTH_SHORT).show();
                     }
@@ -492,20 +543,20 @@ public class attendance_report extends AppCompatActivity {
                 .show();
     }
 
+
+
     // ==============================
 // Show Attendance Status Dialog
 // ==============================
     private void showAttendanceStatusDialog(List<Employee> selectedEmployees) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Mark Attendance As")
-                .setItems(new String[]{"Present", "Absent", "Overtime", "Half Day"}, (dialog, which) -> {
+                .setItems(new String[]{"Present", "Absent"}, (dialog, which) -> {
                     String status = "";
 
                     switch (which) {
                         case 0: status = "Present"; break;
                         case 1: status = "Absent"; break;
-                        case 2: status = "Overtime"; break;
-                        case 3: status = "Half Day"; break;
                     }
 
                     showDateTimeDialog(selectedEmployees, status);  // ➡️ Select Date, In-Time, Out-Time

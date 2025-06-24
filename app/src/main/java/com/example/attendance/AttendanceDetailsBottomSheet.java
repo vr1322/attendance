@@ -57,7 +57,6 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         etDate = view.findViewById(R.id.et_date);
         etInTime = view.findViewById(R.id.et_intime);
         etOutTime = view.findViewById(R.id.et_outtime);
-        etOvertime = view.findViewById(R.id.et_overtime);
         spinnerStatus = view.findViewById(R.id.spinner_status);
         btnEdit = view.findViewById(R.id.btn_edit);
 
@@ -73,8 +72,6 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         etDate.setOnClickListener(v -> showDatePickerDialog(etDate));
         etInTime.setOnClickListener(v -> showTimePickerDialog(etInTime));
         etOutTime.setOnClickListener(v -> showTimePickerDialog(etOutTime));
-        etOvertime.setOnClickListener(v -> showOvertimePickerDialog());
-
         // Handle "Edit" button click
         btnEdit.setOnClickListener(v -> markAttendance());
 
@@ -169,25 +166,6 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         }, hour, minute, false).show();
     }
 
-    // NumberPicker for Overtime (Hours Only)
-    private void showOvertimePickerDialog() {
-        BottomSheetDialog overtimeDialog = new BottomSheetDialog(requireContext());
-        View overtimeView = getLayoutInflater().inflate(R.layout.dialog_overtime_picker, null);
-        NumberPicker numberPicker = overtimeView.findViewById(R.id.numberPicker);
-        Button btnConfirm = overtimeView.findViewById(R.id.btnConfirmOvertime);
-
-        numberPicker.setMinValue(0);
-        numberPicker.setMaxValue(12);
-        numberPicker.setValue(0);
-
-        btnConfirm.setOnClickListener(v -> {
-            etOvertime.setText(numberPicker.getValue() + " hrs");
-            overtimeDialog.dismiss();
-        });
-
-        overtimeDialog.setContentView(overtimeView);
-        overtimeDialog.show();
-    }
 
     private String getMonthName(int month) {
         String[] monthNames = {"JAN", "FEB", "MAR", "APR", "MAY", "JUN",

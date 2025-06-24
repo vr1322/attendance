@@ -104,26 +104,6 @@
                     style="@style/DetailValue" />
             </LinearLayout>
 
-            <!-- OVERTIME (Editable) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/DetailLabel"
-                    android:text="OVERTIME :" />
-
-                <EditText
-                    android:id="@+id/et_overtime"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:hint="Enter Overtime"
-                    android:focusable="false"
-                    android:clickable="true"
-                    style="@style/DetailValue" />
-            </LinearLayout>
-
             <!-- DAY COUNT AS -->
             <TextView
                 style="@style/DetailLabel"

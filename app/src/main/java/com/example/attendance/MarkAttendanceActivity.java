@@ -52,12 +52,14 @@ public class MarkAttendanceActivity extends AppCompatActivity {
     private static final String GET_ALL_ATTENDANCE_URL = BASE_URL + "get_all_attendance.php";
     private static final String GET_ATTENDANCE_SUMMARY_URL = BASE_URL + "get_attendance_summary.php";
     private static final String SEARCH_ATTENDANCE_URL = BASE_URL + "search_attendance.php";
+    private static final String GET_OVERTIME_ATTENDANCE_URL = BASE_URL + "get_overtime_attendance.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark_attendance);
 
+        // UI Elements
         materialCalendarView = findViewById(R.id.calendarGrid);
         employeeName = findViewById(R.id.employee_name);
         branchName = findViewById(R.id.branch_name);
@@ -69,7 +71,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         overtimeCount = findViewById(R.id.overtime_count);
         btnMarkAttendance = findViewById(R.id.btn_mark_attendance);
 
-        // Fetch Employee Name & Branch from SharedPreferences
+        // SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
         String employeeId = sharedPreferences.getString("employee_id", "");
         String companyCode = sharedPreferences.getString("company_code", "");
@@ -85,25 +87,31 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
         });
         searchiv.setOnClickListener(v -> showDatePicker());
-        // Load Attendance Data from Database
 
         if (companyCode.isEmpty() || empName.isEmpty() || branch.isEmpty()) {
             Toast.makeText(this, "Missing data in SharedPreferences!", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Get current month/year
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        int currentYear = calendar.get(Calendar.YEAR);
+
+        // Load attendance data
         new LoadAllAttendanceData().execute(companyCode, branch, empName);
+        new LoadOvertimeAttendance().execute(companyCode, empName, branch);
+        new LoadAttendanceSummaryWithOvertime(currentMonth, currentYear).execute(companyCode, empName, branch);
 
+        // When month changes, refresh monthly summary
+        materialCalendarView.setOnMonthChangedListener((widget, date) -> {
+            int selectedMonth = date.getMonth() + 1;
+            int selectedYear = date.getYear();
 
+            new LoadAttendanceSummaryWithOvertime(selectedMonth, selectedYear).execute(companyCode, empName, branch);
+        });
 
-        if (!companyCode.isEmpty()) {
-            new LoadAttendanceSummary().execute(companyCode, empName, branch);
-        } else {
-            Toast.makeText(this, "Company code not found!", Toast.LENGTH_SHORT).show();
-        }
-
-
-        // Date Click Listener for Showing Details
+        // Show status on date click
         materialCalendarView.setOnDateChangedListener((widget, date, selected) -> {
             String selectedDate = String.format("%d-%02d-%02d",
                     date.getYear(), date.getMonth() + 1, date.getDay());
@@ -124,8 +132,8 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 Toast.makeText(this, "No attendance data found for this date.", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
+
 
     // AsyncTask to Fetch Attendance Data from API
     private class LoadAllAttendanceData extends AsyncTask<String, Void, String> {
@@ -235,20 +243,20 @@ public class MarkAttendanceActivity extends AppCompatActivity {
 
 
     }
-    // AsyncTask to Fetch Attendance Summary from API
-    private class LoadAttendanceSummary extends AsyncTask<String, Void, String> {
+
+    private class LoadOvertimeAttendance extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             String companyCode = params[0];
             String employeeName = params[1];
             String branch = params[2];
 
-            String apiUrl = GET_ATTENDANCE_SUMMARY_URL
-                    + "?company_code=" + companyCode
-                    + "&employee_name=" + employeeName
-                    + "&branch=" + branch;
-
             try {
+                String apiUrl = GET_OVERTIME_ATTENDANCE_URL
+                        + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
+                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8")
+                        + "&branch=" + URLEncoder.encode(branch, "UTF-8");
+
                 URL url = new URL(apiUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -256,14 +264,12 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 StringBuilder result = new StringBuilder();
                 String line;
-
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
                 }
 
                 reader.close();
                 return result.toString();
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -277,30 +283,142 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(result);
 
                     if (jsonObject.getString("status").equals("success")) {
-                        int present = jsonObject.optInt("present", 0);
-                        int absent = jsonObject.optInt("absent", 0);
-                        int halfDay = jsonObject.optInt("half_day", 0);
-                        int overtime = jsonObject.optInt("overtime", 0);
+                        JSONArray attendanceArray = jsonObject.getJSONArray("attendance_data");
 
-                        presentCount.setText(String.valueOf(present));
-                        absentCount.setText(String.valueOf(absent));
-                        halfdayCount.setText(String.valueOf(halfDay));
-                        overtimeCount.setText(String.valueOf(overtime));
+                        for (int i = 0; i < attendanceArray.length(); i++) {
+                            JSONObject obj = attendanceArray.getJSONObject(i);
+                            String date = obj.getString("date");
+                            String inTime = obj.optString("in_time", "N/A");
+                            String outTime = obj.optString("out_time", "N/A");
+                            String overtimeHours = obj.optString("overtime_hours", "0");
+
+                            // Add to calendar data
+                            CalendarDay day = CalendarDay.from(
+                                    Integer.parseInt(date.substring(0, 4)),
+                                    Integer.parseInt(date.substring(5, 7)) - 1,
+                                    Integer.parseInt(date.substring(8, 10))
+                            );
+
+                            overtimeDates.add(day);
+                            attendanceData.put(date, new String[]{"Overtime (" + overtimeHours + " hrs)", inTime, outTime});
+                        }
+
+                        // Decorate overtime dates
+                        materialCalendarView.addDecorator(new CustomDecorator(Color.BLUE, overtimeDates));
 
                     } else {
                         Toast.makeText(MarkAttendanceActivity.this,
                                 jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(MarkAttendanceActivity.this, "Data parsing error!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MarkAttendanceActivity.this, "Error parsing overtime data!", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(MarkAttendanceActivity.this, "Failed to load data!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MarkAttendanceActivity.this, "Failed to load overtime data!", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+    private class LoadAttendanceSummaryWithOvertime extends AsyncTask<String, Void, Void> {
+        private int present = 0, absent = 0, halfDay = 0, overtime = 0;
+        private final int selectedMonth;
+        private final int selectedYear;
+
+        public LoadAttendanceSummaryWithOvertime(int month, int year) {
+            this.selectedMonth = month;
+            this.selectedYear = year;
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            String companyCode = params[0];
+            String employeeName = params[1];
+            String branch = params[2];
+
+            String summaryUrl = GET_ATTENDANCE_SUMMARY_URL
+                    + "?company_code=" + companyCode
+                    + "&employee_name=" + employeeName
+                    + "&branch=" + branch
+                    + "&month=" + selectedMonth
+                    + "&year=" + selectedYear;
+
+            String overtimeUrl;
+            try {
+                overtimeUrl = GET_OVERTIME_ATTENDANCE_URL
+                        + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
+                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8")
+                        + "&branch=" + URLEncoder.encode(branch, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            try {
+                // Attendance summary
+                URL url1 = new URL(summaryUrl);
+                HttpURLConnection connection1 = (HttpURLConnection) url1.openConnection();
+                connection1.setRequestMethod("GET");
+                BufferedReader reader1 = new BufferedReader(new InputStreamReader(connection1.getInputStream()));
+                StringBuilder summaryResult = new StringBuilder();
+                String line1;
+                while ((line1 = reader1.readLine()) != null) summaryResult.append(line1);
+                reader1.close();
+
+                JSONObject jsonSummary = new JSONObject(summaryResult.toString());
+                if (jsonSummary.getString("status").equals("success")) {
+                    present = jsonSummary.optInt("present", 0);
+                    absent = jsonSummary.optInt("absent", 0);
+                    halfDay = jsonSummary.optInt("half_day", 0);
+                }
+
+                // Overtime
+                URL url2 = new URL(overtimeUrl);
+                HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
+                connection2.setRequestMethod("GET");
+                BufferedReader reader2 = new BufferedReader(new InputStreamReader(connection2.getInputStream()));
+                StringBuilder overtimeResult = new StringBuilder();
+                String line2;
+                while ((line2 = reader2.readLine()) != null) overtimeResult.append(line2);
+                reader2.close();
+
+                JSONObject jsonOvertime = new JSONObject(overtimeResult.toString());
+                if (jsonOvertime.getString("status").equals("success")) {
+                    JSONArray overtimeArray = jsonOvertime.getJSONArray("attendance_data");
+
+                    for (int i = 0; i < overtimeArray.length(); i++) {
+                        JSONObject obj = overtimeArray.getJSONObject(i);
+                        String dateStr = obj.getString("date");
+
+                        String[] parts = dateStr.split("-");
+                        int year = Integer.parseInt(parts[0]);
+                        int month = Integer.parseInt(parts[1]);
+
+                        // ✅ Use selectedMonth/year here
+                        if (month == selectedMonth && year == selectedYear) {
+                            overtime++;
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            presentCount.setText(String.valueOf(present));
+            absentCount.setText(String.valueOf(absent));
+            halfdayCount.setText(String.valueOf(halfDay));
+            overtimeCount.setText(String.valueOf(overtime));
+        }
+    }
+
+
+
 
     // Show DatePicker Dialog for Selecting Dates
     private void showDatePicker() {
