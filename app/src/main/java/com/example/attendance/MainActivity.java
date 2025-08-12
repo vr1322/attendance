@@ -148,10 +148,30 @@ public class MainActivity extends AppCompatActivity {
                                     break;
 
                                 case "manager":
+                                    sharedPreferences = getSharedPreferences("ManagerSession", MODE_PRIVATE);
+                                    editor = sharedPreferences.edit();
+                                    editor.putString("manager_id", employeeId);
+                                    editor.putString("manager_name", employeeName);
+                                    editor.putString("email", email);
+                                    editor.putString("company_code", companyCode);
+                                    editor.putString("company_name", companyNameStr);
+                                    editor.apply();
+
+                                    Toast.makeText(MainActivity.this, "Welcome " + employeeName, Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(MainActivity.this, ManagerHomeActivity.class));
                                     break;
 
                                 case "supervisor":
+                                    sharedPreferences = getSharedPreferences("SupervisorSession", MODE_PRIVATE);
+                                    editor = sharedPreferences.edit();
+                                    editor.putString("supervisor_id", employeeId);
+                                    editor.putString("supervisor_name", employeeName);
+                                    editor.putString("email", email);
+                                    editor.putString("company_code", companyCode);
+                                    editor.putString("company_name", companyNameStr);
+                                    editor.apply();
+
+                                    Toast.makeText(MainActivity.this, "Welcome " + employeeName, Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(MainActivity.this, SupervisorHomeActivity.class));
                                     break;
 

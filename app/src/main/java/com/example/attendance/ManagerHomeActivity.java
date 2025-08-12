@@ -31,7 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ManagerHomeActivity extends AppCompatActivity {
     private ImageButton el_button, ab_Button, ma_Button, mark_Button;
     private Button ad_pay_btn, all_ot_btn, leave_manage_btn, sal_View, cnt_emp_btn;
-    private CardView el_View, ab_View, ma_View;
+    private CardView el_View, ab_View, ma_View, markAttendanceCard;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
@@ -42,7 +42,7 @@ public class ManagerHomeActivity extends AppCompatActivity {
     private TextView companyName, designation;
 
     private String apiUrlFetch = "https://devonix.io/ems_api/get_manager_profile.php";
-    private String companyCode = "";
+    private String companyCode = "", email = "", managerName = "";
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -54,7 +54,7 @@ public class ManagerHomeActivity extends AppCompatActivity {
         el_button = findViewById(R.id.el_button);
         ab_Button = findViewById(R.id.ab_Button);
         ma_Button = findViewById(R.id.ma_Button);
-        mark_Button = findViewById(R.id.sal_Button);
+        mark_Button = findViewById(R.id.mark_Button); // ✅ fixed from sal_Button
         el_View = findViewById(R.id.el_View);
         ab_View = findViewById(R.id.ab_View);
         ma_View = findViewById(R.id.ma_View);
@@ -63,33 +63,19 @@ public class ManagerHomeActivity extends AppCompatActivity {
         all_ot_btn = findViewById(R.id.allocate_otbt);
         leave_manage_btn = findViewById(R.id.leave_managbt);
         cnt_emp_btn = findViewById(R.id.cnt_empbt);
+        markAttendanceCard = findViewById(R.id.Mark_Attendance); // ✅ new
 
         // Setup Toolbar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Attendo");
 
-        all_ot_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Employee List Screen Open Karne Ka Intent
-                Intent intent = new Intent(ManagerHomeActivity.this, EmployeeListActivity.class);
-                startActivity(intent);
-            }
-        });
-        cnt_emp_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Employee List Screen Open Karne Ka Intent
-                Intent intent = new Intent(ManagerHomeActivity.this, ContactEmpList.class);
-                startActivity(intent);
-            }
-        });
-
         // Setup Drawer Layout
         drawerLayout = findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        );
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
@@ -100,19 +86,14 @@ public class ManagerHomeActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.settings) {
                 startActivity(new Intent(ManagerHomeActivity.this, settings.class));
             }
-
             if (item.getItemId() == R.id.logout) {
                 new AlertDialog.Builder(ManagerHomeActivity.this)
                         .setTitle("Logout")
                         .setMessage("Do you really want to logout?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            // Clear shared preferences
-                            SharedPreferences preferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.clear();
-                            editor.apply();
+                            SharedPreferences preferences = getSharedPreferences("ManagerSession", MODE_PRIVATE);
+                            preferences.edit().clear().apply();
 
-                            // Go back to login screen
                             Intent intent = new Intent(ManagerHomeActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
@@ -120,30 +101,28 @@ public class ManagerHomeActivity extends AppCompatActivity {
                         })
                         .setNegativeButton("No", null)
                         .show();
-
             }
-
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
-        // Initialize Navigation Header Views
+        // Navigation Header Views
         View headerView = navigationView.getHeaderView(0);
         profilePic = headerView.findViewById(R.id.profilePic);
         companyName = headerView.findViewById(R.id.companyName);
         designation = headerView.findViewById(R.id.designation);
 
-        // Load Company Code from Shared Preferences
-        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);;
-        String email = sharedPreferences.getString("email", "");
+        // Load Manager Session
+        SharedPreferences sharedPreferences = getSharedPreferences("ManagerSession", MODE_PRIVATE);
+        email = sharedPreferences.getString("email", "");
         companyCode = sharedPreferences.getString("company_code", "");
+        managerName = sharedPreferences.getString("manager_name", "");
 
         if (companyCode.isEmpty() || email.isEmpty()) {
             Toast.makeText(this, "Company code or email is missing!", Toast.LENGTH_SHORT).show();
         } else {
             fetchManagerDetails(companyCode, email);
         }
-
 
         // Assign Click Listeners
         assignClickListener(el_button, emp_list.class);
@@ -154,6 +133,29 @@ public class ManagerHomeActivity extends AppCompatActivity {
         assignClickListener(ma_View, attendance_report.class);
         assignClickListener(sal_View, salary_calculation.class);
         assignClickListener(all_ot_btn, AllocateOtPage.class);
+        assignClickListener(cnt_emp_btn, ContactEmpList.class);
+
+        // ✅ Mark Attendance Click Events (both card & button)
+        markAttendanceCard.setOnClickListener(v -> handleMarkAttendance());
+        mark_Button.setOnClickListener(v -> handleMarkAttendance());
+    }
+
+    /**
+     * Launches ManagerAttendanceActivity with session data
+     */
+    private void handleMarkAttendance() {
+        if (companyCode.isEmpty() || email.isEmpty()) {
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
+        Intent intent = new Intent(ManagerHomeActivity.this, ManagerAttendanceActivity.class);
+        intent.putExtra("company_code", companyCode);
+        intent.putExtra("email", email);
+        intent.putExtra("manager_name", managerName);
+        startActivity(intent);
     }
 
     /**
@@ -169,7 +171,7 @@ public class ManagerHomeActivity extends AppCompatActivity {
                         if (jsonObject.getString("status").equals("success")) {
                             JSONObject data = jsonObject.getJSONObject("data");
 
-                            companyName.setText(data.getString("employee_name")); // Or use "branch_name"
+                            companyName.setText(data.getString("company_name"));
                             designation.setText(data.getString("designation"));
 
                             String profileUrl = data.getString("profile_pic");
@@ -180,7 +182,6 @@ public class ManagerHomeActivity extends AppCompatActivity {
                             Toast.makeText(ManagerHomeActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
                         Toast.makeText(ManagerHomeActivity.this, "Error parsing response!", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -188,7 +189,6 @@ public class ManagerHomeActivity extends AppCompatActivity {
 
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
-
 
     /**
      * Helper method to assign click listeners to buttons and views.

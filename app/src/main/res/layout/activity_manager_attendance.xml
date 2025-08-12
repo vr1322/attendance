@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg">
+
+    <!-- Top App Bar -->
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:padding="11dp"
+            android:src="@drawable/chevron_left" />
+
+        <TextView
+            android:id="@+id/manager_attendance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:fontFamily="@font/inter_bold"
+            android:text="Manager Attendance"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_below="@id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- Branch Status Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                card_view:cardCornerRadius="12dp"
+                card_view:cardElevation="6dp"
+                android:backgroundTint="#FFF3E0">
+
+                <TextView
+                    android:id="@+id/branchStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Checking location..."
+                    android:textColor="#FF5722"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:padding="16dp" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Current Time Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                card_view:cardCornerRadius="12dp"
+                card_view:cardElevation="6dp"
+                android:backgroundTint="#FFFFFF">
+
+                <TextView
+                    android:id="@+id/currentTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Current Time: --:--:--"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:textColor="#212121"
+                    android:padding="16dp" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Attendance Status -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                card_view:cardCornerRadius="12dp"
+                card_view:cardElevation="6dp"
+                android:backgroundTint="#E8F5E9">
+
+                <TextView
+                    android:id="@+id/attendanceStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Attendance Status: Not Marked"
+                    android:textSize="16sp"
+                    android:textColor="#2E7D32"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:padding="16dp" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Mark In-Time Button -->
+            <Button
+                android:id="@+id/btnManagerInTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mark In-Time"
+                android:textAllCaps="false"
+                android:enabled="false"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="#4CAF50"
+                android:textColor="#FFFFFF"
+                android:elevation="6dp"
+                android:padding="16dp"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium" />
+
+            <!-- Mark Out-Time Button -->
+            <Button
+                android:id="@+id/btnManagerOutTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mark Out-Time"
+                android:textAllCaps="false"
+                android:enabled="false"
+                android:backgroundTint="#2196F3"
+                android:textColor="#FFFFFF"
+                android:elevation="6dp"
+                android:padding="16dp"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

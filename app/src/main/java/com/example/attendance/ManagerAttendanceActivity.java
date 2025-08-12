@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -14,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -22,26 +25,24 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
 import org.json.JSONObject;
 
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class GeoFenceAttendanceActivity extends AppCompatActivity {
+public class ManagerAttendanceActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
 
     private TextView currentTimeText, branchStatus, attendanceStatus, screenTitle;
     private Button btnInTime, btnOutTime;
-
     private FusedLocationProviderClient fusedLocationClient;
     private Handler handler = new Handler();
 
@@ -49,40 +50,44 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
     private float branchRadius;
     private boolean locationReady = false;
 
-    private String employeeId, companyCode, employeeName, branchName;
+    private String managerId, companyCode, managerName, branchName;
 
     private final String GET_BRANCH_URL = "https://devonix.io/ems_api/get_geo_branch_location.php";
     private final String MARK_ATTENDANCE_URL = "https://devonix.io/ems_api/mark_geo_attendance.php";
     private final String CHECK_ATTENDANCE_URL = "https://devonix.io/ems_api/check_attendance_status.php";
 
+    private final ActivityResultLauncher<Intent> locationSettingsLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> checkLocationEnabled());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_geo_fence_attendance);
+        setContentView(R.layout.activity_manager_attendance);
 
         currentTimeText = findViewById(R.id.currentTime);
         branchStatus = findViewById(R.id.branchStatus);
         attendanceStatus = findViewById(R.id.attendanceStatus);
-        btnInTime = findViewById(R.id.btnInTime);
-        btnOutTime = findViewById(R.id.btnOutTime);
-        screenTitle = findViewById(R.id.emp_list_txt);
-
-        screenTitle.setText("Mark Attendance");
+        btnInTime = findViewById(R.id.btnManagerInTime);
+        btnOutTime = findViewById(R.id.btnManagerOutTime);
+        screenTitle = findViewById(R.id.manager_attendance_title);
+        screenTitle.setText("Manager Attendance");
 
         ImageView backBtn = findViewById(R.id.back);
         backBtn.setOnClickListener(v -> onBackPressed());
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
         loadSession();
 
-        if (employeeId == null || employeeId.isEmpty() || companyCode == null || companyCode.isEmpty()) {
-            Toast.makeText(this, "Invalid employee session. Please login again.", Toast.LENGTH_LONG).show();
+        if (managerId == null || managerId.isEmpty() || companyCode == null || companyCode.isEmpty()) {
+            Toast.makeText(this, "Invalid manager session. Please login again.", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
-        Toast.makeText(this, "Welcome, " + employeeName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Welcome, " + managerName, Toast.LENGTH_SHORT).show();
+
+        btnInTime.setEnabled(false);
+        btnOutTime.setEnabled(false);
 
         btnInTime.setOnClickListener(v -> markAttendance("in"));
         btnOutTime.setOnClickListener(v -> markAttendance("out"));
@@ -92,21 +97,20 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
 
     private void loadSession() {
         Intent intent = getIntent();
-        employeeId = intent.getStringExtra("employee_id");
+        managerId = intent.getStringExtra("manager_id");
         companyCode = intent.getStringExtra("company_code");
-        employeeName = intent.getStringExtra("employee_name");
+        managerName = intent.getStringExtra("manager_name");
 
-        if (employeeId == null || employeeId.isEmpty()) {
-            SharedPreferences sharedPreferences = getSharedPreferences("EmployeeSession", MODE_PRIVATE);
-            employeeId = sharedPreferences.getString("employee_id", "");
-            companyCode = sharedPreferences.getString("company_code", "");
-            employeeName = sharedPreferences.getString("employee_name", "Employee");
+        if (managerId == null || managerId.isEmpty()) {
+            SharedPreferences sp = getSharedPreferences("ManagerSession", MODE_PRIVATE);
+            managerId = sp.getString("manager_id", "");
+            companyCode = sp.getString("company_code", "");
+            managerName = sp.getString("manager_name", "Manager");
         }
     }
 
     private void checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
@@ -117,89 +121,110 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
 
     private void fetchBranchLocation() {
         StringRequest request = new StringRequest(Request.Method.POST, GET_BRANCH_URL, response -> {
+            Log.d("BranchAPIResponse", response);
             try {
                 JSONObject obj = new JSONObject(response);
                 if (obj.getString("status").equals("success")) {
                     branchLat = obj.getDouble("latitude");
                     branchLng = obj.getDouble("longitude");
-                    branchRadius = (float) obj.getDouble("radius");
+                    branchRadius = (float) obj.getDouble("radius"); // radius in meters
                     branchName = obj.getString("branch_name");
 
                     getCurrentLocation();
                 } else {
-                    Toast.makeText(this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                    branchName = null;
+                    Toast.makeText(this, "Branch not found: " + obj.optString("message"), Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
+                branchName = null;
                 Toast.makeText(this, "JSON error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("BranchFetchError", e.getMessage());
+                Log.e("BranchFetchError", e.getMessage(), e);
             }
         }, error -> {
+            branchName = null;
             Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("BranchNetworkError", error.toString());
         }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
-                map.put("user_id", employeeId); // changed from employee_id
-                map.put("user_role", "Employee"); // adjust dynamically if needed
+                map.put("user_id", managerId);
+                map.put("user_role", "Manager");
                 map.put("company_code", companyCode);
                 return map;
             }
         };
-
         Volley.newRequestQueue(this).add(request);
     }
 
     private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
+
+        // Using high accuracy current location
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(location -> {
+                    if (location != null && branchName != null) {
+                        checkDistance(location);
+                    } else {
+                        Toast.makeText(this, "Turn on GPS and make sure branch is loaded", Toast.LENGTH_SHORT).show();
+                        openLocationSettings();
+                    }
+                });
+    }
+
+    private void checkDistance(Location location) {
+        float[] distance = new float[1];
+        Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+                branchLat, branchLng, distance);
+
+        Log.d("DistanceCheck", "Distance to branch: " + distance[0] + " meters | Radius: " + branchRadius);
+
+        if (distance[0] <= branchRadius) {
+            locationReady = true;
+            branchStatus.setText("✅ Inside branch area");
+            btnInTime.setEnabled(true);
+            btnOutTime.setEnabled(true);
+        } else {
+            locationReady = false;
+            branchStatus.setText("❌ Outside branch area");
+            btnInTime.setEnabled(false);
+            btnOutTime.setEnabled(false);
         }
 
-        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-            if (location != null) {
-                float[] distance = new float[1];
-                Location.distanceBetween(
-                        location.getLatitude(), location.getLongitude(),
-                        branchLat, branchLng, distance
-                );
+        checkAttendanceStatus();
+    }
 
-                if (distance[0] <= branchRadius) {
-                    locationReady = true;
-                    branchStatus.setText("✅ Inside branch area");
-                    btnInTime.setEnabled(true);
-                    btnOutTime.setEnabled(true);
-                } else {
-                    locationReady = false;
-                    branchStatus.setText("❌ Outside branch area");
-                    btnInTime.setEnabled(false);
-                    btnOutTime.setEnabled(false);
-                }
+    private void openLocationSettings() {
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        locationSettingsLauncher.launch(intent);
+    }
 
-                // Now check today's attendance for this employee
-                checkAttendanceStatus();
-            } else {
-                Toast.makeText(this, "Turn on GPS to mark attendance", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-            }
-        });
+    private void checkLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean gpsEnabled = false;
+        try { gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); } catch (Exception ignored) {}
+        if (gpsEnabled) getCurrentLocation();
+        else Toast.makeText(this, "Please enable GPS to mark attendance", Toast.LENGTH_SHORT).show();
     }
 
     private void markAttendance(String type) {
-        String timeNow = getCurrentTime();
+        if (branchName == null || branchName.trim().isEmpty()) {
+            Toast.makeText(this, "Branch not loaded. Cannot mark attendance.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String timeNow = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
         String dateToday = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         StringRequest request = new StringRequest(Request.Method.POST, MARK_ATTENDANCE_URL, response -> {
+            Log.d("MarkAttendanceResponse", response);
             try {
                 JSONObject obj = new JSONObject(response);
-                String message = obj.optString("message", "Unknown response");
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
-                checkAttendanceStatus(); // Refresh attendance after marking
-
+                Toast.makeText(this, obj.optString("message", "Unknown response"), Toast.LENGTH_SHORT).show();
+                checkAttendanceStatus();
             } catch (Exception e) {
                 Toast.makeText(this, "Response parse error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("MarkAttendance", "Parse error: " + e.getMessage());
+                Log.e("MarkAttendance", "Parse error: " + e.getMessage(), e);
             }
         }, error -> {
             Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -208,8 +233,8 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
-                map.put("employee_id", employeeId);
-                map.put("employee_name", employeeName);
+                map.put("employee_id", managerId);
+                map.put("employee_name", managerName);
                 map.put("company_code", companyCode);
                 map.put("branch", branchName);
                 map.put("attendance_status", "Present");
@@ -220,7 +245,6 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
                 return map;
             }
         };
-
         Volley.newRequestQueue(this).add(request);
     }
 
@@ -228,6 +252,7 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
         String dateToday = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         StringRequest request = new StringRequest(Request.Method.POST, CHECK_ATTENDANCE_URL, response -> {
+            Log.d("CheckAttendanceResponse", response);
             try {
                 JSONObject obj = new JSONObject(response);
                 boolean status = obj.optBoolean("status", false);
@@ -249,34 +274,26 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
                     btnInTime.setEnabled(true);
                     btnOutTime.setEnabled(false);
                 }
-
             } catch (Exception e) {
-                Log.e("CheckAttendance", "Parse error: " + e.getMessage());
+                Log.e("CheckAttendance", "Parse error: " + e.getMessage(), e);
             }
-        }, error -> {
-            Log.e("CheckAttendance", "Volley error: " + error.getMessage());
-        }) {
+        }, error -> Log.e("CheckAttendance", "Volley error: " + error.getMessage())) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
-                map.put("employee_id", employeeId);
+                map.put("employee_id", managerId);
                 map.put("company_code", companyCode);
                 map.put("date", dateToday);
                 return map;
             }
         };
-
         Volley.newRequestQueue(this).add(request);
-    }
-
-    private String getCurrentTime() {
-        return new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
     }
 
     private final Runnable timeUpdater = new Runnable() {
         @Override
         public void run() {
-            currentTimeText.setText("Current Time: " + getCurrentTime());
+            currentTimeText.setText("Current Time: " + new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date()));
             handler.postDelayed(this, 1000);
         }
     };

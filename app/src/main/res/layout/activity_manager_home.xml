@@ -164,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_bold"
                     android:includeFontPadding="false"
-                    android:text="Add Branches"
+                    android:text="View Branches"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp15"
                     android:elevation="@dimen/dp15"
