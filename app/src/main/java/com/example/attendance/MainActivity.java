@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvForgot, companyNameTextView;
     private ProgressDialog progressDialog;
 
-    private static final String LOGIN_URL = "https://devonix.io/ems_api/login.php"; // Ensure this URL is correct
+    private static final String LOGIN_URL = "https://devonix.io/ems_api/login.php";
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -46,16 +46,16 @@ public class MainActivity extends AppCompatActivity {
         checkShowPassword = findViewById(R.id.check_show_password);
         btnSubmit = findViewById(R.id.btn_submit);
         tvForgot = findViewById(R.id.tv_forgot);
-        companyNameTextView = findViewById(R.id.companyName); // ✅ TextView for company name
+        companyNameTextView = findViewById(R.id.companyName);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Logging in...");
         progressDialog.setCancelable(false);
 
-        // ✅ Load stored company name from SharedPreferences (if available)
+        // Show stored company name if available
         SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
         String storedCompanyName = sharedPreferences.getString("company_name", "Company Name Not Set");
-        companyNameTextView.setText(storedCompanyName); // ✅ Display company name on launch
+        companyNameTextView.setText(storedCompanyName);
 
         checkShowPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
         progressDialog.show();
 
-        // Create JSON parameters for API request
         JSONObject jsonParams = new JSONObject();
         try {
             jsonParams.put("email", email);
@@ -99,12 +98,10 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Log.d("LoginRequest", "Sending login request: " + jsonParams.toString());
-
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, LOGIN_URL, jsonParams,
                 response -> {
                     progressDialog.dismiss();
-                    Log.d("LoginResponse", "Response received: " + response.toString());
+                    Log.d("LoginResponse", "Response received: " + response);
 
                     try {
                         String status = response.getString("status");
@@ -113,55 +110,65 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject user = response.getJSONObject("user");
                             String role = user.getString("role");
                             String companyCode = user.optString("company_code", "");
-                            String companyNameStr = user.optString("company_name", "Unknown Company"); // ✅ Fetch company_name
+                            String companyNameStr = user.optString("company_name", "Unknown Company");
+                            String employeeName = user.optString("employee_name", user.optString("name", "User")); // Flexible field
+                            String employeeId = user.optString("employee_id", "");
 
-                            Log.d("CompanyName", "Received from API: " + companyNameStr);
-
-                            // ✅ Set company name in TextView
+                            // Update company name UI
                             companyNameTextView.setText(companyNameStr);
 
-                            // ✅ Save company name & code to SharedPreferences
-                            SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("company_code", companyCode);
-                            editor.putString("company_name", companyNameStr); // ✅ Save company name
-                            editor.putString("email", email); // ✅ Add this line to save email
-                            editor.putString("role", role);
-                            editor.apply();
+                            SharedPreferences sharedPreferences;
+                            SharedPreferences.Editor editor;
 
-                            // Navigate to the appropriate home screen based on role
-                            Intent intent;
                             switch (role.toLowerCase()) {
-                                case "admin":
-                                    intent = new Intent(MainActivity.this, home.class);
-                                    break;
                                 case "employee":
-                                    intent = new Intent(MainActivity.this, EmployeeHomeActivity.class);
+                                    sharedPreferences = getSharedPreferences("EmployeeSession", MODE_PRIVATE);
+                                    editor = sharedPreferences.edit();
+                                    editor.putString("employee_id", employeeId);
+                                    editor.putString("employee_name", employeeName);
+                                    editor.putString("email", email);
+                                    editor.putString("company_code", companyCode);
+                                    editor.putString("company_name", companyNameStr);
+                                    editor.apply();
+
+                                    Toast.makeText(MainActivity.this, "Welcome " + employeeName, Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(MainActivity.this, EmployeeHomeActivity.class));
                                     break;
+
+                                case "admin":
+                                    sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+                                    editor = sharedPreferences.edit();
+                                    editor.putString("company_code", companyCode);
+                                    editor.putString("company_name", companyNameStr);
+                                    editor.putString("email", email);
+                                    editor.putString("role", role);
+                                    editor.apply();
+
+                                    startActivity(new Intent(MainActivity.this, home.class));
+                                    break;
+
                                 case "manager":
-                                    intent = new Intent(MainActivity.this, ManagerHomeActivity.class);
+                                    startActivity(new Intent(MainActivity.this, ManagerHomeActivity.class));
                                     break;
+
                                 case "supervisor":
-                                    intent = new Intent(MainActivity.this, SupervisorHomeActivity.class);
+                                    startActivity(new Intent(MainActivity.this, SupervisorHomeActivity.class));
                                     break;
+
                                 default:
                                     Toast.makeText(MainActivity.this, "Unknown role", Toast.LENGTH_SHORT).show();
                                     return;
                             }
 
-                            intent.putExtra("email", email);
-                            intent.putExtra("company_name", companyNameStr); // ✅ Pass company_name to next activity
-                            startActivity(intent);
-                            finish();
+                            finish(); // Close login screen
                         } else {
-                            String errorMessage = response.optString("message", "Invalid credentials");
-                            Log.e("LoginError", "Server error message: " + errorMessage);
-                            Toast.makeText(MainActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            String message = response.optString("message", "Invalid credentials");
+                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.e("LoginError", "JSON parsing error: " + e.getMessage());
-                        Toast.makeText(MainActivity.this, "Invalid Server Response!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Invalid server response", Toast.LENGTH_SHORT).show();
                     }
                 },
                 error -> {

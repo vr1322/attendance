@@ -381,9 +381,6 @@ public class attendance_report extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-
-
-
     // ==============================
 // Auto-Refresh Attendance Data (Every 5 Minutes)
 // ==============================
@@ -398,9 +395,6 @@ public class attendance_report extends AppCompatActivity {
             }
         }, 5 * 60 * 1000);
     }
-
-
-
     private void refreshData() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Refreshing Data").setMessage("Please wait...").setCancelable(false);
@@ -435,7 +429,6 @@ public class attendance_report extends AppCompatActivity {
         intent.putExtra("employee_id", employee.getId());  // Pass employee ID for attendance details
         startActivity(intent);
     }
-
 
     // ==============================
 // OnLongClick - Initiate Multiple Employee Selection
@@ -795,6 +788,4 @@ public class attendance_report extends AppCompatActivity {
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.show();
     }
-
-
 }

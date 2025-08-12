@@ -36,7 +36,6 @@ public class home extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Toolbar toolbar;
     private NavigationView navigationView;
-
     // Navigation Header Views
     private CircleImageView profilePic;
     private TextView companyName, designation;

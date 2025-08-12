@@ -1,8 +1,10 @@
 package com.example.attendance;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -13,23 +15,43 @@ import androidx.cardview.widget.CardView;
 
 public class EmployeeHomeActivity extends AppCompatActivity {
 
-    private String companyCode, companyName, email;
+    private String companyCode, companyName, email, employeeId, employeeName;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee_home);
 
-        // ✅ Retrieve SharedPreferences data
-        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
-        companyCode = sharedPreferences.getString("company_code", "");
-        companyName = sharedPreferences.getString("company_name", "");
-        email = sharedPreferences.getString("email", "");
+        context = this;
 
-        // Optional: show a toast or log to confirm retrieval
-        Toast.makeText(this, "Welcome: " + email, Toast.LENGTH_SHORT).show();
+        // ✅ Load session
+        SharedPreferences sharedPreferences = getSharedPreferences("EmployeeSession", MODE_PRIVATE);
+        companyCode = sharedPreferences.getString("company_code", null);
+        companyName = sharedPreferences.getString("company_name", null);
+        email = sharedPreferences.getString("email", null);
+        employeeId = sharedPreferences.getString("employee_id", null);
+        employeeName = sharedPreferences.getString("employee_name", null);
 
-        // Initializing buttons and card views
+        // ✅ Check if session is valid
+        if (companyCode == null || employeeId == null || employeeName == null) {
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, MainActivity.class)); // redirect to login
+            finish();
+            return;
+        }
+
+        // ✅ Log session
+        Log.d("SessionDebug", "Company Code: " + companyCode);
+        Log.d("SessionDebug", "Company Name: " + companyName);
+        Log.d("SessionDebug", "Email: " + email);
+        Log.d("SessionDebug", "Emp ID: " + employeeId);
+        Log.d("SessionDebug", "Emp Name: " + employeeName);
+
+        // ✅ Toast welcome
+        Toast.makeText(context, "Welcome: " + employeeName + "\nEmail: " + email, Toast.LENGTH_LONG).show();
+
+        // UI
         CardView atView = findViewById(R.id.at_View);
         CardView lmView = findViewById(R.id.lm_View);
         CardView maView = findViewById(R.id.ma_View);
@@ -42,18 +64,35 @@ public class EmployeeHomeActivity extends AppCompatActivity {
 
         Button otReq = findViewById(R.id.ot_request);
 
-        // Setting up onClickListeners for navigation
+        // Click events
         atView.setOnClickListener(v -> navigateTo(AttendanceTrackingActivity.class));
         lmView.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
-        maView.setOnClickListener(v -> navigateTo(EmpMarkAttendanceActivity.class));
+        maView.setOnClickListener(v -> handleMarkAttendance());
         salView.setOnClickListener(v -> navigateTo(SalaryDetailsActivity.class));
 
-        btnMarkAttendance.setOnClickListener(v -> navigateTo(EmpMarkAttendanceActivity.class));
+        btnMarkAttendance.setOnClickListener(v -> handleMarkAttendance());
         btnAttendTrack.setOnClickListener(v -> navigateTo(AttendanceTrackingActivity.class));
         btnSalDetail.setOnClickListener(v -> navigateTo(SalaryDetailsActivity.class));
         btnLeaveManage.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
 
         otReq.setOnClickListener(v -> navigateTo(EmpOtbtn.class));
+    }
+
+    private void handleMarkAttendance() {
+        // Using already loaded session variables
+        if (employeeId == null || employeeId.isEmpty() || companyCode == null || companyCode.isEmpty()) {
+            Toast.makeText(this, "Session expired. Please login again.", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
+
+        Intent intent = new Intent(EmployeeHomeActivity.this, GeoFenceAttendanceActivity.class);
+        intent.putExtra("employee_id", employeeId);
+        intent.putExtra("company_code", companyCode);
+        intent.putExtra("employee_name", employeeName);
+        startActivity(intent);
     }
 
     private void navigateTo(Class<?> targetActivity) {
