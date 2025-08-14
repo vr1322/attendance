@@ -30,7 +30,8 @@
             android:fontFamily="@font/inter_bold"
             android:text="Attendance"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="#000000" />
     </LinearLayout>
 
     <!-- Scrollable Content Below -->
@@ -108,6 +109,20 @@
                     android:textStyle="bold"
                     android:gravity="center"
                     android:padding="16dp" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- MapView for current location and route -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="16dp"
+                card_view:cardCornerRadius="12dp"
+                card_view:cardElevation="6dp">
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/employeeMapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
             </androidx.cardview.widget.CardView>
 
             <!-- Mark In-Time Button -->

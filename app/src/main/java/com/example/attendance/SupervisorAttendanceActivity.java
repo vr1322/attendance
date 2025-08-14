@@ -314,4 +314,3 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
         }
     }
 }
-a

@@ -23,24 +23,37 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.OutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class GeoFenceAttendanceActivity extends AppCompatActivity {
+public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
+    private static final String GOOGLE_MAPS_API_KEY = "AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g"; // Replace with your key
 
     private TextView currentTimeText, branchStatus, attendanceStatus, screenTitle;
     private Button btnInTime, btnOutTime;
+    private MapView mapView;
+    private GoogleMap gMap;
 
     private FusedLocationProviderClient fusedLocationClient;
     private Handler handler = new Handler();
@@ -50,6 +63,7 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
     private boolean locationReady = false;
 
     private String employeeId, companyCode, employeeName, branchName;
+    private LatLng employeeLatLng;
 
     private final String GET_BRANCH_URL = "https://devonix.io/ems_api/get_geo_branch_location.php";
     private final String MARK_ATTENDANCE_URL = "https://devonix.io/ems_api/mark_geo_attendance.php";
@@ -66,6 +80,10 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
         btnInTime = findViewById(R.id.btnInTime);
         btnOutTime = findViewById(R.id.btnOutTime);
         screenTitle = findViewById(R.id.emp_list_txt);
+        mapView = findViewById(R.id.employeeMapView);
+
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
         screenTitle.setText("Mark Attendance");
 
@@ -81,8 +99,6 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
             finish();
             return;
         }
-
-        Toast.makeText(this, "Welcome, " + employeeName, Toast.LENGTH_SHORT).show();
 
         btnInTime.setOnClickListener(v -> markAttendance("in"));
         btnOutTime.setOnClickListener(v -> markAttendance("out"));
@@ -130,37 +146,32 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
                     Toast.makeText(this, obj.getString("message"), Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "JSON error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("BranchFetchError", e.getMessage());
             }
-        }, error -> {
-            Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("BranchNetworkError", error.toString());
-        }) {
+        }, error -> Log.e("BranchNetworkError", error.toString())) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
-                map.put("user_id", employeeId); // changed from employee_id
-                map.put("user_role", "Employee"); // adjust dynamically if needed
+                map.put("user_id", employeeId);
+                map.put("user_role", "Employee");
                 map.put("company_code", companyCode);
                 return map;
             }
         };
-
         Volley.newRequestQueue(this).add(request);
     }
 
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+                != PackageManager.PERMISSION_GRANTED) return;
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
             if (location != null) {
+                employeeLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
                 float[] distance = new float[1];
                 Location.distanceBetween(
-                        location.getLatitude(), location.getLongitude(),
+                        employeeLatLng.latitude, employeeLatLng.longitude,
                         branchLat, branchLng, distance
                 );
 
@@ -176,13 +187,70 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
                     btnOutTime.setEnabled(false);
                 }
 
-                // Now check today's attendance for this employee
+                updateMap();
                 checkAttendanceStatus();
             } else {
                 Toast.makeText(this, "Turn on GPS to mark attendance", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
             }
         });
+    }
+
+    private void updateMap() {
+        if (gMap == null || employeeLatLng == null) return;
+
+        LatLng branchLatLng = new LatLng(branchLat, branchLng);
+        gMap.clear();
+
+        gMap.addMarker(new MarkerOptions().position(employeeLatLng).title("You are here")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        gMap.addMarker(new MarkerOptions().position(branchLatLng).title(branchName)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(employeeLatLng, 14));
+        gMap.getUiSettings().setZoomControlsEnabled(true);
+
+        // Fetch and draw route
+        // Fetch and draw route
+        new Thread(() -> {
+            try {
+                String urlStr = "https://maps.googleapis.com/maps/api/directions/json?origin=" +
+                        employeeLatLng.latitude + "," + employeeLatLng.longitude +
+                        "&destination=" + branchLat + "," + branchLng +
+                        "&key=" + GOOGLE_MAPS_API_KEY;
+
+                URL url = new URL(urlStr);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.connect();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) sb.append(line);
+
+                JSONObject json = new JSONObject(sb.toString());
+                JSONArray routes = json.getJSONArray("routes");
+                if (routes.length() > 0) {
+                    String polyline = routes.getJSONObject(0)
+                            .getJSONObject("overview_polyline")
+                            .getString("points");
+
+                    final java.util.List<LatLng> points = decodePolyline(polyline);
+
+                    runOnUiThread(() -> {
+                        PolylineOptions polylineOptions = new PolylineOptions()
+                                .addAll(points)
+                                .width(8)
+                                .color(android.graphics.Color.parseColor("#1976D2"))
+                                .geodesic(true);
+
+                        gMap.addPolyline(polylineOptions);
+                    });
+                }
+            } catch (Exception e) {
+                Log.e("RouteError", e.getMessage());
+            }
+        }).start();
     }
 
     private void markAttendance(String type) {
@@ -192,19 +260,12 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, MARK_ATTENDANCE_URL, response -> {
             try {
                 JSONObject obj = new JSONObject(response);
-                String message = obj.optString("message", "Unknown response");
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
-                checkAttendanceStatus(); // Refresh attendance after marking
-
+                Toast.makeText(this, obj.optString("message", "Unknown response"), Toast.LENGTH_SHORT).show();
+                checkAttendanceStatus();
             } catch (Exception e) {
-                Toast.makeText(this, "Response parse error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("MarkAttendance", "Parse error: " + e.getMessage());
+                Log.e("MarkAttendance", e.getMessage());
             }
-        }, error -> {
-            Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("VolleyError", error.toString());
-        }) {
+        }, error -> Log.e("VolleyError", error.toString())) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
@@ -220,7 +281,6 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
                 return map;
             }
         };
-
         Volley.newRequestQueue(this).add(request);
     }
 
@@ -249,13 +309,10 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
                     btnInTime.setEnabled(true);
                     btnOutTime.setEnabled(false);
                 }
-
             } catch (Exception e) {
-                Log.e("CheckAttendance", "Parse error: " + e.getMessage());
+                Log.e("CheckAttendance", e.getMessage());
             }
-        }, error -> {
-            Log.e("CheckAttendance", "Volley error: " + error.getMessage());
-        }) {
+        }, error -> Log.e("CheckAttendance", error.toString())) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
@@ -265,38 +322,82 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity {
                 return map;
             }
         };
-
         Volley.newRequestQueue(this).add(request);
+    }
+
+    private java.util.List<LatLng> decodePolyline(String encoded) {
+        java.util.List<LatLng> poly = new java.util.ArrayList<>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng(
+                    lat / 1E5, lng / 1E5
+            );
+            poly.add(p);
+        }
+        return poly;
     }
 
     private String getCurrentTime() {
         return new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
     }
 
-    private final Runnable timeUpdater = new Runnable() {
-        @Override
-        public void run() {
-            currentTimeText.setText("Current Time: " + getCurrentTime());
-            handler.postDelayed(this, 1000);
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        this.gMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            gMap.setMyLocationEnabled(true);
         }
-    };
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        handler.post(timeUpdater);
+        mapView.onResume();
+        handler.postDelayed(() -> currentTimeText.setText("Current Time: " + getCurrentTime()), 1000);
         getCurrentLocation();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(timeUpdater);
+        mapView.onPause();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
                 grantResults.length > 0 &&
