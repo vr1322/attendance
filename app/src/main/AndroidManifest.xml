@@ -24,6 +24,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".UpdateManager"
+            android:exported="false" />
+        <activity
             android:name=".SupervisorAttendanceActivity"
             android:exported="false" />
         <activity
@@ -150,6 +153,11 @@
         <activity
             android:name=".ContactEmpList"
             android:exported="false" />
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".ComtactEmpInfo"
             android:exported="false" />

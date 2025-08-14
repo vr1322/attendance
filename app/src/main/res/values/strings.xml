@@ -150,6 +150,10 @@
     <string name="login_failed">"Login failed"</string>
     <string name="help_support"><![CDATA[Help & Support]]></string>
 
+    <string name="google_maps_key" templateMergeStrategy="preserve">
+        AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g
+    </string>
+
     <string-array name="user_roles">
         <item>Select Role</item> <!-- Hint -->
         <item>admin</item>

@@ -26,18 +26,31 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SupervisorAttendanceActivity extends AppCompatActivity {
+public class SupervisorAttendanceActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 101;
+    private static final String GOOGLE_MAPS_API_KEY = "AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g";
 
     private TextView currentTimeText, branchStatus, attendanceStatus, screenTitle;
     private Button btnInTime, btnOutTime;
@@ -49,6 +62,10 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
     private boolean locationReady = false;
 
     private String supervisorId, companyCode, supervisorName, branchName;
+
+    private LatLng supervisorLatLng;
+    private GoogleMap mMap;
+    private MapView mapView;
 
     private final String GET_BRANCH_URL = "https://devonix.io/ems_api/get_geo_branch_location.php";
     private final String MARK_ATTENDANCE_URL = "https://devonix.io/ems_api/mark_geo_attendance.php";
@@ -62,9 +79,9 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supervisor_attendance);
 
-        currentTimeText = findViewById(R.id.currentTime);
-        branchStatus = findViewById(R.id.branchStatus);
-        attendanceStatus = findViewById(R.id.attendanceStatus);
+        currentTimeText = findViewById(R.id.currentTimeSupervisor);
+        branchStatus = findViewById(R.id.branchStatusSupervisor);
+        attendanceStatus = findViewById(R.id.attendanceStatusSupervisor);
         btnInTime = findViewById(R.id.btnSupervisorInTime);
         btnOutTime = findViewById(R.id.btnSupervisorOutTime);
         screenTitle = findViewById(R.id.supervisor_attendance_title);
@@ -72,6 +89,10 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
 
         ImageView backBtn = findViewById(R.id.back);
         backBtn.setOnClickListener(v -> onBackPressed());
+
+        mapView = findViewById(R.id.supervisorMapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         loadSession();
@@ -81,8 +102,6 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
             finish();
             return;
         }
-
-        Toast.makeText(this, "Welcome, " + supervisorName, Toast.LENGTH_SHORT).show();
 
         btnInTime.setEnabled(false);
         btnOutTime.setEnabled(false);
@@ -119,7 +138,6 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
 
     private void fetchBranchLocation() {
         StringRequest request = new StringRequest(Request.Method.POST, GET_BRANCH_URL, response -> {
-            Log.d("BranchAPIResponse", response);
             try {
                 JSONObject obj = new JSONObject(response);
                 if (obj.getString("status").equals("success")) {
@@ -127,7 +145,6 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
                     branchLng = obj.getDouble("longitude");
                     branchRadius = (float) obj.getDouble("radius");
                     branchName = obj.getString("branch_name");
-
                     getCurrentLocation();
                 } else {
                     branchName = null;
@@ -135,14 +152,9 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 branchName = null;
-                Toast.makeText(this, "JSON error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("BranchFetchError", e.getMessage(), e);
             }
-        }, error -> {
-            branchName = null;
-            Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("BranchNetworkError", error.toString());
-        }) {
+        }, error -> Log.e("BranchNetworkError", error.toString())) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
@@ -158,30 +170,103 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
     private void getCurrentLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return;
 
-        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-            if (location != null && branchName != null) {
-                float[] distance = new float[1];
-                Location.distanceBetween(location.getLatitude(), location.getLongitude(),
-                        branchLat, branchLng, distance);
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener(location -> {
+                    if (location != null && branchName != null) {
+                        supervisorLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        checkDistance(location);
+                        updateMapWithRoute();
+                    } else {
+                        openLocationSettings();
+                    }
+                });
+    }
 
-                if (distance[0] <= branchRadius) {
-                    locationReady = true;
-                    branchStatus.setText("✅ Inside branch area");
-                    btnInTime.setEnabled(true);
-                    btnOutTime.setEnabled(true);
-                } else {
-                    locationReady = false;
-                    branchStatus.setText("❌ Outside branch area");
-                    btnInTime.setEnabled(false);
-                    btnOutTime.setEnabled(false);
+    private void checkDistance(Location location) {
+        float[] distance = new float[1];
+        Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+                branchLat, branchLng, distance);
+
+        if (distance[0] <= branchRadius) {
+            locationReady = true;
+            branchStatus.setText("✅ Inside branch area");
+            btnInTime.setEnabled(true);
+            btnOutTime.setEnabled(true);
+        } else {
+            locationReady = false;
+            branchStatus.setText("❌ Outside branch area");
+            btnInTime.setEnabled(false);
+            btnOutTime.setEnabled(false);
+        }
+
+        checkAttendanceStatus();
+    }
+
+    private void updateMapWithRoute() {
+        if (mMap == null || supervisorLatLng == null) return;
+
+        mMap.clear();
+        LatLng branchLatLng = new LatLng(branchLat, branchLng);
+
+        mMap.addMarker(new MarkerOptions().position(supervisorLatLng).title("You are here"));
+        mMap.addMarker(new MarkerOptions()
+                .position(branchLatLng)
+                .title(branchName)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(supervisorLatLng, 14));
+
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" +
+                supervisorLatLng.latitude + "," + supervisorLatLng.longitude +
+                "&destination=" + branchLat + "," + branchLng +
+                "&key=" + GOOGLE_MAPS_API_KEY;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
+            try {
+                JSONObject json = new JSONObject(response);
+                JSONArray routes = json.getJSONArray("routes");
+                if (routes.length() > 0) {
+                    String polyline = routes.getJSONObject(0)
+                            .getJSONObject("overview_polyline")
+                            .getString("points");
+                    List<LatLng> points = decodePolyline(polyline);
+                    mMap.addPolyline(new PolylineOptions().addAll(points).width(10).color(0xFF0000FF));
                 }
-
-                checkAttendanceStatus();
-            } else {
-                Toast.makeText(this, "Turn on GPS and make sure branch is loaded", Toast.LENGTH_SHORT).show();
-                openLocationSettings();
+            } catch (Exception e) {
+                Log.e("RouteError", e.getMessage(), e);
             }
-        });
+        }, error -> Log.e("RouteAPIError", error.toString()));
+
+        Volley.newRequestQueue(this).add(request);
+    }
+
+    private List<LatLng> decodePolyline(String encoded) {
+        List<LatLng> poly = new ArrayList<>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            poly.add(new LatLng(lat / 1E5, lng / 1E5));
+        }
+        return poly;
     }
 
     private void openLocationSettings() {
@@ -194,32 +279,24 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
         boolean gpsEnabled = false;
         try { gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); } catch (Exception ignored) {}
         if (gpsEnabled) getCurrentLocation();
-        else Toast.makeText(this, "Please enable GPS to mark attendance", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(this, "Please enable GPS", Toast.LENGTH_SHORT).show();
     }
 
     private void markAttendance(String type) {
-        if (branchName == null || branchName.trim().isEmpty()) {
-            Toast.makeText(this, "Branch not loaded. Cannot mark attendance.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (branchName == null || branchName.trim().isEmpty()) return;
 
         String timeNow = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
         String dateToday = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         StringRequest request = new StringRequest(Request.Method.POST, MARK_ATTENDANCE_URL, response -> {
-            Log.d("MarkAttendanceResponse", response);
             try {
                 JSONObject obj = new JSONObject(response);
                 Toast.makeText(this, obj.optString("message", "Unknown response"), Toast.LENGTH_SHORT).show();
                 checkAttendanceStatus();
             } catch (Exception e) {
-                Toast.makeText(this, "Response parse error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("MarkAttendance", "Parse error: " + e.getMessage(), e);
+                Log.e("MarkAttendanceError", e.getMessage(), e);
             }
-        }, error -> {
-            Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("VolleyError", error.toString());
-        }) {
+        }, error -> Log.e("MarkAttendanceVolley", error.toString())) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
@@ -242,7 +319,6 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
         String dateToday = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
         StringRequest request = new StringRequest(Request.Method.POST, CHECK_ATTENDANCE_URL, response -> {
-            Log.d("CheckAttendanceResponse", response);
             try {
                 JSONObject obj = new JSONObject(response);
                 boolean status = obj.optBoolean("status", false);
@@ -265,9 +341,9 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
                     btnOutTime.setEnabled(false);
                 }
             } catch (Exception e) {
-                Log.e("CheckAttendance", "Parse error: " + e.getMessage(), e);
+                Log.e("CheckAttendanceError", e.getMessage(), e);
             }
-        }, error -> Log.e("CheckAttendance", "Volley error: " + error.getMessage())) {
+        }, error -> Log.e("CheckAttendanceVolley", error.getMessage())) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> map = new HashMap<>();
@@ -292,6 +368,7 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         handler.post(timeUpdater);
+        mapView.onResume();
         getCurrentLocation();
     }
 
@@ -299,6 +376,27 @@ public class SupervisorAttendanceActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(timeUpdater);
+        mapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
+        getCurrentLocation();
     }
 
     @Override

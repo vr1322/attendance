@@ -63,4 +63,5 @@ dependencies {
     implementation(libs.material.calendarview)
     implementation (libs.material.calendarview)
     implementation (libs.play.services.location.v2101)
+    implementation (libs.ucrop)
 }

@@ -84,7 +84,7 @@ public class ManagerHomeActivity extends AppCompatActivity {
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.settings) {
-                startActivity(new Intent(ManagerHomeActivity.this, settings.class));
+                startActivity(new Intent(ManagerHomeActivity.this, UpdateManager.class));
             }
             if (item.getItemId() == R.id.logout) {
                 new AlertDialog.Builder(ManagerHomeActivity.this)

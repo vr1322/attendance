@@ -24,6 +24,7 @@ carUiLib = "2.6.0"
 playServicesLocation = "21.3.0"
 playServicesLocationVersion = "21.0.1"
 playServicesMaps = "19.1.0"
+ucrop = "2.2.8"
 volley = "1.2.1"
 swiperefreshlayout = "1.1.0"
 
@@ -50,6 +51,7 @@ navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "n
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+ucrop = { module = "com.github.yalantis:ucrop", version.ref = "ucrop" }
 version-x-x-x = { module = "com.github.Dimezis.BlurView:version-2.0.5" }
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
