@@ -31,7 +31,7 @@
             android:text="Supervisor Attendance"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF" />
+            android:textColor="#000000" />
     </LinearLayout>
 
     <!-- Scrollable Content -->
@@ -58,7 +58,7 @@
                 android:backgroundTint="#FFF3E0">
 
                 <TextView
-                    android:id="@+id/branchStatus"
+                    android:id="@+id/branchStatusSupervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Checking location..."
@@ -79,7 +79,7 @@
                 android:backgroundTint="#FFFFFF">
 
                 <TextView
-                    android:id="@+id/currentTime"
+                    android:id="@+id/currentTimeSupervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Current Time: --:--:--"
@@ -100,7 +100,7 @@
                 android:backgroundTint="#E8F5E9">
 
                 <TextView
-                    android:id="@+id/attendanceStatus"
+                    android:id="@+id/attendanceStatusSupervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Attendance Status: Not Marked"
@@ -109,6 +109,20 @@
                     android:textStyle="bold"
                     android:gravity="center"
                     android:padding="16dp" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Map Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginBottom="16dp"
+                card_view:cardCornerRadius="12dp"
+                card_view:cardElevation="6dp">
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/supervisorMapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
             </androidx.cardview.widget.CardView>
 
             <!-- Mark In-Time Button -->
