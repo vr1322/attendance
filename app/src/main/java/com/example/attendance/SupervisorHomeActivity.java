@@ -84,7 +84,7 @@ public class SupervisorHomeActivity extends AppCompatActivity {
         navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.settings) {
-                startActivity(new Intent(SupervisorHomeActivity.this, settings.class));
+                startActivity(new Intent(SupervisorHomeActivity.this, UpdateSupervisor.class));
             }
             if (item.getItemId() == R.id.logout) {
                 new AlertDialog.Builder(SupervisorHomeActivity.this)

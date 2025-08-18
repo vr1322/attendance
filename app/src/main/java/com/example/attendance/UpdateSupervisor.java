@@ -1,7 +1,7 @@
 package com.example.attendance;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -14,11 +14,11 @@ import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -37,67 +37,68 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UpdateManager extends AppCompatActivity {
+public class UpdateSupervisor extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int UCROP_REQUEST_CODE = 2;
 
     private CircleImageView profilePic;
-    private EditText managerName, managerEmail, mobileNo, address;
+    private EditText supervisorName, supervisorEmail, mobileNo, address;
     private TextView companyName, companyRegNo, companyCode, logoutTv, updateText, designation;
     private ImageView back, logout_iv;
     private Button updateBtn;
 
-    private String companyCodeStr, managerIdStr, base64Image = "";
+    private String companyCodeStr, supervisorIdStr, base64Image = "";
     private Uri imageUri;
 
-    // API URLs
-    private final String apiUrlFetch = "https://devonix.io/ems_api/fetch_manager_profile.php";
-    private final String apiUrlUpdate = "https://devonix.io/ems_api/update_manager_profile.php";
+    private final String apiUrlFetch = "https://devonix.io/ems_api/fetch_supervisor_profile.php";
+    private final String apiUrlUpdate = "https://devonix.io/ems_api/update_supervisor_profile.php";
+
+    private AlertDialog progressDialog;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_manager);
+        setContentView(R.layout.activity_update_supervisor);
 
         // Bind Views
-        profilePic = findViewById(R.id.profilePic);
-        companyName = findViewById(R.id.companyName);
-        companyRegNo = findViewById(R.id.companyRegNo);
-        companyCode = findViewById(R.id.companyCode);
+        profilePic = findViewById(R.id.profilePic_supervisor);
+        companyName = findViewById(R.id.companyName_supervisor);
+        companyRegNo = findViewById(R.id.companyRegNo_supervisor);
+        companyCode = findViewById(R.id.companyCode_supervisor);
 
-        managerName = findViewById(R.id.managerName);
-        designation = findViewById(R.id.designation);
-        managerEmail = findViewById(R.id.managerEmail);
-        mobileNo = findViewById(R.id.mobileNo);
-        address = findViewById(R.id.address);
+        supervisorName = findViewById(R.id.supervisorName);
+        designation = findViewById(R.id.designation_supervisor);
+        supervisorEmail = findViewById(R.id.supervisorEmail);
+        mobileNo = findViewById(R.id.supervisorMobileNo);
+        address = findViewById(R.id.supervisorAddress);
 
-        updateBtn = findViewById(R.id.updateBtn);
-        updateText = findViewById(R.id.updttext);
-        logoutTv = findViewById(R.id.logout);
-        back = findViewById(R.id.back);
-        logout_iv = findViewById(R.id.logout_iv);
+        updateBtn = findViewById(R.id.updateBtn_supervisor);
+        updateText = findViewById(R.id.updttext_supervisor);
+        logoutTv = findViewById(R.id.logout_supervisor);
+        back = findViewById(R.id.back_supervisor);
+        logout_iv = findViewById(R.id.logout_iv_supervisor);
 
         // Get session
-        SharedPreferences sharedPreferences = getSharedPreferences("ManagerSession", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("SupervisorSession", MODE_PRIVATE);
         companyCodeStr = sharedPreferences.getString("company_code", "").trim();
-        managerIdStr = sharedPreferences.getString("manager_id", "").trim();
+        supervisorIdStr = sharedPreferences.getString("supervisor_id", "").trim();
 
-        Log.d("UpdateManager", "Company Code: " + companyCodeStr + " | Manager ID: " + managerIdStr);
+        Log.d("UpdateSupervisor", "Company Code: " + companyCodeStr + " | Supervisor ID: " + supervisorIdStr);
 
         // Back & Logout
-        back.setOnClickListener(view -> startActivity(new Intent(UpdateManager.this, ManagerHomeActivity.class)));
-        updateText.setOnClickListener(view -> startActivity(new Intent(UpdateManager.this, ManagerHomeActivity.class)));
-        logout_iv.setOnClickListener(view -> showLogoutDialog());
-        logoutTv.setOnClickListener(view -> showLogoutDialog());
+        if (back != null) back.setOnClickListener(v -> startActivity(new Intent(this, SupervisorHomeActivity.class)));
+        if (updateText != null) updateText.setOnClickListener(v -> startActivity(new Intent(this, SupervisorHomeActivity.class)));
+        if (logout_iv != null) logout_iv.setOnClickListener(v -> showLogoutDialog());
+        if (logoutTv != null) logoutTv.setOnClickListener(v -> showLogoutDialog());
 
-        // Load manager data
-        if (companyCodeStr.isEmpty()) {
-            Toast.makeText(this, "Company code missing!", Toast.LENGTH_SHORT).show();
-        } else {
+        // Load supervisor data
+        if (!companyCodeStr.isEmpty()) {
             companyCode.setText(companyCodeStr);
-            fetchManagerDetails();
+            fetchSupervisorDetails();
+        } else {
+            Toast.makeText(this, "Company code missing!", Toast.LENGTH_SHORT).show();
         }
 
         // Pick image
@@ -106,39 +107,40 @@ public class UpdateManager extends AppCompatActivity {
         // Update button with validation
         updateBtn.setOnClickListener(view -> {
             if (validateInputs()) {
-                updateManagerDetails();
+                updateSupervisorDetails();
             }
         });
     }
 
-    // ✅ Input Validation
+    // Input validation
     private boolean validateInputs() {
-        String name = managerName.getText().toString().trim();
-        String email = managerEmail.getText().toString().trim();
+        String name = supervisorName.getText().toString().trim();
+        String email = supervisorEmail.getText().toString().trim();
         String phone = mobileNo.getText().toString().trim();
         String addr = address.getText().toString().trim();
         String desig = designation.getText().toString().trim();
 
         if (name.isEmpty()) {
-            managerName.setError("Name cannot be empty");
-            managerName.requestFocus();
+            supervisorName.setError("Name cannot be empty");
+            supervisorName.requestFocus();
             return false;
         }
 
         if (desig.isEmpty()) {
-            Toast.makeText(this, "Designation cannot be empty", Toast.LENGTH_SHORT).show();
+            designation.setError("Designation cannot be empty");
+            designation.requestFocus();
             return false;
         }
 
         if (email.isEmpty()) {
-            managerEmail.setError("Email cannot be empty");
-            managerEmail.requestFocus();
+            supervisorEmail.setError("Email cannot be empty");
+            supervisorEmail.requestFocus();
             return false;
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            managerEmail.setError("Enter a valid email");
-            managerEmail.requestFocus();
+            supervisorEmail.setError("Enter a valid email");
+            supervisorEmail.requestFocus();
             return false;
         }
 
@@ -163,102 +165,7 @@ public class UpdateManager extends AppCompatActivity {
         return true;
     }
 
-    private void fetchManagerDetails() {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Fetching details...");
-        progressDialog.show();
-
-        String url = apiUrlFetch + "?company_code=" + companyCodeStr + "&manager_id=" + managerIdStr;
-
-        StringRequest request = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    progressDialog.dismiss();
-                    Log.d("FetchManagerResponse", response);
-
-                    try {
-                        JSONObject json = new JSONObject(response);
-                        if (json.getString("status").equals("success")) {
-                            JSONObject data = json.getJSONObject("data");
-
-                            companyName.setText(data.getString("company_name"));
-                            companyRegNo.setText(data.getString("company_reg_no"));
-                            companyCode.setText(data.getString("company_code"));
-
-                            managerName.setText(data.getString("manager_name"));
-                            designation.setText(data.getString("manager_designation"));
-                            managerEmail.setText(data.getString("manager_email"));
-                            mobileNo.setText(data.getString("manager_phone"));
-                            address.setText(data.getString("manager_address"));
-
-                            String profileUrl = data.getString("profile_pic");
-                            if (!profileUrl.isEmpty()) {
-                                Glide.with(this).load(profileUrl).into(profilePic);
-                            }
-
-                        } else {
-                            Toast.makeText(this, json.getString("message"), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Parse error!", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(this, "Fetch failed!", Toast.LENGTH_SHORT).show();
-                });
-
-        VolleySingleton.getInstance(this).addToRequestQueue(request);
-    }
-
-    private void updateManagerDetails() {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Updating profile...");
-        progressDialog.show();
-
-        StringRequest request = new StringRequest(Request.Method.POST, apiUrlUpdate,
-                response -> {
-                    progressDialog.dismiss();
-                    Log.d("UpdateManagerResponse", response);
-                    try {
-                        JSONObject json = new JSONObject(response);
-                        String status = json.getString("status");
-                        String msg = json.getString("message");
-                        if (status.equals("success")) {
-                            Toast.makeText(this, "Profile updated!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(this, "Update failed: " + msg, Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Update error!", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(this, "Error updating profile!", Toast.LENGTH_SHORT).show();
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("company_code", companyCodeStr);
-                params.put("manager_id", managerIdStr);
-                params.put("manager_name", managerName.getText().toString());
-                params.put("designation", designation.getText().toString());
-                params.put("manager_email", managerEmail.getText().toString());
-                params.put("mobile_no", mobileNo.getText().toString());
-                params.put("address", address.getText().toString());
-
-                if (!base64Image.isEmpty()) {
-                    params.put("profile_pic", base64Image);
-                }
-                return params;
-            }
-        };
-
-        VolleySingleton.getInstance(this).addToRequestQueue(request);
-    }
-
+    // Open image picker
     private void openFileChooser() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
@@ -294,6 +201,94 @@ public class UpdateManager extends AppCompatActivity {
         }
     }
 
+    private void fetchSupervisorDetails() {
+        showProgressDialog("Fetching details...");
+        String url = apiUrlFetch + "?company_code=" + companyCodeStr + "&supervisor_id=" + supervisorIdStr;
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    dismissProgressDialog();
+                    try {
+                        JSONObject json = new JSONObject(response);
+                        if (json.getString("status").equals("success")) {
+                            JSONObject data = json.getJSONObject("data");
+
+                            companyName.setText(data.getString("company_name"));
+                            companyRegNo.setText(data.getString("company_reg_no"));
+                            companyCode.setText(data.getString("company_code"));
+
+                            supervisorName.setText(data.getString("supervisor_name"));
+                            designation.setText(data.getString("supervisor_designation"));
+                            supervisorEmail.setText(data.getString("supervisor_email"));
+                            mobileNo.setText(data.getString("supervisor_phone"));
+                            address.setText(data.getString("supervisor_address"));
+
+                            String profileUrl = data.getString("profile_pic");
+                            if (!profileUrl.isEmpty()) {
+                                Glide.with(this).load(profileUrl).into(profilePic);
+                            }
+
+                        } else {
+                            Toast.makeText(this, json.getString("message"), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Parse error!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    dismissProgressDialog();
+                    Toast.makeText(this, "Fetch failed!", Toast.LENGTH_SHORT).show();
+                });
+
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
+    }
+
+    private void updateSupervisorDetails() {
+        showProgressDialog("Updating profile...");
+        StringRequest request = new StringRequest(Request.Method.POST, apiUrlUpdate,
+                response -> {
+                    dismissProgressDialog();
+                    try {
+                        JSONObject json = new JSONObject(response);
+                        String status = json.getString("status");
+                        String msg = json.getString("message");
+                        if (status.equals("success")) {
+                            Toast.makeText(this, "Profile updated!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "Update failed: " + msg, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Update error!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    dismissProgressDialog();
+                    Toast.makeText(this, "Error updating profile!", Toast.LENGTH_SHORT).show();
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("company_code", companyCodeStr);
+                params.put("supervisor_id", supervisorIdStr);
+                params.put("supervisor_name", supervisorName.getText().toString());
+                params.put("designation", designation.getText().toString());
+                params.put("supervisor_email", supervisorEmail.getText().toString());
+                params.put("mobile_no", mobileNo.getText().toString());
+                params.put("address", address.getText().toString());
+
+                if (!base64Image.isEmpty()) {
+                    params.put("profile_pic", base64Image);
+                }
+
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
+    }
+
     private String getCompressedBase64(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
@@ -305,14 +300,32 @@ public class UpdateManager extends AppCompatActivity {
                 .setTitle("Logout")
                 .setMessage("Do you really want to logout?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    SharedPreferences.Editor editor = getSharedPreferences("ManagerSession", MODE_PRIVATE).edit();
+                    SharedPreferences.Editor editor = getSharedPreferences("SupervisorSession", MODE_PRIVATE).edit();
                     editor.clear();
                     editor.apply();
-                    Intent intent = new Intent(UpdateManager.this, MainActivity.class);
+                    Intent intent = new Intent(this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 })
                 .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    private void showProgressDialog(String message) {
+        if (progressDialog == null) {
+            ProgressBar progressBar = new ProgressBar(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(progressBar);
+            builder.setMessage(message);
+            builder.setCancelable(false);
+            progressDialog = builder.create();
+        }
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 }

@@ -13,7 +13,7 @@
 
         <!-- Back Button & Title -->
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/linearLayout_employee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -23,7 +23,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/back"
+                android:id="@+id/back_employee"
                 android:layout_width="@dimen/dp40"
                 android:layout_height="@dimen/dp40"
                 android:layout_gravity="top|left"
@@ -32,7 +32,7 @@
                 android:src="@drawable/chevron_left" />
 
             <TextView
-                android:id="@+id/updttext"
+                android:id="@+id/updttext_employee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -42,7 +42,7 @@
                 android:textSize="@dimen/dp20" />
 
             <TextView
-                android:id="@+id/logout"
+                android:id="@+id/logout_employee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="LogOut"
@@ -53,7 +53,7 @@
                 android:textColor="@color/red"/>
 
             <ImageView
-                android:id="@+id/logout_iv"
+                android:id="@+id/logout_iv_employee"
                 android:layout_gravity="top|right"
                 android:layout_width="@dimen/dp25"
                 android:layout_height="match_parent"
@@ -62,20 +62,20 @@
                 android:src="@drawable/ic_logout" />
         </LinearLayout>
 
-        <!-- First Card: Company Info (READ-ONLY for manager) -->
+        <!-- Company Info Card -->
         <androidx.cardview.widget.CardView
-            android:id="@+id/card"
+            android:id="@+id/card_employee"
             android:layout_width="@dimen/dp320"
             android:layout_height="@dimen/dp190"
             android:layout_marginTop="@dimen/dp100"
             app:cardCornerRadius="@dimen/dp20"
-            app:layout_constraintBottom_toTopOf="@id/card2"
+            app:layout_constraintBottom_toTopOf="@id/card2_employee"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profilePic"
+            android:id="@+id/profilePic_employee"
             android:layout_width="@dimen/dp90"
             android:layout_height="@dimen/dp90"
             android:src="@drawable/ic_profile"
@@ -85,15 +85,15 @@
             android:elevation="@dimen/dp10"
             app:civ_border_width="@dimen/dp3"
             app:civ_border_color="@color/blue"
-            app:layout_constraintTop_toBottomOf="@id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout_employee"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/card"
+            app:layout_constraintBottom_toBottomOf="@id/card_employee"
             tools:ignore="MissingClass" />
 
-
+        <!-- Company Info Labels -->
         <TextView
-            android:id="@+id/cname_View"
+            android:id="@+id/cname_View_employee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp60"
@@ -103,13 +103,13 @@
             android:textSize="@dimen/dp14"
             android:textColor="@color/black"
             android:fontFamily="@font/inter_bold"
-            app:layout_constraintBottom_toTopOf="@id/creg_View"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            app:layout_constraintStart_toStartOf="@id/card"
-            app:layout_constraintTop_toTopOf="@id/card" />
+            app:layout_constraintBottom_toTopOf="@id/creg_View_employee"
+            app:layout_constraintEnd_toEndOf="@id/card_employee"
+            app:layout_constraintStart_toStartOf="@id/card_employee"
+            app:layout_constraintTop_toTopOf="@id/card_employee" />
 
         <TextView
-            android:id="@+id/creg_View"
+            android:id="@+id/creg_View_employee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp15"
@@ -119,13 +119,13 @@
             android:textSize="@dimen/dp14"
             android:fontFamily="@font/inter_bold"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@id/ccode_View"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            app:layout_constraintStart_toStartOf="@id/card"
-            app:layout_constraintTop_toBottomOf="@id/cname_View" />
+            app:layout_constraintBottom_toTopOf="@id/ccode_View_employee"
+            app:layout_constraintEnd_toEndOf="@id/card_employee"
+            app:layout_constraintStart_toStartOf="@id/card_employee"
+            app:layout_constraintTop_toBottomOf="@id/cname_View_employee" />
 
         <TextView
-            android:id="@+id/ccode_View"
+            android:id="@+id/ccode_View_employee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp15"
@@ -135,13 +135,13 @@
             android:textSize="@dimen/dp14"
             android:fontFamily="@font/inter_bold"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@id/shortn_View"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            app:layout_constraintStart_toStartOf="@id/card"
-            app:layout_constraintTop_toBottomOf="@id/creg_View" />
+            app:layout_constraintBottom_toTopOf="@id/shortn_View_employee"
+            app:layout_constraintEnd_toEndOf="@id/card_employee"
+            app:layout_constraintStart_toStartOf="@id/card_employee"
+            app:layout_constraintTop_toBottomOf="@id/creg_View_employee" />
 
         <TextView
-            android:id="@+id/shortn_View"
+            android:id="@+id/shortn_View_employee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp180"
@@ -150,14 +150,14 @@
             android:fontFamily="@font/inter_bold"
             android:text="(short name)"
             android:textSize="@dimen/dp12"
-            app:layout_constraintBottom_toBottomOf="@id/card"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            app:layout_constraintStart_toStartOf="@id/card"
-            app:layout_constraintTop_toBottomOf="@id/ccode_View" />
+            app:layout_constraintBottom_toBottomOf="@id/card_employee"
+            app:layout_constraintEnd_toEndOf="@id/card_employee"
+            app:layout_constraintStart_toStartOf="@id/card_employee"
+            app:layout_constraintTop_toBottomOf="@id/ccode_View_employee" />
 
-        <!-- READ-ONLY VALUES (NO EDITTEXT) -->
+        <!-- Company Info Values -->
         <TextView
-            android:id="@+id/companyName"
+            android:id="@+id/companyName_employee"
             android:layout_width="@dimen/dp190"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp50"
@@ -165,53 +165,50 @@
             android:text="ABC Ltd."
             android:textSize="@dimen/dp14"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@id/companyRegNo"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            app:layout_constraintStart_toEndOf="@id/cname_View"
-            app:layout_constraintTop_toTopOf="@id/card" />
+            app:layout_constraintBottom_toTopOf="@id/companyRegNo_employee"
+            app:layout_constraintEnd_toEndOf="@id/card_employee"
+            app:layout_constraintStart_toEndOf="@id/cname_View_employee"
+            app:layout_constraintTop_toTopOf="@id/card_employee" />
 
         <TextView
-            android:id="@+id/companyRegNo"
+            android:id="@+id/companyRegNo_employee"
             android:layout_width="@dimen/dp180"
             android:layout_height="wrap_content"
             android:elevation="@dimen/dp10"
-            android:text=" 123456"
+            android:text="123456"
             android:textSize="@dimen/dp14"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@id/companyCode"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            app:layout_constraintStart_toEndOf="@id/cname_View"
-            app:layout_constraintTop_toBottomOf="@id/companyName" />
+            app:layout_constraintBottom_toTopOf="@id/companyCode_employee"
+            app:layout_constraintEnd_toEndOf="@id/card_employee"
+            app:layout_constraintStart_toEndOf="@id/cname_View_employee"
+            app:layout_constraintTop_toBottomOf="@id/companyName_employee" />
 
         <TextView
-            android:id="@+id/companyCode"
+            android:id="@+id/companyCode_employee"
             android:layout_width="@dimen/dp190"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp18"
             android:elevation="@dimen/dp10"
-            android:text="MGR001"
+            android:text="EMP001"
             android:textSize="@dimen/dp14"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@id/card"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            app:layout_constraintStart_toEndOf="@id/cname_View"
-            app:layout_constraintTop_toBottomOf="@id/companyRegNo" />
+            app:layout_constraintBottom_toBottomOf="@id/card_employee"
+            app:layout_constraintEnd_toEndOf="@id/card_employee"
+            app:layout_constraintStart_toEndOf="@id/cname_View_employee"
+            app:layout_constraintTop_toBottomOf="@id/companyRegNo_employee" />
 
-
-
-        <!-- Second Card: Manager Editable Info -->
+        <!-- Editable Employee Info Card -->
         <androidx.cardview.widget.CardView
-            android:id="@+id/card2"
+            android:id="@+id/card2_employee"
             android:layout_width="@dimen/dp320"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp18"
             app:cardCornerRadius="@dimen/dp20"
-            app:layout_constraintBottom_toTopOf="@id/updateBtn"
+            app:layout_constraintBottom_toTopOf="@id/updateBtn_employee"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card">
+            app:layout_constraintTop_toBottomOf="@id/card_employee">
 
-            <!-- Wrap inputs inside a vertical LinearLayout -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,17 +217,17 @@
                 android:gravity="center">
 
                 <EditText
-                    android:id="@+id/managerName"
+                    android:id="@+id/employeeName"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp50"
                     android:background="@drawable/btn_bg"
                     android:drawableRight="@drawable/ic_admin"
-                    android:hint="Manager Name"
+                    android:hint="Employee Name"
                     android:paddingStart="@dimen/dp20"
                     android:elevation="@dimen/dp10" />
 
                 <TextView
-                    android:id="@+id/designation"
+                    android:id="@+id/designation_employee"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp50"
                     android:layout_marginTop="12dp"
@@ -238,14 +235,13 @@
                     android:drawableRight="@drawable/ic_designation"
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp20"
-                    android:text="Manager"
+                    android:text="Employee"
                     android:textSize="@dimen/dp14"
                     android:textColor="@color/black"
                     android:elevation="@dimen/dp10"/>
 
-
                 <EditText
-                    android:id="@+id/managerEmail"
+                    android:id="@+id/employeeEmail"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp50"
                     android:layout_marginTop="12dp"
@@ -257,7 +253,7 @@
                     android:elevation="@dimen/dp10" />
 
                 <EditText
-                    android:id="@+id/mobileNo"
+                    android:id="@+id/employeeMobileNo"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp50"
                     android:layout_marginTop="12dp"
@@ -269,7 +265,7 @@
                     android:elevation="@dimen/dp10" />
 
                 <EditText
-                    android:id="@+id/address"
+                    android:id="@+id/employeeAddress"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp50"
                     android:layout_marginTop="12dp"
@@ -283,10 +279,9 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-
         <!-- Update Button -->
         <Button
-            android:id="@+id/updateBtn"
+            android:id="@+id/updateBtn_employee"
             android:layout_width="@dimen/dp200"
             android:layout_height="@dimen/dp50"
             android:layout_marginTop="@dimen/dp10"
@@ -294,7 +289,7 @@
             android:background="@drawable/button"
             android:text="UPDATE"
             android:textSize="@dimen/dp18"
-            app:layout_constraintTop_toBottomOf="@id/card2"
+            app:layout_constraintTop_toBottomOf="@id/card2_employee"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,143 +36,79 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UpdateManager extends AppCompatActivity {
+public class UpdateEmployee extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int UCROP_REQUEST_CODE = 2;
 
     private CircleImageView profilePic;
-    private EditText managerName, managerEmail, mobileNo, address;
+    private EditText employeeName, employeeEmail, employeeMobileNo, employeeAddress;
     private TextView companyName, companyRegNo, companyCode, logoutTv, updateText, designation;
     private ImageView back, logout_iv;
     private Button updateBtn;
 
-    private String companyCodeStr, managerIdStr, base64Image = "";
+    private String companyCodeStr, employeeIdStr, base64Image = "";
     private Uri imageUri;
 
-    // API URLs
-    private final String apiUrlFetch = "https://devonix.io/ems_api/fetch_manager_profile.php";
-    private final String apiUrlUpdate = "https://devonix.io/ems_api/update_manager_profile.php";
+    private final String apiUrlFetch = "https://devonix.io/ems_api/fetch_employee_profile.php";
+    private final String apiUrlUpdate = "https://devonix.io/ems_api/update_employee_profile.php";
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update_manager);
+        setContentView(R.layout.activity_update_employee);
 
-        // Bind Views
-        profilePic = findViewById(R.id.profilePic);
-        companyName = findViewById(R.id.companyName);
-        companyRegNo = findViewById(R.id.companyRegNo);
-        companyCode = findViewById(R.id.companyCode);
+        profilePic = findViewById(R.id.profilePic_employee);
+        companyName = findViewById(R.id.companyName_employee);
+        companyRegNo = findViewById(R.id.companyRegNo_employee);
+        companyCode = findViewById(R.id.companyCode_employee);
 
-        managerName = findViewById(R.id.managerName);
-        designation = findViewById(R.id.designation);
-        managerEmail = findViewById(R.id.managerEmail);
-        mobileNo = findViewById(R.id.mobileNo);
-        address = findViewById(R.id.address);
+        employeeName = findViewById(R.id.employeeName);
+        designation = findViewById(R.id.designation_employee);
+        employeeEmail = findViewById(R.id.employeeEmail);
+        employeeMobileNo = findViewById(R.id.employeeMobileNo);
+        employeeAddress = findViewById(R.id.employeeAddress);
 
-        updateBtn = findViewById(R.id.updateBtn);
-        updateText = findViewById(R.id.updttext);
-        logoutTv = findViewById(R.id.logout);
-        back = findViewById(R.id.back);
-        logout_iv = findViewById(R.id.logout_iv);
+        updateBtn = findViewById(R.id.updateBtn_employee);
+        updateText = findViewById(R.id.updttext_employee);
+        logoutTv = findViewById(R.id.logout_employee);
+        back = findViewById(R.id.back_employee);
+        logout_iv = findViewById(R.id.logout_iv_employee);
 
-        // Get session
-        SharedPreferences sharedPreferences = getSharedPreferences("ManagerSession", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("EmployeeSession", MODE_PRIVATE);
         companyCodeStr = sharedPreferences.getString("company_code", "").trim();
-        managerIdStr = sharedPreferences.getString("manager_id", "").trim();
+        employeeIdStr = sharedPreferences.getString("employee_id", "").trim();
 
-        Log.d("UpdateManager", "Company Code: " + companyCodeStr + " | Manager ID: " + managerIdStr);
+        Log.d("UpdateEmployee", "Company Code: " + companyCodeStr + " | Employee ID: " + employeeIdStr);
 
-        // Back & Logout
-        back.setOnClickListener(view -> startActivity(new Intent(UpdateManager.this, ManagerHomeActivity.class)));
-        updateText.setOnClickListener(view -> startActivity(new Intent(UpdateManager.this, ManagerHomeActivity.class)));
+        back.setOnClickListener(view -> startActivity(new Intent(UpdateEmployee.this, EmployeeHomeActivity.class)));
+        updateText.setOnClickListener(view -> startActivity(new Intent(UpdateEmployee.this, EmployeeHomeActivity.class)));
         logout_iv.setOnClickListener(view -> showLogoutDialog());
         logoutTv.setOnClickListener(view -> showLogoutDialog());
 
-        // Load manager data
         if (companyCodeStr.isEmpty()) {
             Toast.makeText(this, "Company code missing!", Toast.LENGTH_SHORT).show();
         } else {
             companyCode.setText(companyCodeStr);
-            fetchManagerDetails();
+            fetchEmployeeDetails();
         }
 
-        // Pick image
         profilePic.setOnClickListener(view -> openFileChooser());
-
-        // Update button with validation
-        updateBtn.setOnClickListener(view -> {
-            if (validateInputs()) {
-                updateManagerDetails();
-            }
-        });
+        updateBtn.setOnClickListener(view -> updateEmployeeDetails());
     }
 
-    // ✅ Input Validation
-    private boolean validateInputs() {
-        String name = managerName.getText().toString().trim();
-        String email = managerEmail.getText().toString().trim();
-        String phone = mobileNo.getText().toString().trim();
-        String addr = address.getText().toString().trim();
-        String desig = designation.getText().toString().trim();
-
-        if (name.isEmpty()) {
-            managerName.setError("Name cannot be empty");
-            managerName.requestFocus();
-            return false;
-        }
-
-        if (desig.isEmpty()) {
-            Toast.makeText(this, "Designation cannot be empty", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (email.isEmpty()) {
-            managerEmail.setError("Email cannot be empty");
-            managerEmail.requestFocus();
-            return false;
-        }
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            managerEmail.setError("Enter a valid email");
-            managerEmail.requestFocus();
-            return false;
-        }
-
-        if (phone.isEmpty()) {
-            mobileNo.setError("Mobile number cannot be empty");
-            mobileNo.requestFocus();
-            return false;
-        }
-
-        if (phone.length() != 10) {
-            mobileNo.setError("Enter a valid 10-digit number");
-            mobileNo.requestFocus();
-            return false;
-        }
-
-        if (addr.isEmpty()) {
-            address.setError("Address cannot be empty");
-            address.requestFocus();
-            return false;
-        }
-
-        return true;
-    }
-
-    private void fetchManagerDetails() {
+    private void fetchEmployeeDetails() {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Fetching details...");
         progressDialog.show();
 
-        String url = apiUrlFetch + "?company_code=" + companyCodeStr + "&manager_id=" + managerIdStr;
+        String url = apiUrlFetch + "?company_code=" + companyCodeStr + "&employee_id=" + employeeIdStr;
 
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
                     progressDialog.dismiss();
-                    Log.d("FetchManagerResponse", response);
+                    Log.d("FetchEmployeeResponse", response);
 
                     try {
                         JSONObject json = new JSONObject(response);
@@ -184,11 +119,11 @@ public class UpdateManager extends AppCompatActivity {
                             companyRegNo.setText(data.getString("company_reg_no"));
                             companyCode.setText(data.getString("company_code"));
 
-                            managerName.setText(data.getString("manager_name"));
-                            designation.setText(data.getString("manager_designation"));
-                            managerEmail.setText(data.getString("manager_email"));
-                            mobileNo.setText(data.getString("manager_phone"));
-                            address.setText(data.getString("manager_address"));
+                            employeeName.setText(data.getString("employee_name"));
+                            designation.setText(data.getString("designation")); // ✅ fixed key
+                            employeeEmail.setText(data.getString("employee_email"));
+                            employeeMobileNo.setText(data.getString("employee_phone"));
+                            employeeAddress.setText(data.getString("employee_address"));
 
                             String profileUrl = data.getString("profile_pic");
                             if (!profileUrl.isEmpty()) {
@@ -211,7 +146,19 @@ public class UpdateManager extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
-    private void updateManagerDetails() {
+    private void updateEmployeeDetails() {
+        String name = employeeName.getText().toString().trim();
+        String email = employeeEmail.getText().toString().trim();
+        String phone = employeeMobileNo.getText().toString().trim();
+        String addressStr = employeeAddress.getText().toString().trim();
+
+        if (name.isEmpty()) { employeeName.setError("Enter employee name"); employeeName.requestFocus(); return; }
+        if (email.isEmpty()) { employeeEmail.setError("Enter email"); employeeEmail.requestFocus(); return; }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) { employeeEmail.setError("Enter valid email"); employeeEmail.requestFocus(); return; }
+        if (phone.isEmpty()) { employeeMobileNo.setError("Enter mobile number"); employeeMobileNo.requestFocus(); return; }
+        if (!phone.matches("\\d{10}")) { employeeMobileNo.setError("Enter valid 10-digit mobile number"); employeeMobileNo.requestFocus(); return; }
+        if (addressStr.isEmpty()) { employeeAddress.setError("Enter address"); employeeAddress.requestFocus(); return; }
+
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Updating profile...");
         progressDialog.show();
@@ -219,7 +166,7 @@ public class UpdateManager extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, apiUrlUpdate,
                 response -> {
                     progressDialog.dismiss();
-                    Log.d("UpdateManagerResponse", response);
+                    Log.d("UpdateEmployeeResponse", response);
                     try {
                         JSONObject json = new JSONObject(response);
                         String status = json.getString("status");
@@ -242,16 +189,13 @@ public class UpdateManager extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("company_code", companyCodeStr);
-                params.put("manager_id", managerIdStr);
-                params.put("manager_name", managerName.getText().toString());
+                params.put("employee_id", employeeIdStr);
+                params.put("employee_name", name);
                 params.put("designation", designation.getText().toString());
-                params.put("manager_email", managerEmail.getText().toString());
-                params.put("mobile_no", mobileNo.getText().toString());
-                params.put("address", address.getText().toString());
-
-                if (!base64Image.isEmpty()) {
-                    params.put("profile_pic", base64Image);
-                }
+                params.put("employee_email", email);
+                params.put("mobile_no", phone);
+                params.put("address", addressStr);
+                if (!base64Image.isEmpty()) { params.put("profile_pic", base64Image); }
                 return params;
             }
         };
@@ -284,9 +228,7 @@ public class UpdateManager extends AppCompatActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
                     profilePic.setImageBitmap(bitmap);
                     base64Image = getCompressedBase64(bitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                } catch (IOException e) { e.printStackTrace(); }
             }
         } else if (requestCode == UCROP_REQUEST_CODE && resultCode == UCrop.RESULT_ERROR) {
             Throwable cropError = UCrop.getError(data);
@@ -305,10 +247,10 @@ public class UpdateManager extends AppCompatActivity {
                 .setTitle("Logout")
                 .setMessage("Do you really want to logout?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    SharedPreferences.Editor editor = getSharedPreferences("ManagerSession", MODE_PRIVATE).edit();
+                    SharedPreferences.Editor editor = getSharedPreferences("EmployeeSession", MODE_PRIVATE).edit();
                     editor.clear();
                     editor.apply();
-                    Intent intent = new Intent(UpdateManager.this, MainActivity.class);
+                    Intent intent = new Intent(UpdateEmployee.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 })
