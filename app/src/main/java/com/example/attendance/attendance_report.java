@@ -160,8 +160,32 @@ public class attendance_report extends AppCompatActivity {
     }
 
     private void loadBranchesAndEmployees() {
-            String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
-            String url = GET_BRANCHES_URL + "?company_code=" + companyCode;
+        String companyCode = getIntent().getStringExtra("company_code");
+        String email = getIntent().getStringExtra("email");
+        String role = getIntent().getStringExtra("role");
+
+        String url;
+
+        if ("admin".equalsIgnoreCase(role)) {
+            // ✅ Admin sees all branches/employees in the company
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&admin_email=" + email;
+
+        } else if ("manager".equalsIgnoreCase(role)) {
+            // ✅ Manager sees only branches/employees assigned to them
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&manager_email=" + email;
+
+        } else if ("supervisor".equalsIgnoreCase(role)) {
+            // ✅ Supervisor sees only employees assigned to their branch
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&supervisor_email=" + email;
+
+        } else if ("employee".equalsIgnoreCase(role)) {
+            // ✅ Employee sees only their own profile
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&employee_email=" + email;
+
+        } else {
+            // ✅ Fallback - just by company (minimal access)
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode;
+        }
 
             // ✅ Clear data at the start to prevent duplication
             listGroupTitles.clear();

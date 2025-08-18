@@ -127,12 +127,19 @@ public class MainActivity extends AppCompatActivity {
                                     editor.putString("employee_id", employeeId);
                                     editor.putString("employee_name", employeeName);
                                     editor.putString("email", email);
+                                    editor.putString("role", role);
                                     editor.putString("company_code", companyCode);
                                     editor.putString("company_name", companyNameStr);
                                     editor.apply();
 
                                     Toast.makeText(MainActivity.this, "Welcome " + employeeName, Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(MainActivity.this, EmployeeHomeActivity.class));
+                                    Intent empIntent = new Intent(MainActivity.this, EmployeeHomeActivity.class);
+                                    empIntent.putExtra("role", role);
+                                    empIntent.putExtra("email", email);
+                                    empIntent.putExtra("company_code", companyCode);
+                                    empIntent.putExtra("employee_id", employeeId);
+                                    empIntent.putExtra("employee_name", employeeName);
+                                    startActivity(empIntent);
                                     break;
 
                                 case "admin":
@@ -144,7 +151,11 @@ public class MainActivity extends AppCompatActivity {
                                     editor.putString("role", role);
                                     editor.apply();
 
-                                    startActivity(new Intent(MainActivity.this, home.class));
+                                    Intent adminIntent = new Intent(MainActivity.this, home.class);
+                                    adminIntent.putExtra("role", role);
+                                    adminIntent.putExtra("email", email);
+                                    adminIntent.putExtra("company_code", companyCode);
+                                    startActivity(adminIntent);
                                     break;
 
                                 case "manager":
@@ -153,12 +164,18 @@ public class MainActivity extends AppCompatActivity {
                                     editor.putString("manager_id", employeeId);
                                     editor.putString("manager_name", employeeName);
                                     editor.putString("email", email);
+                                    editor.putString("role", role);
                                     editor.putString("company_code", companyCode);
                                     editor.putString("company_name", companyNameStr);
                                     editor.apply();
 
                                     Toast.makeText(MainActivity.this, "Welcome " + employeeName, Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(MainActivity.this, ManagerHomeActivity.class));
+                                    Intent mgrIntent = new Intent(MainActivity.this, ManagerHomeActivity.class);
+                                    mgrIntent.putExtra("role", role);
+                                    mgrIntent.putExtra("email", email);
+                                    mgrIntent.putExtra("company_code", companyCode);
+                                    mgrIntent.putExtra("manager_name", employeeName);
+                                    startActivity(mgrIntent);
                                     break;
 
                                 case "supervisor":
@@ -167,13 +184,20 @@ public class MainActivity extends AppCompatActivity {
                                     editor.putString("supervisor_id", employeeId);
                                     editor.putString("supervisor_name", employeeName);
                                     editor.putString("email", email);
+                                    editor.putString("role", role);
                                     editor.putString("company_code", companyCode);
                                     editor.putString("company_name", companyNameStr);
                                     editor.apply();
 
                                     Toast.makeText(MainActivity.this, "Welcome " + employeeName, Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(MainActivity.this, SupervisorHomeActivity.class));
+                                    Intent supIntent = new Intent(MainActivity.this, SupervisorHomeActivity.class);
+                                    supIntent.putExtra("role", role);
+                                    supIntent.putExtra("email", email);
+                                    supIntent.putExtra("company_code", companyCode);
+                                    supIntent.putExtra("supervisor_name", employeeName);
+                                    startActivity(supIntent);
                                     break;
+
 
                                 default:
                                     Toast.makeText(MainActivity.this, "Unknown role", Toast.LENGTH_SHORT).show();

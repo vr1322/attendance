@@ -42,7 +42,7 @@ public class ManagerHomeActivity extends AppCompatActivity {
     private TextView companyName, designation;
 
     private String apiUrlFetch = "https://devonix.io/ems_api/get_manager_profile.php";
-    private String companyCode = "", email = "", managerName = "";
+    private String companyCode = "", role = "manager", email = "", managerName = "";
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -116,6 +116,7 @@ public class ManagerHomeActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("ManagerSession", MODE_PRIVATE);
         email = sharedPreferences.getString("email", "");
         companyCode = sharedPreferences.getString("company_code", "");
+        role =sharedPreferences.getString("role","");
         managerName = sharedPreferences.getString("manager_name", "");
 
         if (companyCode.isEmpty() || email.isEmpty()) {
@@ -125,10 +126,10 @@ public class ManagerHomeActivity extends AppCompatActivity {
         }
 
         // Assign Click Listeners
-        assignClickListener(el_button, emp_list.class);
+        assignClickListener(el_button,  emp_list.class);
         assignClickListener(ab_Button, BranchListActivity.class);
         assignClickListener(ma_Button, attendance_report.class);
-        assignClickListener(el_View, emp_list.class);
+        assignClickListener(el_View,  emp_list.class);
         assignClickListener(ab_View, BranchListActivity.class);
         assignClickListener(ma_View, attendance_report.class);
         assignClickListener(sal_View, salary_calculation.class);
@@ -190,10 +191,19 @@ public class ManagerHomeActivity extends AppCompatActivity {
         VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
     }
 
+
     /**
      * Helper method to assign click listeners to buttons and views.
      */
     private void assignClickListener(View view, final Class<?> targetActivity) {
-        view.setOnClickListener(v -> startActivity(new Intent(ManagerHomeActivity.this, targetActivity)));
+        view.setOnClickListener(v -> {
+            Intent intent = new Intent(ManagerHomeActivity.this, targetActivity);
+            intent.putExtra("company_code", companyCode);
+            intent.putExtra("manager_name", managerName);
+            intent.putExtra("email", email);
+            intent.putExtra("role", role);
+            startActivity(intent);
+        });
     }
+
 }

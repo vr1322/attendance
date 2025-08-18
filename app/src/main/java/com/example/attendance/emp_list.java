@@ -122,6 +122,7 @@ public class emp_list extends AppCompatActivity {
             }
         });
 
+
         // Set the refresh listener
         swipeRefreshLayout.setOnRefreshListener(() -> {
             // Show loading spinner
@@ -144,8 +145,9 @@ public class emp_list extends AppCompatActivity {
 
 
 
-        backbutton.setOnClickListener(view -> startActivity(new Intent(emp_list.this, home.class)));
-        emplist_txt.setOnClickListener(view -> startActivity(new Intent(emp_list.this, home.class)));
+        backbutton.setOnClickListener(view -> goBackToHome());
+        emplist_txt.setOnClickListener(view -> goBackToHome());
+
 
         searchiv.setOnClickListener(view -> showSearchDialog());
         downloadiv.setOnClickListener(view -> showDownloadOptionsDialog());
@@ -179,7 +181,45 @@ public class emp_list extends AppCompatActivity {
             showEmployeeOptionsDialog(employee, listGroupTitles.get(groupPosition));
             return true;
         });
+
     }
+
+    private void goBackToHome() {
+        String role = getIntent().getStringExtra("role");
+
+        Intent intent;
+        switch (role.toLowerCase()) {
+            case "admin":
+                intent = new Intent(emp_list.this, home.class);
+                break;
+            case "manager":
+                intent = new Intent(emp_list.this, ManagerHomeActivity.class);
+                break;
+            case "supervisor":
+                intent = new Intent(emp_list.this, SupervisorHomeActivity.class);
+                break;
+            case "employee":
+                intent = new Intent(emp_list.this, EmployeeHomeActivity.class);
+                break;
+            default:
+                intent = new Intent(emp_list.this, home.class); // fallback
+        }
+
+        // Pass role, company_code, email back if needed
+        intent.putExtra("role", role);
+        intent.putExtra("company_code", getIntent().getStringExtra("company_code"));
+        intent.putExtra("email", getIntent().getStringExtra("email"));
+
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        goBackToHome();
+    }
+
 
 
     private void toggleFabVisibility(boolean show) {
@@ -207,8 +247,32 @@ public class emp_list extends AppCompatActivity {
     }
 
     private void loadBranchesAndEmployees() {
-        String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
-        String url = GET_BRANCHES_URL + "?company_code=" + companyCode;
+        String companyCode = getIntent().getStringExtra("company_code");
+        String email = getIntent().getStringExtra("email");
+        String role = getIntent().getStringExtra("role");
+
+        String url;
+
+        if ("admin".equalsIgnoreCase(role)) {
+            // ✅ Admin sees all branches/employees in the company
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&admin_email=" + email;
+
+        } else if ("manager".equalsIgnoreCase(role)) {
+            // ✅ Manager sees only branches/employees assigned to them
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&manager_email=" + email;
+
+        } else if ("supervisor".equalsIgnoreCase(role)) {
+            // ✅ Supervisor sees only employees assigned to their branch
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&supervisor_email=" + email;
+
+        } else if ("employee".equalsIgnoreCase(role)) {
+            // ✅ Employee sees only their own profile
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&employee_email=" + email;
+
+        } else {
+            // ✅ Fallback - just by company (minimal access)
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode;
+        }
 
         // ✅ Clear data at the start to prevent duplication
         listGroupTitles.clear();
@@ -276,6 +340,8 @@ public class emp_list extends AppCompatActivity {
 
         requestQueue.add(jsonObjectRequest);
     }
+
+
 
 
     private void requestStoragePermission() {

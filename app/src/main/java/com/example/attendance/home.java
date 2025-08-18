@@ -41,7 +41,7 @@ public class home extends AppCompatActivity {
     private TextView companyName, designation;
 
     private String apiUrlFetch = "https://devonix.io/ems_api/get_admin_profile.php";
-    private String companyCode = "";
+    private String companyCode = "", companyNameStr = "", email = "", role = "admin";
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -128,6 +128,9 @@ public class home extends AppCompatActivity {
         // Load Company Code from Shared Preferences
         SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
         companyCode = sharedPreferences.getString("company_code", "").trim();
+        companyNameStr = sharedPreferences.getString("company_name", "Company");
+        email = sharedPreferences.getString("email", "");
+        role = sharedPreferences.getString("role", "admin");
 
         if (companyCode.isEmpty()) {
             Toast.makeText(this, "Company code is missing!", Toast.LENGTH_SHORT).show();
@@ -182,6 +185,13 @@ public class home extends AppCompatActivity {
      * Helper method to assign click listeners to buttons and views.
      */
     private void assignClickListener(View view, final Class<?> targetActivity) {
-        view.setOnClickListener(v -> startActivity(new Intent(home.this, targetActivity)));
+        view.setOnClickListener(v -> {
+            Intent intent = new Intent(home.this, targetActivity);
+            intent.putExtra("company_code", companyCode);
+            intent.putExtra("company_name", companyNameStr);
+            intent.putExtra("email", email);
+            intent.putExtra("role", role);
+            startActivity(intent);
+        });
     }
 }
