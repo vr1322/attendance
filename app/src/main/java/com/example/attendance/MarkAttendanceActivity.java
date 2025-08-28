@@ -71,17 +71,29 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         overtimeCount = findViewById(R.id.overtime_count);
         btnMarkAttendance = findViewById(R.id.btn_mark_attendance);
 
-        // SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
-        String employeeId = sharedPreferences.getString("employee_id", "");
-        String companyCode = sharedPreferences.getString("company_code", "");
-        String empName = sharedPreferences.getString("employee_name", "").trim();
-        String branch = sharedPreferences.getString("branch", "").trim();
+        // ✅ Get all values from Intent only
+        Intent intent = getIntent();
+        String employeeId   = intent.getStringExtra("employee_id");
+        String empName      = intent.getStringExtra("employee_name");
+        String branch       = intent.getStringExtra("branch");
+        String companyCode  = intent.getStringExtra("company_code");
+        String email        = intent.getStringExtra("email");
+        String role         = intent.getStringExtra("role");
+
 
         employeeName.setText(empName);
         branchName.setText(branch);
 
-        backiv.setOnClickListener(view -> startActivity(new Intent(MarkAttendanceActivity.this, attendance_report.class)));
+        backiv.setOnClickListener(view -> {
+            Intent backIntent = new Intent(MarkAttendanceActivity.this, attendance_report.class);
+            backIntent.putExtra("company_code", companyCode);
+            backIntent.putExtra("email", email);
+            backIntent.putExtra("role", role);
+            startActivity(backIntent);
+            finish();
+        });
+
+
         btnMarkAttendance.setOnClickListener(view -> {
             AttendanceDetailsBottomSheet bottomSheet = new AttendanceDetailsBottomSheet();
             bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());

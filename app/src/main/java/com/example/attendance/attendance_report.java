@@ -439,20 +439,16 @@ public class attendance_report extends AppCompatActivity {
 // OnClick - Mark Single Employee Attendance
 // ==============================
     private void markSingleEmployeeAttendance(Employee employee) {
-
-        // Save Employee Name and Branch in SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("employee_id", employee.getId());
-        editor.putString("employee_name", employee.getName());
-        editor.putString("branch", employee.getBranch());
-        editor.apply(); // Save data
-
-        // Start MarkAttendanceActivity
         Intent intent = new Intent(attendance_report.this, MarkAttendanceActivity.class);
-        intent.putExtra("employee_id", employee.getId());  // Pass employee ID for attendance details
+        intent.putExtra("employee_id", employee.getId());
+        intent.putExtra("employee_name", employee.getName());
+        intent.putExtra("branch", employee.getBranch());
+        intent.putExtra("company_code", getIntent().getStringExtra("company_code"));
+        intent.putExtra("email", getIntent().getStringExtra("email"));
+        intent.putExtra("role", getIntent().getStringExtra("role"));
         startActivity(intent);
     }
+
 
     // ==============================
 // OnLongClick - Initiate Multiple Employee Selection
