@@ -4,12 +4,10 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,9 +47,14 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
     private ImageView imgPreview;
 
     private RequestQueue requestQueue;
-    private SharedPreferences sharedPreferences;
 
-    private Bitmap capturedImageBitmap = null; // Store captured image
+    private Bitmap capturedImageBitmap = null;
+
+    // Employee details from Bundle
+    private String employeeId = "";
+    private String branch = "";
+    private String companyCode = "";
+    private String role = "";
 
     // Camera launcher
     private final ActivityResultLauncher<Intent> captureImageLauncher =
@@ -85,10 +88,16 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         // Volley
         requestQueue = Volley.newRequestQueue(requireContext());
 
-        // SharedPreferences
-        sharedPreferences = requireActivity().getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
-        String empName = sharedPreferences.getString("employee_name", "").trim();
-        tvName.setText(empName);
+        // Get employee info from arguments
+        Bundle args = getArguments();
+        if (args != null) {
+            employeeId = args.getString("employee_id", "");
+            companyCode = args.getString("company_code", "");
+            branch = args.getString("branch", "");
+            role = args.getString("role", "");
+            String employeeName = args.getString("employee_name", "");
+            tvName.setText(employeeName);
+        }
 
         // Pickers
         etDate.setOnClickListener(v -> showDatePickerDialog(etDate));
@@ -114,18 +123,11 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void markAttendance() {
-        String employeeId = sharedPreferences.getString("employee_id", "");
-        String companyCode = sharedPreferences.getString("company_code", "");
-        String employeeName = sharedPreferences.getString("employee_name", "");
-        String branch = sharedPreferences.getString("branch", "");
-        String role = sharedPreferences.getString("role", "");
+        String employeeName = tvName.getText().toString().trim();
         String status = spinnerStatus.getSelectedItem().toString();
         String date = etDate.getText().toString().trim();
-
-        // ✅ Get in_time & out_time
         String inTime = etInTime.getText().toString().trim();
         String outTime = etOutTime.getText().toString().trim();
-
         int geofencedStatus = 1;
 
         if (employeeId.isEmpty() || companyCode.isEmpty() || employeeName.isEmpty() || branch.isEmpty() || status.isEmpty()) {
@@ -133,36 +135,16 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
             return;
         }
 
-        // ✅ Ensure date is mandatory
-        if (date.isEmpty()) {
-            Toast.makeText(requireContext(), "Date is required for marking attendance!", Toast.LENGTH_SHORT).show();
+        if ((role.equalsIgnoreCase("Supervisor") || role.equalsIgnoreCase("Manager")) && capturedImageBitmap == null) {
+            Toast.makeText(requireContext(), "Photo capture is required for " + role, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // ✅ Role-based restrictions
-        if (role.equalsIgnoreCase("Supervisor") || role.equalsIgnoreCase("Manager")) {
-            if (!status.equalsIgnoreCase("Absent")) {
-                Toast.makeText(requireContext(), "Supervisors/Managers can only mark employees as Absent!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            // For Absent → no photo required
-        } else if (role.equalsIgnoreCase("Admin")) {
-            // Admin → photo optional
-        } else {
-            // Regular Employee → photo required
-            if (capturedImageBitmap == null) {
-                Toast.makeText(requireContext(), "Photo capture is required for employees.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-
-        // Encode image if present
         String encodedImage = "";
         if (capturedImageBitmap != null) {
             encodedImage = compressAndEncodeImage(capturedImageBitmap);
         }
 
-        // Build JSON
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("employee_id", employeeId);
@@ -172,11 +154,8 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
             jsonBody.put("attendance_status", status);
             jsonBody.put("geofenced_status", geofencedStatus);
             jsonBody.put("date", date);
-
-            // ✅ Add times
             jsonBody.put("in_time", inTime);
             jsonBody.put("out_time", outTime);
-
             jsonBody.put("attendance_image", encodedImage);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -184,7 +163,6 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
             return;
         }
 
-        // API request
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, MARK_ATTENDANCE_URL, jsonBody,
                 response -> {
                     try {
@@ -202,7 +180,6 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         requestQueue.add(request);
     }
 
-    // Compress and encode image
     private String compressAndEncodeImage(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
@@ -210,7 +187,6 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
     }
 
-    // Date Picker
     private void showDatePickerDialog(EditText editText) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -223,7 +199,6 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         }, year, month, day).show();
     }
 
-    // Time Picker
     private void showTimePickerDialog(EditText editText) {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);

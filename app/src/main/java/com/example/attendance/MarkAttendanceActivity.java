@@ -96,8 +96,18 @@ public class MarkAttendanceActivity extends AppCompatActivity {
 
         btnMarkAttendance.setOnClickListener(view -> {
             AttendanceDetailsBottomSheet bottomSheet = new AttendanceDetailsBottomSheet();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("employee_id", employeeId);
+            bundle.putString("employee_name", empName);
+            bundle.putString("branch", branch);
+            bundle.putString("company_code", companyCode);
+            bundle.putString("role", role);
+            bottomSheet.setArguments(bundle);
+
             bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
         });
+
         searchiv.setOnClickListener(v -> showDatePicker());
 
         if (companyCode.isEmpty() || empName.isEmpty() || branch.isEmpty()) {
