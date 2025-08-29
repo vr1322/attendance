@@ -7,15 +7,17 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
-import com.android.volley.RequestQueue;
+import com.bumptech.glide.Glide;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
@@ -25,7 +27,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -36,30 +37,34 @@ import java.util.HashSet;
 public class MarkAttendanceActivity extends AppCompatActivity {
 
     MaterialCalendarView materialCalendarView;
-    HashMap<String, String[]> attendanceData; // Date -> [Status, InTime, OutTime]
-
+    HashMap<String, String[]> attendanceData = new HashMap<>();
     HashSet<CalendarDay> presentDates = new HashSet<>();
     HashSet<CalendarDay> absentDates = new HashSet<>();
     HashSet<CalendarDay> halfDayDates = new HashSet<>();
     HashSet<CalendarDay> overtimeDates = new HashSet<>();
 
-    private TextView employeeName, branchName,presentCount, absentCount, halfdayCount, overtimeCount;
-    private ImageView backiv , searchiv;
+    private TextView employeeName, branchName, presentCount, absentCount, halfdayCount, overtimeCount;
+    private ImageView backiv, searchiv;
     private Button btnMarkAttendance;
 
+    private CardView cardPastAttendance;
+    private ImageView attendancePhoto;
+    private TextView pastEmpName, pastDate, inTimeText, outTimeText;
 
     private static final String BASE_URL = "https://devonix.io/ems_api/";
     private static final String GET_ALL_ATTENDANCE_URL = BASE_URL + "get_all_attendance.php";
     private static final String GET_ATTENDANCE_SUMMARY_URL = BASE_URL + "get_attendance_summary.php";
     private static final String SEARCH_ATTENDANCE_URL = BASE_URL + "search_attendance.php";
     private static final String GET_OVERTIME_ATTENDANCE_URL = BASE_URL + "get_overtime_attendance.php";
+    private static final String ATTENDANCE_IMAGE_BASE_URL = BASE_URL + "attendance_image/";
+    private static final String GET_PAST_ATTENDANCE_URL = BASE_URL + "get_past_attendance.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mark_attendance);
 
-        // UI Elements
+        // UI Initialization
         materialCalendarView = findViewById(R.id.calendarGrid);
         employeeName = findViewById(R.id.employee_name);
         branchName = findViewById(R.id.branch_name);
@@ -71,15 +76,22 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         overtimeCount = findViewById(R.id.overtime_count);
         btnMarkAttendance = findViewById(R.id.btn_mark_attendance);
 
-        // ✅ Get all values from Intent only
-        Intent intent = getIntent();
-        String employeeId   = intent.getStringExtra("employee_id");
-        String empName      = intent.getStringExtra("employee_name");
-        String branch       = intent.getStringExtra("branch");
-        String companyCode  = intent.getStringExtra("company_code");
-        String email        = intent.getStringExtra("email");
-        String role         = intent.getStringExtra("role");
+        cardPastAttendance = findViewById(R.id.card_past_attendance);
+        attendancePhoto = findViewById(R.id.attendance_photo);
+        pastEmpName = findViewById(R.id.attendance_name);
+        pastDate = findViewById(R.id.attendance_date);
+        inTimeText = findViewById(R.id.in_time);
+        outTimeText = findViewById(R.id.out_time);
 
+        cardPastAttendance.setVisibility(View.GONE);
+
+        Intent intent = getIntent();
+        String employeeId = intent.getStringExtra("employee_id");
+        String empName = intent.getStringExtra("employee_name");
+        String branch = intent.getStringExtra("branch");
+        String companyCode = intent.getStringExtra("company_code");
+        String email = intent.getStringExtra("email");
+        String role = intent.getStringExtra("role");
 
         employeeName.setText(empName);
         branchName.setText(branch);
@@ -93,10 +105,8 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             finish();
         });
 
-
         btnMarkAttendance.setOnClickListener(view -> {
             AttendanceDetailsBottomSheet bottomSheet = new AttendanceDetailsBottomSheet();
-
             Bundle bundle = new Bundle();
             bundle.putString("employee_id", employeeId);
             bundle.putString("employee_name", empName);
@@ -104,38 +114,32 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             bundle.putString("company_code", companyCode);
             bundle.putString("role", role);
             bottomSheet.setArguments(bundle);
-
             bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
         });
 
         searchiv.setOnClickListener(v -> showDatePicker());
 
         if (companyCode.isEmpty() || empName.isEmpty() || branch.isEmpty()) {
-            Toast.makeText(this, "Missing data in SharedPreferences!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Missing data!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Get current month/year
         Calendar calendar = Calendar.getInstance();
         int currentMonth = calendar.get(Calendar.MONTH) + 1;
         int currentYear = calendar.get(Calendar.YEAR);
 
-        // Load attendance data
         new LoadAllAttendanceData().execute(companyCode, branch, empName);
         new LoadOvertimeAttendance().execute(companyCode, empName, branch);
         new LoadAttendanceSummaryWithOvertime(currentMonth, currentYear).execute(companyCode, empName, branch);
 
-        // When month changes, refresh monthly summary
         materialCalendarView.setOnMonthChangedListener((widget, date) -> {
             int selectedMonth = date.getMonth() + 1;
             int selectedYear = date.getYear();
-
             new LoadAttendanceSummaryWithOvertime(selectedMonth, selectedYear).execute(companyCode, empName, branch);
         });
 
-        // Show status on date click
         materialCalendarView.setOnDateChangedListener((widget, date, selected) -> {
-            String selectedDate = String.format("%d-%02d-%02d",
+            String selectedDate = String.format("%04d-%02d-%02d",
                     date.getYear(), date.getMonth() + 1, date.getDay());
 
             if (attendanceData != null && attendanceData.containsKey(selectedDate)) {
@@ -144,39 +148,46 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 String status = details[0] != null ? details[0] : "Not Marked";
                 String inTime = details[1] != null ? details[1] : "N/A";
                 String outTime = details[2] != null ? details[2] : "N/A";
+                String photoFile = details.length > 3 ? details[3] : "";
 
-                String message = "Status: " + status +
-                        "\nIn-Time: " + inTime +
-                        "\nOut-Time: " + outTime;
+                pastEmpName.setText(empName);
+                pastDate.setText("Date: " + selectedDate);
+                inTimeText.setText("In: " + inTime);
+                outTimeText.setText("Out: " + outTime);
 
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                if (!photoFile.isEmpty()) {
+                    String finalUrl = photoFile.startsWith("http") ? photoFile : ATTENDANCE_IMAGE_BASE_URL + photoFile.replace("attendance_image/", "");
+                    Log.d("MarkAttendance", "Loading image: " + finalUrl); // optional debug log
+                    Glide.with(MarkAttendanceActivity.this)
+                            .load(finalUrl)
+                            .placeholder(R.drawable.ic_profile)
+                            .error(R.drawable.ic_profile)
+                            .into(attendancePhoto);
+                } else {
+                    attendancePhoto.setImageResource(R.drawable.ic_profile);
+                }
+
+
+                cardPastAttendance.setVisibility(View.VISIBLE);
             } else {
-                Toast.makeText(this, "No attendance data found for this date.", Toast.LENGTH_SHORT).show();
+                cardPastAttendance.setVisibility(View.GONE);
             }
         });
     }
 
-
-    // AsyncTask to Fetch Attendance Data from API
+    // ------------- AsyncTasks -------------
     private class LoadAllAttendanceData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             String companyCode = params[0];
             String branch = params[1];
             String employeeName = params[2];
-
-            String apiUrl = null;
             try {
-                apiUrl = GET_ALL_ATTENDANCE_URL
+                String apiUrl = GET_ALL_ATTENDANCE_URL
                         + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
                         + "&branch=" + URLEncoder.encode(branch, "UTF-8")
                         + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
 
-
-            try {
                 URL url = new URL(apiUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -184,11 +195,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 StringBuilder result = new StringBuilder();
                 String line;
-
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
+                while ((line = reader.readLine()) != null) result.append(line);
                 reader.close();
                 return result.toString();
 
@@ -203,22 +210,22 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             if (result != null) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-
                     if (jsonObject.getString("status").equals("success")) {
                         JSONArray attendanceArray = jsonObject.getJSONArray("attendance_data");
 
-                        attendanceData = new HashMap<>();
-
                         for (int i = 0; i < attendanceArray.length(); i++) {
                             JSONObject attendanceObj = attendanceArray.getJSONObject(i);
-
                             String date = attendanceObj.getString("date");
                             String status = attendanceObj.optString("attendance_status", "Not Marked");
                             String inTime = attendanceObj.optString("in_time", "N/A");
                             String outTime = attendanceObj.optString("out_time", "N/A");
+                            String photoFile = attendanceObj.optString("attendance_image", "");
+                            String photoUrl = "";
+                            if (!photoFile.isEmpty()) {
+                                photoUrl = photoFile.startsWith("http") ? photoFile : ATTENDANCE_IMAGE_BASE_URL + photoFile.replace("attendance_image/", "");
+                            }
 
-                            attendanceData.put(date, new String[]{status, inTime, outTime});
-
+                            attendanceData.put(date, new String[]{status, inTime, outTime, photoUrl});
 
                             String[] splitDate = date.split("-");
                             int year = Integer.parseInt(splitDate[0]);
@@ -226,24 +233,14 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                             int day = Integer.parseInt(splitDate[2]);
 
                             CalendarDay calendarDay = CalendarDay.from(year, month, day);
-
                             switch (status) {
-                                case "Present":
-                                    presentDates.add(calendarDay);
-                                    break;
-                                case "Absent":
-                                    absentDates.add(calendarDay);
-                                    break;
-                                case "Half Day":
-                                    halfDayDates.add(calendarDay);
-                                    break;
-                                case "Overtime":
-                                    overtimeDates.add(calendarDay);
-                                    break;
+                                case "Present": presentDates.add(calendarDay); break;
+                                case "Absent": absentDates.add(calendarDay); break;
+                                case "Half Day": halfDayDates.add(calendarDay); break;
+                                case "Overtime": overtimeDates.add(calendarDay); break;
                             }
                         }
 
-                        // Decorate Calendar with Attendance Status
                         materialCalendarView.addDecorator(new CustomDecorator(Color.GREEN, presentDates));
                         materialCalendarView.addDecorator(new CustomDecorator(Color.RED, absentDates));
                         materialCalendarView.addDecorator(new CustomDecorator(Color.YELLOW, halfDayDates));
@@ -253,7 +250,6 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                         Toast.makeText(MarkAttendanceActivity.this,
                                 jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(MarkAttendanceActivity.this, "Data parsing error!", Toast.LENGTH_SHORT).show();
@@ -262,8 +258,6 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 Toast.makeText(MarkAttendanceActivity.this, "Failed to load data!", Toast.LENGTH_SHORT).show();
             }
         }
-
-
     }
 
     private class LoadOvertimeAttendance extends AsyncTask<String, Void, String> {
@@ -272,7 +266,6 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             String companyCode = params[0];
             String employeeName = params[1];
             String branch = params[2];
-
             try {
                 String apiUrl = GET_OVERTIME_ATTENDANCE_URL
                         + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
@@ -286,12 +279,10 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 StringBuilder result = new StringBuilder();
                 String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
+                while ((line = reader.readLine()) != null) result.append(line);
                 reader.close();
                 return result.toString();
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -300,10 +291,11 @@ public class MarkAttendanceActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            if (attendanceData == null) attendanceData = new HashMap<>();
+
             if (result != null) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-
                     if (jsonObject.getString("status").equals("success")) {
                         JSONArray attendanceArray = jsonObject.getJSONArray("attendance_data");
 
@@ -314,7 +306,6 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                             String outTime = obj.optString("out_time", "N/A");
                             String overtimeHours = obj.optString("overtime_hours", "0");
 
-                            // Add to calendar data
                             CalendarDay day = CalendarDay.from(
                                     Integer.parseInt(date.substring(0, 4)),
                                     Integer.parseInt(date.substring(5, 7)) - 1,
@@ -325,9 +316,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                             attendanceData.put(date, new String[]{"Overtime (" + overtimeHours + " hrs)", inTime, outTime});
                         }
 
-                        // Decorate overtime dates
                         materialCalendarView.addDecorator(new CustomDecorator(Color.BLUE, overtimeDates));
-
                     } else {
                         Toast.makeText(MarkAttendanceActivity.this,
                                 jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
@@ -358,26 +347,14 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             String employeeName = params[1];
             String branch = params[2];
 
-            String summaryUrl = GET_ATTENDANCE_SUMMARY_URL
-                    + "?company_code=" + companyCode
-                    + "&employee_name=" + employeeName
-                    + "&branch=" + branch
-                    + "&month=" + selectedMonth
-                    + "&year=" + selectedYear;
-
-            String overtimeUrl;
             try {
-                overtimeUrl = GET_OVERTIME_ATTENDANCE_URL
-                        + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
-                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8")
-                        + "&branch=" + URLEncoder.encode(branch, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                return null;
-            }
+                String summaryUrl = GET_ATTENDANCE_SUMMARY_URL
+                        + "?company_code=" + companyCode
+                        + "&employee_name=" + employeeName
+                        + "&branch=" + branch
+                        + "&month=" + selectedMonth
+                        + "&year=" + selectedYear;
 
-            try {
-                // Attendance summary
                 URL url1 = new URL(summaryUrl);
                 HttpURLConnection connection1 = (HttpURLConnection) url1.openConnection();
                 connection1.setRequestMethod("GET");
@@ -394,7 +371,11 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                     halfDay = jsonSummary.optInt("half_day", 0);
                 }
 
-                // Overtime
+                String overtimeUrl = GET_OVERTIME_ATTENDANCE_URL
+                        + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
+                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8")
+                        + "&branch=" + URLEncoder.encode(branch, "UTF-8");
+
                 URL url2 = new URL(overtimeUrl);
                 HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
                 connection2.setRequestMethod("GET");
@@ -407,19 +388,13 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 JSONObject jsonOvertime = new JSONObject(overtimeResult.toString());
                 if (jsonOvertime.getString("status").equals("success")) {
                     JSONArray overtimeArray = jsonOvertime.getJSONArray("attendance_data");
-
                     for (int i = 0; i < overtimeArray.length(); i++) {
                         JSONObject obj = overtimeArray.getJSONObject(i);
                         String dateStr = obj.getString("date");
-
                         String[] parts = dateStr.split("-");
                         int year = Integer.parseInt(parts[0]);
                         int month = Integer.parseInt(parts[1]);
-
-                        // ✅ Use selectedMonth/year here
-                        if (month == selectedMonth && year == selectedYear) {
-                            overtime++;
-                        }
+                        if (month == selectedMonth && year == selectedYear) overtime++;
                     }
                 }
 
@@ -439,13 +414,8 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-    // Show DatePicker Dialog for Selecting Dates
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
-
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
@@ -456,11 +426,9 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
         );
-
         datePickerDialog.show();
     }
 
-    // Search Attendance by Date via API
     private void searchAttendanceByDate(String selectedDate) {
         SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
         String companyCode = sharedPreferences.getString("company_code", "");
@@ -474,7 +442,6 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         }
     }
 
-    // AsyncTask to Fetch Attendance Data from API
     private class SearchAttendanceData extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
@@ -483,13 +450,13 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             String branch = params[2];
             String selectedDate = params[3];
 
-            String apiUrl = SEARCH_ATTENDANCE_URL
-                    + "?company_code=" + companyCode
-                    + "&employee_name=" + employeeName
-                    + "&branch=" + branch
-                    + "&date=" + selectedDate;
-
             try {
+                String apiUrl = SEARCH_ATTENDANCE_URL
+                        + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
+                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8")
+                        + "&branch=" + URLEncoder.encode(branch, "UTF-8")
+                        + "&date=" + URLEncoder.encode(selectedDate, "UTF-8");
+
                 URL url = new URL(apiUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -497,14 +464,9 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 StringBuilder result = new StringBuilder();
                 String line;
-
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
+                while ((line = reader.readLine()) != null) result.append(line);
                 reader.close();
                 return result.toString();
-
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -516,13 +478,10 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             if (result != null) {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-
                     if (jsonObject.getString("status").equals("success")) {
                         JSONArray attendanceArray = jsonObject.getJSONArray("attendance_data");
-
                         if (attendanceArray.length() > 0) {
                             JSONObject attendanceObj = attendanceArray.getJSONObject(0);
-
                             String status = attendanceObj.optString("attendance_status", "Not Marked");
                             String inTime = attendanceObj.optString("in_time", "N/A");
                             String outTime = attendanceObj.optString("out_time", "N/A");
@@ -533,7 +492,6 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                                     "\nOut-Time: " + outTime;
 
                             Toast.makeText(MarkAttendanceActivity.this, message, Toast.LENGTH_LONG).show();
-
                         } else {
                             Toast.makeText(MarkAttendanceActivity.this, "No attendance data found for selected date.", Toast.LENGTH_SHORT).show();
                         }
@@ -541,7 +499,6 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                         Toast.makeText(MarkAttendanceActivity.this,
                                 jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(MarkAttendanceActivity.this, "Data parsing error!", Toast.LENGTH_SHORT).show();
@@ -551,6 +508,4 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             }
         }
     }
-
-
 }
