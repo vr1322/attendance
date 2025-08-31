@@ -4,10 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -36,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -48,10 +53,14 @@ import java.util.Map;
 public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 101;
+    private static final int CAMERA_REQUEST_CODE = 102;
+
     private static final String GOOGLE_MAPS_API_KEY = "AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g"; // Replace with your key
 
     private TextView currentTimeText, branchStatus, attendanceStatus, screenTitle;
-    private Button btnInTime, btnOutTime;
+    private Button btnInTime, btnOutTime, btnCaptureSelfie;
+    private ImageView selfiePreview;
     private MapView mapView;
     private GoogleMap gMap;
 
@@ -61,9 +70,12 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnM
     private double branchLat, branchLng;
     private float branchRadius;
     private boolean locationReady = false;
+    private boolean selfieCaptured = false;
 
     private String employeeId, companyCode, employeeName, branchName;
     private LatLng employeeLatLng;
+
+    private Bitmap capturedSelfieBitmap;
 
     private final String GET_BRANCH_URL = "https://devonix.io/ems_api/get_geo_branch_location.php";
     private final String MARK_ATTENDANCE_URL = "https://devonix.io/ems_api/mark_geo_attendance.php";
@@ -79,6 +91,8 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnM
         attendanceStatus = findViewById(R.id.attendanceStatus);
         btnInTime = findViewById(R.id.btnInTime);
         btnOutTime = findViewById(R.id.btnOutTime);
+        btnCaptureSelfie = findViewById(R.id.btnCaptureSelfie);
+        selfiePreview = findViewById(R.id.selfiePreview);
         screenTitle = findViewById(R.id.emp_list_txt);
         mapView = findViewById(R.id.employeeMapView);
 
@@ -100,8 +114,23 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnM
             return;
         }
 
-        btnInTime.setOnClickListener(v -> markAttendance("in"));
-        btnOutTime.setOnClickListener(v -> markAttendance("out"));
+        btnInTime.setOnClickListener(v -> {
+            if (selfieCaptured) {
+                markAttendance("in");
+            } else {
+                Toast.makeText(this, "Please capture selfie first", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnOutTime.setOnClickListener(v -> {
+            if (selfieCaptured) {
+                markAttendance("out");
+            } else {
+                Toast.makeText(this, "Please capture selfie first", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnCaptureSelfie.setOnClickListener(v -> checkCameraPermission());
 
         checkLocationPermission();
     }
@@ -129,6 +158,45 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnM
         } else {
             fetchBranchLocation();
         }
+    }
+
+    private void checkCameraPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            openCamera();
+        }
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, CAMERA_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            Bundle extras = data.getExtras();
+            capturedSelfieBitmap = (Bitmap) extras.get("data");
+            if (capturedSelfieBitmap != null) {
+                selfiePreview.setImageBitmap(capturedSelfieBitmap);
+                selfieCaptured = true;
+                Toast.makeText(this, "Selfie captured", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private String convertBitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+        byte[] imageBytes = baos.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
 
     private void fetchBranchLocation() {
@@ -257,6 +325,8 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnM
         String timeNow = getCurrentTime();
         String dateToday = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
+        String selfieBase64 = capturedSelfieBitmap != null ? convertBitmapToBase64(capturedSelfieBitmap) : "";
+
         StringRequest request = new StringRequest(Request.Method.POST, MARK_ATTENDANCE_URL, response -> {
             try {
                 JSONObject obj = new JSONObject(response);
@@ -278,6 +348,7 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnM
                 map.put("date", dateToday);
                 map.put("in_time", type.equals("in") ? timeNow : "");
                 map.put("out_time", type.equals("out") ? timeNow : "");
+                map.put("attendance_image", selfieBase64); // ✅ fixed key
                 return map;
             }
         };
@@ -397,14 +468,44 @@ public class GeoFenceAttendanceActivity extends AppCompatActivity implements OnM
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
-                grantResults.length > 0 &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            fetchBranchLocation();
-        } else {
-            Toast.makeText(this, "Location permission is required", Toast.LENGTH_SHORT).show();
+
+        if (grantResults.length == 0) {
+            Toast.makeText(this, "Permission request cancelled", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE:
+                if (allPermissionsGranted(grantResults)) {
+                    fetchBranchLocation();
+                } else {
+                    Toast.makeText(this, "Location permission is required to mark attendance", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case CAMERA_PERMISSION_REQUEST_CODE:
+                if (allPermissionsGranted(grantResults)) {
+                    openCamera();
+                } else {
+                    Toast.makeText(this, "Camera permission is required to capture selfie", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
+    /**
+     * Utility method to check all permissions in result
+     */
+    private boolean allPermissionsGranted(int[] grantResults) {
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 }

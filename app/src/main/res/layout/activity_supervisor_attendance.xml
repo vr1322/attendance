@@ -111,7 +111,7 @@
                     android:padding="16dp" />
             </androidx.cardview.widget.CardView>
 
-            <!-- Map Card -->
+            <!-- Map View Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
@@ -119,10 +119,47 @@
                 card_view:cardCornerRadius="12dp"
                 card_view:cardElevation="6dp">
 
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/supervisorMapView"
+                <fragment
+                    android:id="@+id/supervisorMapFragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Selfie Capture Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                card_view:cardCornerRadius="12dp"
+                card_view:cardElevation="6dp"
+                android:backgroundTint="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:id="@+id/selfiePreviewSupervisor"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/ic_profile"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Selfie Preview" />
+
+                    <Button
+                        android:id="@+id/btnCaptureSelfieSupervisor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Capture Selfie"
+                        android:layout_marginTop="12dp"
+                        android:backgroundTint="#FF9800"
+                        android:textColor="#FFFFFF"
+                        android:textAllCaps="false"/>
+                </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <!-- Mark In-Time Button -->

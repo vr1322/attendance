@@ -1,10 +1,13 @@
 package com.example.attendance;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -170,17 +173,31 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 outTimeText.setText("Out: " + outTime);
 
                 if (!photoFile.isEmpty()) {
-                    String finalUrl = photoFile.startsWith("http") ? photoFile : ATTENDANCE_IMAGE_BASE_URL + photoFile.replace("attendance_image/", "");
-                    Log.d("MarkAttendance", "Loading image: " + finalUrl); // optional debug log
+                    String finalUrl = photoFile.startsWith("http") ? photoFile :
+                            ATTENDANCE_IMAGE_BASE_URL + photoFile.replace("attendance_image/", "");
+                    Log.d("MarkAttendance", "Loading image: " + finalUrl);
+
                     Glide.with(MarkAttendanceActivity.this)
                             .load(finalUrl)
                             .placeholder(R.drawable.ic_profile)
                             .error(R.drawable.ic_profile)
                             .into(attendancePhoto);
+
+                    attendancePhoto.setTag(finalUrl); // save URL for preview
                 } else {
                     attendancePhoto.setImageResource(R.drawable.ic_profile);
+                    attendancePhoto.setTag(null);
                 }
 
+                // click to fullscreen preview
+                attendancePhoto.setOnClickListener(v -> {
+                    String url = (String) attendancePhoto.getTag();
+                    if (url != null && !url.isEmpty()) {
+                        showImagePreview(url);
+                    } else {
+                        Toast.makeText(MarkAttendanceActivity.this, "No image available", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 cardPastAttendance.setVisibility(View.VISIBLE);
             } else {
@@ -188,6 +205,33 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             }
         });
     }
+
+    // --- fullscreen image preview ---
+    private void showImagePreview(String imageUrl) {
+        Dialog dialog = new Dialog(this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setContentView(R.layout.dialog_image_preview);
+
+        ImageView imageView = dialog.findViewById(R.id.fullscreen_image);
+
+        // Load Image
+        Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
+                .into(imageView);
+
+        // Blur background (Android 12+)
+        View blurBg = dialog.findViewById(R.id.blur_background);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            blurBg.setRenderEffect(RenderEffect.createBlurEffect(40f, 40f, Shader.TileMode.CLAMP));
+        }
+
+        // Close dialog on tap
+        imageView.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
 
     // ------------- AsyncTasks -------------
     private class LoadAllAttendanceData extends AsyncTask<String, Void, String> {
