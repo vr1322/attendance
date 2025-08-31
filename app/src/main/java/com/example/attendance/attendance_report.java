@@ -15,11 +15,9 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -150,13 +148,43 @@ public class attendance_report extends AppCompatActivity {
 
 
         // Back Button
-        backButton.setOnClickListener(view -> startActivity(new Intent(attendance_report.this, home.class)));
-        reportTxt.setOnClickListener(view -> startActivity(new Intent(attendance_report.this, home.class)));
+        backButton.setOnClickListener(view -> goBackToHome());
+        reportTxt.setOnClickListener(view -> goBackToHome());
         // Search
         searchIv.setOnClickListener(view -> showSearchDialog());
 
         // Download
         downloadIv.setOnClickListener(view -> showDownloadOptionsDialog());
+    }
+
+    private void goBackToHome() {
+        String role = getIntent().getStringExtra("role");
+
+        Intent intent;
+        switch (role.toLowerCase()) {
+            case "admin":
+                intent = new Intent(attendance_report.this, home.class);
+                break;
+            case "manager":
+                intent = new Intent(attendance_report.this, ManagerHomeActivity.class);
+                break;
+            case "supervisor":
+                intent = new Intent(attendance_report.this, SupervisorHomeActivity.class);
+                break;
+            case "employee":
+                intent = new Intent(attendance_report.this, EmployeeHomeActivity.class);
+                break;
+            default:
+                intent = new Intent(attendance_report.this, home.class); // fallback
+        }
+
+        // Pass role, company_code, email back if needed
+        intent.putExtra("role", role);
+        intent.putExtra("company_code", getIntent().getStringExtra("company_code"));
+        intent.putExtra("email", getIntent().getStringExtra("email"));
+
+        startActivity(intent);
+        finish();
     }
 
     private void loadBranchesAndEmployees() {
@@ -435,20 +463,43 @@ public class attendance_report extends AppCompatActivity {
         expandableListView.postDelayed(dialog::dismiss, 1500);
     }
 
+    private String getLoggedInEmployeeId(String role) {
+        SharedPreferences prefs;
+        switch (role.toLowerCase()) {
+            case "admin":
+                prefs = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+                return prefs.getString("employee_id", "");
+            case "manager":
+                prefs = getSharedPreferences("ManagerSession", MODE_PRIVATE);
+                return prefs.getString("manager_id", "");
+            case "supervisor":
+                prefs = getSharedPreferences("SupervisorSession", MODE_PRIVATE);
+                return prefs.getString("supervisor_id", "");
+            case "employee":
+                prefs = getSharedPreferences("EmployeeSession", MODE_PRIVATE);
+                return prefs.getString("employee_id", "");
+            default:
+                return "";
+        }
+    }
+
     // ==============================
 // OnClick - Mark Single Employee Attendance
 // ==============================
     private void markSingleEmployeeAttendance(Employee employee) {
+        String role = getIntent().getStringExtra("role");
+        String loggedInEmployeeId = getLoggedInEmployeeId(role);
+
         Intent intent = new Intent(attendance_report.this, MarkAttendanceActivity.class);
-        intent.putExtra("employee_id", employee.getId());
+        intent.putExtra("employee_id", employee.getId()); // employee being viewed
+        intent.putExtra("logged_in_employee_id", loggedInEmployeeId); // correct logged-in user
         intent.putExtra("employee_name", employee.getName());
         intent.putExtra("branch", employee.getBranch());
         intent.putExtra("company_code", getIntent().getStringExtra("company_code"));
         intent.putExtra("email", getIntent().getStringExtra("email"));
-        intent.putExtra("role", getIntent().getStringExtra("role"));
+        intent.putExtra("role", role);
         startActivity(intent);
     }
-
 
     // ==============================
 // OnLongClick - Initiate Multiple Employee Selection

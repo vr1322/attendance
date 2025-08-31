@@ -87,6 +87,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String employeeId = intent.getStringExtra("employee_id");
+        String loggedInEmployeeId = intent.getStringExtra("logged_in_employee_id"); // actual logged-in user
         String empName = intent.getStringExtra("employee_name");
         String branch = intent.getStringExtra("branch");
         String companyCode = intent.getStringExtra("company_code");
@@ -95,6 +96,17 @@ public class MarkAttendanceActivity extends AppCompatActivity {
 
         employeeName.setText(empName);
         branchName.setText(branch);
+
+        Log.d("CHECK_ROLE", "Role: " + role);
+        Log.d("CHECK_EMPLOYEE", "Viewing employee_id: " + employeeId);
+        Log.d("CHECK_LOGGEDIN", "Logged in employee_id: " + loggedInEmployeeId);
+
+        if ((role != null) &&
+                (role.equalsIgnoreCase("manager") || role.equalsIgnoreCase("supervisor")) &&
+                employeeId != null && employeeId.equals(loggedInEmployeeId)) {
+            btnMarkAttendance.setVisibility(View.GONE);
+        }
+
 
         backiv.setOnClickListener(view -> {
             Intent backIntent = new Intent(MarkAttendanceActivity.this, attendance_report.class);
@@ -116,6 +128,8 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             bottomSheet.setArguments(bundle);
             bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
         });
+
+
 
         searchiv.setOnClickListener(v -> showDatePicker());
 

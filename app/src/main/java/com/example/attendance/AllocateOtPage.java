@@ -2,9 +2,9 @@ package com.example.attendance; // Change this to your actual package name
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AllocateOtPage extends AppCompatActivity {
@@ -23,12 +23,7 @@ public class AllocateOtPage extends AppCompatActivity {
         btnViewRequest = findViewById(R.id.view_request);
 
         // Back Button
-        backButton.setOnClickListener(v -> {
-            // Navigate to Allocate Overtime Screen
-            Intent intent = new Intent(AllocateOtPage.this, home.class);
-            startActivity(intent);
-        }); // Close current activity
-
+        backButton.setOnClickListener(v -> finish());
         // Allocate Overtime Button
         btnAllocateOt.setOnClickListener(v -> {
             // Navigate to Allocate Overtime Screen

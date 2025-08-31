@@ -2,20 +2,15 @@ package com.example.attendance;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,14 +26,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 public class ContactEmpList extends AppCompatActivity {
 
@@ -138,8 +128,8 @@ public class ContactEmpList extends AppCompatActivity {
 
 
         // Back Button
-        backButton.setOnClickListener(view -> startActivity(new Intent(ContactEmpList.this, home.class)));
-        emp_listTxt.setOnClickListener(view -> startActivity(new Intent(ContactEmpList.this, home.class)));
+        backButton.setOnClickListener(v -> finish());
+        emp_listTxt.setOnClickListener(v -> finish());
         // Search
         searchIv.setOnClickListener(view -> showSearchDialog());
 

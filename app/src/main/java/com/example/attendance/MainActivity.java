@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
                                 case "admin":
                                     sharedPreferences = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
                                     editor = sharedPreferences.edit();
+                                    editor.putString("employee_id", employeeId);
                                     editor.putString("company_code", companyCode);
                                     editor.putString("company_name", companyNameStr);
                                     editor.putString("email", email);
