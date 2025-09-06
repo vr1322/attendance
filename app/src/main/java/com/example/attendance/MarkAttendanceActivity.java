@@ -279,8 +279,15 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                             String outTime = attendanceObj.optString("out_time", "N/A");
                             String photoFile = attendanceObj.optString("attendance_image", "");
                             String photoUrl = "";
+
                             if (!photoFile.isEmpty()) {
-                                photoUrl = photoFile.startsWith("http") ? photoFile : ATTENDANCE_IMAGE_BASE_URL + photoFile.replace("attendance_image/", "");
+                                if (photoFile.startsWith("http")) {
+                                    photoUrl = photoFile; // full URL already
+                                } else {
+                                    // only keep the filename
+                                    String filename = photoFile.substring(photoFile.lastIndexOf("/") + 1);
+                                    photoUrl = ATTENDANCE_IMAGE_BASE_URL + filename;
+                                }
                             }
 
                             attendanceData.put(date, new String[]{status, inTime, outTime, photoUrl});
