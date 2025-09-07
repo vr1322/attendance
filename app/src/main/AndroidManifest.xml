@@ -114,6 +114,8 @@
             android:name=".ManagerHomeActivity"
             android:exported="false" />
 
+        <activity android:name=".EmployeeSalaryListActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g" />

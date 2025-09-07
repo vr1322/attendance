@@ -142,11 +142,16 @@ public class home extends AppCompatActivity {
         assignClickListener(el_button, emp_list.class);
         assignClickListener(ab_Button, BranchListActivity.class);
         assignClickListener(ma_Button, attendance_report.class);
-        assignClickListener(sal_Button, salary_calculation.class);
+
+        // 🔹 Changed here → First go to emp_list instead of salary_calculation
+        assignClickListener(sal_Button, EmployeeSalaryListActivity.class);
         assignClickListener(el_View, emp_list.class);
         assignClickListener(ab_View, BranchListActivity.class);
         assignClickListener(ma_View, attendance_report.class);
-        assignClickListener(sal_View, salary_calculation.class);
+
+        // 🔹 Changed here → First go to emp_list instead of salary_calculation
+        assignClickListener(sal_View, EmployeeSalaryListActivity.class);
+
         assignClickListener(all_ot_btn, AllocateOvertimeActivity.class);
     }
 
