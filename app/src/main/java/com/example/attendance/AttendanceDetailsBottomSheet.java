@@ -21,7 +21,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.core.content.ContextCompat;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -69,6 +71,16 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
                 }
             });
 
+    // Permission launcher
+    private final ActivityResultLauncher<String> requestCameraPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    launchCamera();
+                } else {
+                    Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+                }
+            });
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,14 +124,16 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
         return view;
     }
 
+    // Correct version only
     private void openCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            captureImageLauncher.launch(intent);
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            launchCamera();
         } else {
-            Toast.makeText(requireContext(), "Camera not available", Toast.LENGTH_SHORT).show();
+            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
     }
+
 
     private void markAttendance() {
         String employeeName = tvName.getText().toString().trim();
@@ -209,5 +223,14 @@ public class AttendanceDetailsBottomSheet extends BottomSheetDialogFragment {
             String selectedTime = String.format("%02d:%02d %s", hour12, m, amPm);
             editText.setText(selectedTime);
         }, hour, minute, false).show();
+    }
+
+    private void launchCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+            captureImageLauncher.launch(intent);
+        } else {
+            Toast.makeText(requireContext(), "Camera not available", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -145,15 +145,20 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         int currentMonth = calendar.get(Calendar.MONTH) + 1;
         int currentYear = calendar.get(Calendar.YEAR);
 
-        new LoadAllAttendanceData().execute(companyCode, branch, empName);
-        new LoadOvertimeAttendance().execute(companyCode, empName, branch);
-        new LoadAttendanceSummaryWithOvertime(currentMonth, currentYear).execute(companyCode, empName, branch);
+        // Only showing key corrections in MarkAttendanceActivity
+        new LoadAllAttendanceData().execute(companyCode, employeeId);  // Fixed parameter
+
+        new LoadOvertimeAttendance().execute(companyCode, employeeId); // Fixed parameter
+
+        new LoadAttendanceSummaryWithOvertime(currentMonth, currentYear).execute(companyCode, employeeId); // Fixed parameter
 
         materialCalendarView.setOnMonthChangedListener((widget, date) -> {
-            int selectedMonth = date.getMonth() + 1;
+            int selectedMonth = date.getMonth() + 1; // CalendarDay month is 1-based
             int selectedYear = date.getYear();
-            new LoadAttendanceSummaryWithOvertime(selectedMonth, selectedYear).execute(companyCode, empName, branch);
+            new LoadAttendanceSummaryWithOvertime(selectedMonth, selectedYear)
+                    .execute(companyCode, employeeId);
         });
+
 
         materialCalendarView.setOnDateChangedListener((widget, date, selected) -> {
             String selectedDate = String.format("%04d-%02d-%02d",
@@ -174,7 +179,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
 
                 if (!photoFile.isEmpty()) {
                     String finalUrl = photoFile.startsWith("http") ? photoFile :
-                            ATTENDANCE_IMAGE_BASE_URL + photoFile.replace("attendance_image/", "");
+                            ATTENDANCE_IMAGE_BASE_URL + photoFile.substring(photoFile.lastIndexOf("/") + 1);
                     Log.d("MarkAttendance", "Loading image: " + finalUrl);
 
                     Glide.with(MarkAttendanceActivity.this)
@@ -183,7 +188,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                             .error(R.drawable.ic_profile)
                             .into(attendancePhoto);
 
-                    attendancePhoto.setTag(finalUrl); // save URL for preview
+                    attendancePhoto.setTag(finalUrl);
                 } else {
                     attendancePhoto.setImageResource(R.drawable.ic_profile);
                     attendancePhoto.setTag(null);
@@ -238,13 +243,11 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String companyCode = params[0];
-            String branch = params[1];
-            String employeeName = params[2];
+            String employeeId = params[1]; // now using employee_id
             try {
                 String apiUrl = GET_ALL_ATTENDANCE_URL
                         + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
-                        + "&branch=" + URLEncoder.encode(branch, "UTF-8")
-                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8");
+                        + "&employee_id=" + URLEncoder.encode(employeeId, "UTF-8");
 
                 URL url = new URL(apiUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -280,15 +283,13 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                             String photoFile = attendanceObj.optString("attendance_image", "");
                             String photoUrl = "";
 
+                            // inside LoadAllAttendanceData -> onPostExecute or wherever you process photoFile
                             if (!photoFile.isEmpty()) {
-                                if (photoFile.startsWith("http")) {
-                                    photoUrl = photoFile; // full URL already
-                                } else {
-                                    // only keep the filename
-                                    String filename = photoFile.substring(photoFile.lastIndexOf("/") + 1);
-                                    photoUrl = ATTENDANCE_IMAGE_BASE_URL + filename;
-                                }
+                                String filename = photoFile.substring(photoFile.lastIndexOf("/") + 1); // get just the filename
+                                photoUrl = ATTENDANCE_IMAGE_BASE_URL + filename;
+                                attendanceData.put(date, new String[]{status, inTime, outTime, photoUrl});
                             }
+
 
                             attendanceData.put(date, new String[]{status, inTime, outTime, photoUrl});
 
@@ -296,8 +297,8 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                             int year = Integer.parseInt(splitDate[0]);
                             int month = Integer.parseInt(splitDate[1]) - 1;
                             int day = Integer.parseInt(splitDate[2]);
-
                             CalendarDay calendarDay = CalendarDay.from(year, month, day);
+
                             switch (status) {
                                 case "Present": presentDates.add(calendarDay); break;
                                 case "Absent": absentDates.add(calendarDay); break;
@@ -325,17 +326,16 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         }
     }
 
+
     private class LoadOvertimeAttendance extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
             String companyCode = params[0];
-            String employeeName = params[1];
-            String branch = params[2];
+            String employeeId = params[1]; // use employee_id
             try {
                 String apiUrl = GET_OVERTIME_ATTENDANCE_URL
                         + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
-                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8")
-                        + "&branch=" + URLEncoder.encode(branch, "UTF-8");
+                        + "&employee_id=" + URLEncoder.encode(employeeId, "UTF-8");
 
                 URL url = new URL(apiUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -396,6 +396,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         }
     }
 
+
     private class LoadAttendanceSummaryWithOvertime extends AsyncTask<String, Void, Void> {
         private int present = 0, absent = 0, halfDay = 0, overtime = 0;
         private final int selectedMonth;
@@ -409,58 +410,31 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             String companyCode = params[0];
-            String employeeName = params[1];
-            String branch = params[2];
-
+            String employeeId = params[1]; // use employee_id
             try {
+                // Attendance summary
                 String summaryUrl = GET_ATTENDANCE_SUMMARY_URL
-                        + "?company_code=" + companyCode
-                        + "&employee_name=" + employeeName
-                        + "&branch=" + branch
+                        + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
+                        + "&employee_id=" + URLEncoder.encode(employeeId, "UTF-8")
                         + "&month=" + selectedMonth
                         + "&year=" + selectedYear;
 
-                URL url1 = new URL(summaryUrl);
-                HttpURLConnection connection1 = (HttpURLConnection) url1.openConnection();
-                connection1.setRequestMethod("GET");
-                BufferedReader reader1 = new BufferedReader(new InputStreamReader(connection1.getInputStream()));
-                StringBuilder summaryResult = new StringBuilder();
-                String line1;
-                while ((line1 = reader1.readLine()) != null) summaryResult.append(line1);
-                reader1.close();
+                URL url = new URL(summaryUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
 
-                JSONObject jsonSummary = new JSONObject(summaryResult.toString());
-                if (jsonSummary.getString("status").equals("success")) {
-                    present = jsonSummary.optInt("present", 0);
-                    absent = jsonSummary.optInt("absent", 0);
-                    halfDay = jsonSummary.optInt("half_day", 0);
-                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder result = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) result.append(line);
+                reader.close();
 
-                String overtimeUrl = GET_OVERTIME_ATTENDANCE_URL
-                        + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
-                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8")
-                        + "&branch=" + URLEncoder.encode(branch, "UTF-8");
-
-                URL url2 = new URL(overtimeUrl);
-                HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
-                connection2.setRequestMethod("GET");
-                BufferedReader reader2 = new BufferedReader(new InputStreamReader(connection2.getInputStream()));
-                StringBuilder overtimeResult = new StringBuilder();
-                String line2;
-                while ((line2 = reader2.readLine()) != null) overtimeResult.append(line2);
-                reader2.close();
-
-                JSONObject jsonOvertime = new JSONObject(overtimeResult.toString());
-                if (jsonOvertime.getString("status").equals("success")) {
-                    JSONArray overtimeArray = jsonOvertime.getJSONArray("attendance_data");
-                    for (int i = 0; i < overtimeArray.length(); i++) {
-                        JSONObject obj = overtimeArray.getJSONObject(i);
-                        String dateStr = obj.getString("date");
-                        String[] parts = dateStr.split("-");
-                        int year = Integer.parseInt(parts[0]);
-                        int month = Integer.parseInt(parts[1]);
-                        if (month == selectedMonth && year == selectedYear) overtime++;
-                    }
+                JSONObject json = new JSONObject(result.toString());
+                if (json.getString("status").equals("success")) {
+                    present = json.optInt("present", 0);
+                    absent = json.optInt("absent", 0);
+                    halfDay = json.optInt("half_day", 0);
+                    overtime = json.optInt("overtime_days", 0);
                 }
 
             } catch (Exception e) {
@@ -479,6 +453,7 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         }
     }
 
+
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -495,15 +470,15 @@ public class MarkAttendanceActivity extends AppCompatActivity {
     }
 
     private void searchAttendanceByDate(String selectedDate) {
-        SharedPreferences sharedPreferences = getSharedPreferences("AdminPrefs", Context.MODE_PRIVATE);
-        String companyCode = sharedPreferences.getString("company_code", "");
-        String empName = sharedPreferences.getString("employee_name", "");
-        String branch = sharedPreferences.getString("branch", "");
+        Intent intent = getIntent();
+        String companyCode = intent.getStringExtra("company_code");
+        String employeeId = intent.getStringExtra("employee_id");
+        String branch = intent.getStringExtra("branch");
 
-        if (!companyCode.isEmpty()) {
-            new SearchAttendanceData().execute(companyCode, empName, branch, selectedDate);
+        if (!companyCode.isEmpty() && !employeeId.isEmpty()) {
+            new SearchAttendanceData().execute(companyCode, employeeId, selectedDate);
         } else {
-            Toast.makeText(this, "Company code not found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Company code or employee ID missing!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -511,15 +486,13 @@ public class MarkAttendanceActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String companyCode = params[0];
-            String employeeName = params[1];
-            String branch = params[2];
-            String selectedDate = params[3];
+            String employeeId = params[1];
+            String selectedDate = params[2];
 
             try {
                 String apiUrl = SEARCH_ATTENDANCE_URL
                         + "?company_code=" + URLEncoder.encode(companyCode, "UTF-8")
-                        + "&employee_name=" + URLEncoder.encode(employeeName, "UTF-8")
-                        + "&branch=" + URLEncoder.encode(branch, "UTF-8")
+                        + "&employee_id=" + URLEncoder.encode(employeeId, "UTF-8")
                         + "&date=" + URLEncoder.encode(selectedDate, "UTF-8");
 
                 URL url = new URL(apiUrl);
@@ -532,12 +505,12 @@ public class MarkAttendanceActivity extends AppCompatActivity {
                 while ((line = reader.readLine()) != null) result.append(line);
                 reader.close();
                 return result.toString();
+
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
         }
-
         @Override
         protected void onPostExecute(String result) {
             if (result != null) {
@@ -573,4 +546,5 @@ public class MarkAttendanceActivity extends AppCompatActivity {
             }
         }
     }
+
 }
