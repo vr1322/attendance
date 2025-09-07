@@ -2,6 +2,8 @@ package com.example.attendance;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,13 +25,14 @@ import java.util.Map;
 
 public class salary_calculation extends AppCompatActivity {
 
-    TextView tvEmpName, tvDesignation, tvBasicPay, tvPresentDays, tvAbsentDays, tvOvertimePay, tvTotalDeduction, tvNetSalary, tvMonth, tvTotalDays;
-    EditText etAdvance, etUniform, etFine, etPF, etEsicPt;
-    Button btnGenerate, btnSave, btnSelectMonth;
+    TextView tvEmpName, tvDesignation, tvBasicPay, tvPresentDays, tvAbsentDays,
+            tvTotalDeduction, tvNetSalary, tvMonth, tvTotalDays;
+    EditText etAdvance, etUniform, etFine, etPF, etOvertimePay, etEsicPt;
+    Button btnGenerate, btnSave, btnSelectMonth, btnViewSlip;
 
     String empId, companyCode;
     String month; // selected month in YYYY-MM
-    double netSalary = 0, deduction = 0, overtimePay = 0, basicPay = 0;
+    double basicPay = 0;
 
     ProgressDialog progressDialog;
 
@@ -44,11 +47,11 @@ public class salary_calculation extends AppCompatActivity {
         tvBasicPay = findViewById(R.id.tvBasicPay);
         tvPresentDays = findViewById(R.id.tvPresentDays);
         tvAbsentDays = findViewById(R.id.tvAbsentDays);
-        tvOvertimePay = findViewById(R.id.tvOvertimePay);
+        etOvertimePay = findViewById(R.id.etOvertimePay);
         tvTotalDeduction = findViewById(R.id.tvTotalDeduction);
         tvNetSalary = findViewById(R.id.tvNetSalary);
         tvMonth = findViewById(R.id.tvMonth);
-        tvTotalDays = findViewById(R.id.tvTotalDays); // Add this TextView in your XML layout
+        tvTotalDays = findViewById(R.id.tvTotalDays);
 
         etAdvance = findViewById(R.id.etAdvance);
         etUniform = findViewById(R.id.etUniform);
@@ -59,6 +62,7 @@ public class salary_calculation extends AppCompatActivity {
         btnGenerate = findViewById(R.id.btnGenerate);
         btnSave = findViewById(R.id.btnSave);
         btnSelectMonth = findViewById(R.id.btnSelectMonth);
+        btnViewSlip = findViewById(R.id.btnViewSlip); // new button
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
@@ -76,6 +80,9 @@ public class salary_calculation extends AppCompatActivity {
 
         btnGenerate.setOnClickListener(v -> calculateSalary());
         btnSave.setOnClickListener(v -> saveSalarySlip());
+
+        // View slip button
+        btnViewSlip.setOnClickListener(v -> viewSalarySlip());
 
         addTextWatchers(); // auto-recalculate on changes
 
@@ -99,6 +106,7 @@ public class salary_calculation extends AppCompatActivity {
         etAdvance.addTextChangedListener(watcher);
         etUniform.addTextChangedListener(watcher);
         etFine.addTextChangedListener(watcher);
+        etOvertimePay.addTextChangedListener(watcher);
     }
 
     private void showMonthPicker() {
@@ -112,7 +120,6 @@ public class salary_calculation extends AppCompatActivity {
             fetchSalaryDetails();
         }, year, monthCurrent, 1);
 
-        // Hide day spinner
         try {
             java.lang.reflect.Field[] datePickerFields = dpd.getDatePicker().getClass().getDeclaredFields();
             for (java.lang.reflect.Field field : datePickerFields) {
@@ -142,26 +149,21 @@ public class salary_calculation extends AppCompatActivity {
                             return;
                         }
 
-                        // Employee info
                         tvEmpName.setText(obj.optString("employee_name", "N/A"));
                         tvDesignation.setText(obj.optString("designation", "N/A"));
 
-                        // Numeric salary components
                         basicPay = obj.optDouble("basic_pay", 0);
-                        overtimePay = obj.optDouble("overtime_pay", 0);
-                        deduction = obj.optDouble("deduction", 0);
+                        double overtime = obj.optDouble("overtime_pay", 0);
 
-                        tvBasicPay.setText("Basic Pay: ₹" + basicPay); // <-- Important fix
-                        tvOvertimePay.setText("Overtime Pay: ₹" + overtimePay);
+                        tvBasicPay.setText("Basic Pay: ₹" + basicPay);
+                        etOvertimePay.setText(String.valueOf(overtime));
 
-                        // Editable fieldss
                         etPF.setText("0");
                         etEsicPt.setText("300");
                         etAdvance.setText(String.valueOf(obj.optDouble("advance", 0)));
                         etUniform.setText(String.valueOf(obj.optDouble("uniform", 0)));
                         etFine.setText(String.valueOf(obj.optDouble("fine", 0)));
 
-                        // Days
                         int presentDays = obj.optInt("present_days", 0);
                         int absentDays = obj.optInt("absent_days", 0);
                         int totalDays = obj.optInt("total_days", getDaysInMonth(month));
@@ -169,11 +171,9 @@ public class salary_calculation extends AppCompatActivity {
                         tvPresentDays.setText("Present Days: " + presentDays);
                         tvAbsentDays.setText("Absent Days: " + absentDays);
                         tvTotalDays.setText("Total Days: " + totalDays);
-                        // If you want total days in a TextView, make sure to create tvTotalDays in XML
-                        // tvTotalDays.setText("Total Days: " + totalDays);
 
-                        // Recalculate salary after fetching
                         calculateSalary();
+                        fetchSavedSalarySlip();
 
                     } catch (Exception e) {
                         Toast.makeText(this, "Parsing Error", Toast.LENGTH_SHORT).show();
@@ -197,12 +197,49 @@ public class salary_calculation extends AppCompatActivity {
         Volley.newRequestQueue(this).add(request);
     }
 
+    private void fetchSavedSalarySlip() {
+        String url = "https://devonix.io/ems_api/get_salary_slip.php";
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject obj = new JSONObject(response);
+                        if (!obj.optBoolean("success", false)) return;
+
+                        etOvertimePay.setText(String.valueOf(obj.optDouble("overtime_pay", 0)));
+                        etPF.setText(String.valueOf(obj.optDouble("pf", 0)));
+                        etEsicPt.setText(String.valueOf(obj.optDouble("esic_pt", 300)));
+                        etAdvance.setText(String.valueOf(obj.optDouble("advance", 0)));
+                        etUniform.setText(String.valueOf(obj.optDouble("uniform", 0)));
+                        etFine.setText(String.valueOf(obj.optDouble("fine", 0)));
+
+                        calculateSalary();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(this, "Error fetching slip: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("employee_id", empId);
+                params.put("company_code", companyCode);
+                params.put("month_year", month);
+                return params;
+            }
+        };
+        Volley.newRequestQueue(this).add(request);
+    }
+
     private void calculateSalary() {
-        double pf = 0;             // PF = 0
-        double esicPt = 300;       // Fixed ESIC/PT
+        double pf = parseDouble(etPF.getText().toString());
+        double esicPt = getEsicPt();
         double advance = parseDouble(etAdvance.getText().toString());
         double uniform = parseDouble(etUniform.getText().toString());
         double fine = parseDouble(etFine.getText().toString());
+        double overtime = parseDouble(etOvertimePay.getText().toString());
 
         int presentDays = parseInt(tvPresentDays.getText().toString().replaceAll("[^0-9]", ""));
         int absentDays = parseInt(tvAbsentDays.getText().toString().replaceAll("[^0-9]", ""));
@@ -211,7 +248,7 @@ public class salary_calculation extends AppCompatActivity {
 
         double absentDeduction = (basicPay / totalDays) * absentDays;
         double totalDeduction = absentDeduction + pf + esicPt + advance + uniform + fine;
-        double totalNetSalary = basicPay + overtimePay - totalDeduction;
+        double totalNetSalary = basicPay + overtime - totalDeduction;
 
         tvTotalDeduction.setText("Total Deduction: ₹" + totalDeduction);
         tvNetSalary.setText("Net Salary: ₹" + totalNetSalary);
@@ -229,7 +266,6 @@ public class salary_calculation extends AppCompatActivity {
 
                         if (obj.optBoolean("success", false)) {
                             Toast.makeText(this, obj.optString("message", "Salary Slip Saved!"), Toast.LENGTH_SHORT).show();
-                            finish();
                         } else {
                             Toast.makeText(this, obj.optString("error", "Failed to save salary slip"), Toast.LENGTH_LONG).show();
                         }
@@ -245,11 +281,12 @@ public class salary_calculation extends AppCompatActivity {
         ) {
             @Override
             protected Map<String, String> getParams() {
-                double pf = 0;             // PF = 0
-                double esicPt = 300;       // Fixed ESIC/PT
+                double pf = parseDouble(etPF.getText().toString());
+                double esicPt = getEsicPt();
                 double advance = parseDouble(etAdvance.getText().toString());
                 double uniform = parseDouble(etUniform.getText().toString());
                 double fine = parseDouble(etFine.getText().toString());
+                double overtime = parseDouble(etOvertimePay.getText().toString());
 
                 int presentDays = parseInt(tvPresentDays.getText().toString().replaceAll("[^0-9]", ""));
                 int absentDays = parseInt(tvAbsentDays.getText().toString().replaceAll("[^0-9]", ""));
@@ -258,7 +295,7 @@ public class salary_calculation extends AppCompatActivity {
 
                 double absentDeduction = (basicPay / totalDays) * absentDays;
                 double totalDeduction = absentDeduction + pf + esicPt + advance + uniform + fine;
-                double totalNetSalary = basicPay + overtimePay - totalDeduction;
+                double totalNetSalary = basicPay + overtime - totalDeduction;
 
                 Map<String, String> params = new HashMap<>();
                 params.put("employee_id", empId);
@@ -266,7 +303,7 @@ public class salary_calculation extends AppCompatActivity {
                 params.put("month_year", month);
                 params.put("designation", tvDesignation.getText().toString());
                 params.put("basic_pay", String.valueOf(basicPay));
-                params.put("overtime_pay", String.valueOf(overtimePay));
+                params.put("overtime_pay", String.valueOf(overtime));
                 params.put("pf", String.valueOf(pf));
                 params.put("esic_pt", String.valueOf(esicPt));
                 params.put("advance", String.valueOf(advance));
@@ -278,12 +315,18 @@ public class salary_calculation extends AppCompatActivity {
                 params.put("absent_days", String.valueOf(absentDays));
                 params.put("total_days", String.valueOf(totalDays));
 
-                android.util.Log.d("SalaryParams", params.toString());
-
                 return params;
             }
         };
         Volley.newRequestQueue(this).add(request);
+    }
+
+    private void viewSalarySlip() {
+        // Directly open slip PDF/HTML in browser
+        String slipUrl = "https://devonix.io/ems_api/view_salary_slip.php?employee_id=" +
+                empId + "&company_code=" + companyCode + "&month_year=" + month;
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(slipUrl));
+        startActivity(browserIntent);
     }
 
     private double parseDouble(String value) {
@@ -300,6 +343,15 @@ public class salary_calculation extends AppCompatActivity {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    private double getEsicPt() {
+        String value = etEsicPt.getText().toString().trim();
+        if (value.isEmpty()) {
+            etEsicPt.setText("300");
+            return 300;
+        }
+        return parseDouble(value);
     }
 
     private int getDaysInMonth(String month) {
