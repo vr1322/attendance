@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    android:padding="16dp"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Employee Info Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp15"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvEmpName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Employee Name"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tvDesignation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Designation"
+                    android:textColor="#757575"
+                    android:textSize="16sp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp"/>
+
+                <TextView
+                    android:id="@+id/tvMonth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Month"
+                    android:textColor="#757575"
+                    android:textSize="16sp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Earnings & Deductions Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp15"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Earnings &amp; Deductions"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#673AB7"
+                    android:paddingBottom="8dp"/>
+
+                <!-- Earnings Table -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:divider="#BDBDBD"
+                    android:showDividers="middle">
+
+                    <TextView
+                        android:id="@+id/tvBasicPay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Basic Pay: ₹0"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvOvertime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Overtime: ₹0"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvPF"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="PF: ₹0"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvESIC_PT"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="ESIC/PT: ₹0"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvDeduction"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Deductions: ₹0"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvAdvance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Advance: ₹0"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvUniform"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Uniform: ₹0"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp"/>
+
+                    <TextView
+                        android:id="@+id/tvFine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Fine: ₹0"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvNetSalary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Net Salary: ₹0"
+                    android:textStyle="bold"
+                    android:textColor="#388E3C"
+                    android:textSize="20sp"
+                    android:paddingTop="12dp"
+                    android:gravity="center"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Attendance Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp15"
+                android:weightSum="3"
+                android:paddingTop="8dp">
+
+                <!-- Present -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Present"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/green"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvPresent"
+                        android:text="0"
+                        android:textColor="#388E3C"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <!-- Absent -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Absent"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="@color/red"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvAbsent"
+                        android:text="0"
+                        android:textColor="#D32F2F"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+
+                <!-- Total -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="#757575"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvTotal"
+                        android:text="0"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/btnDownload"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Download PDF"
+                android:layout_marginEnd="8dp"
+                android:background="#673AB7"
+                android:textColor="#FFFFFF"/>
+
+            <Button
+                android:id="@+id/btnPrint"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Print"
+                android:background="#009688"
+                android:textColor="#FFFFFF"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

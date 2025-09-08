@@ -322,11 +322,11 @@ public class salary_calculation extends AppCompatActivity {
     }
 
     private void viewSalarySlip() {
-        // Directly open slip PDF/HTML in browser
-        String slipUrl = "https://devonix.io/ems_api/view_salary_slip.php?employee_id=" +
-                empId + "&company_code=" + companyCode + "&month_year=" + month;
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(slipUrl));
-        startActivity(browserIntent);
+        Intent intent = new Intent(this, ViewSalarySlipActivity.class);
+        intent.putExtra("employee_id", empId);
+        intent.putExtra("company_code", companyCode);
+        intent.putExtra("month", month);
+        startActivity(intent);
     }
 
     private double parseDouble(String value) {
