@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
@@ -45,6 +47,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.DownloadManager;
+import android.net.Uri;
+import android.os.Environment;
 
 public class attendance_report extends AppCompatActivity {
 
@@ -215,139 +220,139 @@ public class attendance_report extends AppCompatActivity {
             url = GET_BRANCHES_URL + "?company_code=" + companyCode;
         }
 
-            // ✅ Clear data at the start to prevent duplication
-            listGroupTitles.clear();
-            listData.clear();
+        // ✅ Clear data at the start to prevent duplication
+        listGroupTitles.clear();
+        listData.clear();
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                    response -> {
-                        try {
-                            JSONArray branchesArray = response.getJSONArray("branches");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        JSONArray branchesArray = response.getJSONArray("branches");
 
-                            for (int i = 0; i < branchesArray.length(); i++) {
-                                JSONObject branchObj = branchesArray.getJSONObject(i);
-                                String branchName = branchObj.getString("branch_name");
+                        for (int i = 0; i < branchesArray.length(); i++) {
+                            JSONObject branchObj = branchesArray.getJSONObject(i);
+                            String branchName = branchObj.getString("branch_name");
 
-                                // Ensure unique branch entries
-                                if (!listGroupTitles.contains(branchName)) {
-                                    listGroupTitles.add(branchName);
-                                }
-
-                                JSONArray employeesArray = branchObj.getJSONArray("employees");
-                                List<Employee> employees = new ArrayList<>();
-
-                                for (int j = 0; j < employeesArray.length(); j++) {
-                                    JSONObject empObj = employeesArray.getJSONObject(j);
-
-                                    String employeeId = empObj.getString("employee_id");
-
-                                    // ✅ Prevent duplicate employees
-                                    boolean isDuplicate = false;
-                                    for (Employee emp : employees) {
-                                        if (emp.getId().equals(employeeId)) {
-                                            isDuplicate = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (!isDuplicate) {
-                                        Employee employee = new Employee(
-                                                empObj.getString("employee_name"),
-                                                empObj.getString("designation"),
-                                                empObj.getString("employee_id"),
-                                                false,
-                                                false,
-                                                empObj.getString("phone"),
-                                                BASE_URL + empObj.getString("profile_pic"),
-                                                "",  // ✅ Set default status instead of API value
-                                                branchName
-                                        );
-
-                                        employees.add(employee);
-                                    }
-                                }
-
-                                listData.put(branchName, employees);
+                            // Ensure unique branch entries
+                            if (!listGroupTitles.contains(branchName)) {
+                                listGroupTitles.add(branchName);
                             }
 
-                            adapter.notifyDataSetChanged();
+                            JSONArray employeesArray = branchObj.getJSONArray("employees");
+                            List<Employee> employees = new ArrayList<>();
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(attendance_report.this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                            for (int j = 0; j < employeesArray.length(); j++) {
+                                JSONObject empObj = employeesArray.getJSONObject(j);
+
+                                String employeeId = empObj.getString("employee_id");
+
+                                // ✅ Prevent duplicate employees
+                                boolean isDuplicate = false;
+                                for (Employee emp : employees) {
+                                    if (emp.getId().equals(employeeId)) {
+                                        isDuplicate = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!isDuplicate) {
+                                    Employee employee = new Employee(
+                                            empObj.getString("employee_name"),
+                                            empObj.getString("designation"),
+                                            empObj.getString("employee_id"),
+                                            false,
+                                            false,
+                                            empObj.getString("phone"),
+                                            BASE_URL + empObj.getString("profile_pic"),
+                                            "",  // ✅ Set default status instead of API value
+                                            branchName
+                                    );
+
+                                    employees.add(employee);
+                                }
+                            }
+
+                            listData.put(branchName, employees);
                         }
-                    },
-                    error -> Toast.makeText(attendance_report.this, "Error fetching data", Toast.LENGTH_SHORT).show());
 
-            requestQueue.add(jsonObjectRequest);
-        }
+                        adapter.notifyDataSetChanged();
 
-        // ==============================
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(attendance_report.this, "Error parsing data", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> Toast.makeText(attendance_report.this, "Error fetching data", Toast.LENGTH_SHORT).show());
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    // ==============================
 // Load Attendance Data with Synchronization
 // ==============================
-        private void loadAttendanceData() {
-            String companyCode = getIntent().getStringExtra("company_code");
-            String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+    private void loadAttendanceData() {
+        String companyCode = getIntent().getStringExtra("company_code");
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-            String url = GET_ATTENDANCE_URL + "?company_code=" + companyCode + "&date=" + currentDate;
+        String url = GET_ATTENDANCE_URL + "?company_code=" + companyCode + "&date=" + currentDate;
 
-            requestQueue.getCache().clear();
-            attendanceData.clear(); // Only clear attendance data
+        requestQueue.getCache().clear();
+        attendanceData.clear(); // Only clear attendance data
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                    response -> {
-                        try {
-                            if (response.getString("status").equals("error")) {
-                                Toast.makeText(this, "No attendance data found for today.", Toast.LENGTH_SHORT).show();
-                                resetAllEmployeeStatus();
-                                adapter.notifyDataSetChanged();
-                                return;
-                            }
-
-                            JSONArray attendanceArray = response.getJSONArray("attendance_data");
-
-                            for (int i = 0; i < attendanceArray.length(); i++) {
-                                JSONObject attendanceObj = attendanceArray.getJSONObject(i);
-
-                                String empId = attendanceObj.getString("employee_id");
-                                String branchName = attendanceObj.getString("branch");
-                                String inTime = attendanceObj.getString("in_time");
-                                String outTime = attendanceObj.getString("out_time");
-                                String status = attendanceObj.getString("attendance_status");
-                                String date = attendanceObj.getString("date");
-                                String geofencedStatus = attendanceObj.getString("geofenced_status");
-
-                                Attendance attendance = new Attendance(
-                                        empId,
-                                        attendanceObj.getString("employee_name"),
-                                        branchName,
-                                        inTime,
-                                        outTime,
-                                        status,
-                                        geofencedStatus,
-                                        date
-                                );
-
-                                if (!attendanceData.containsKey(branchName)) {
-                                    attendanceData.put(branchName, new ArrayList<>());
-                                }
-                                attendanceData.get(branchName).add(attendance);
-                            }
-
-                            // Update Employee Objects with latest status
-                            updateEmployeeAttendanceStatus();
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(this, "Error parsing attendance data.", Toast.LENGTH_SHORT).show();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                response -> {
+                    try {
+                        if (response.getString("status").equals("error")) {
+                            Toast.makeText(this, "No attendance data found for today.", Toast.LENGTH_SHORT).show();
+                            resetAllEmployeeStatus();
+                            adapter.notifyDataSetChanged();
+                            return;
                         }
-                    }, error -> {
-                Log.e("API_ERROR", "Error fetching attendance data: " + error.getMessage());
-                Toast.makeText(this, "Failed to fetch attendance data.", Toast.LENGTH_SHORT).show();
-            });
 
-            requestQueue.add(jsonObjectRequest);
-        }
+                        JSONArray attendanceArray = response.getJSONArray("attendance_data");
+
+                        for (int i = 0; i < attendanceArray.length(); i++) {
+                            JSONObject attendanceObj = attendanceArray.getJSONObject(i);
+
+                            String empId = attendanceObj.getString("employee_id");
+                            String branchName = attendanceObj.getString("branch");
+                            String inTime = attendanceObj.getString("in_time");
+                            String outTime = attendanceObj.getString("out_time");
+                            String status = attendanceObj.getString("attendance_status");
+                            String date = attendanceObj.getString("date");
+                            String geofencedStatus = attendanceObj.getString("geofenced_status");
+
+                            Attendance attendance = new Attendance(
+                                    empId,
+                                    attendanceObj.getString("employee_name"),
+                                    branchName,
+                                    inTime,
+                                    outTime,
+                                    status,
+                                    geofencedStatus,
+                                    date
+                            );
+
+                            if (!attendanceData.containsKey(branchName)) {
+                                attendanceData.put(branchName, new ArrayList<>());
+                            }
+                            attendanceData.get(branchName).add(attendance);
+                        }
+
+                        // Update Employee Objects with latest status
+                        updateEmployeeAttendanceStatus();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error parsing attendance data.", Toast.LENGTH_SHORT).show();
+                    }
+                }, error -> {
+            Log.e("API_ERROR", "Error fetching attendance data: " + error.getMessage());
+            Toast.makeText(this, "Failed to fetch attendance data.", Toast.LENGTH_SHORT).show();
+        });
+
+        requestQueue.add(jsonObjectRequest);
+    }
 
 
 
@@ -832,8 +837,8 @@ public class attendance_report extends AppCompatActivity {
         }
     }
     // ==============================
-    // Download Functionality
-    // ==============================
+// Download Attendance Report
+// ==============================
     private void showDownloadOptionsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Download Attendance Report");
@@ -841,13 +846,119 @@ public class attendance_report extends AppCompatActivity {
         String[] options = {"Download All Records", "Download Specific Branch"};
         builder.setItems(options, (dialog, which) -> {
             if (which == 0) {
-                Toast.makeText(this, "Downloading All Records...", Toast.LENGTH_SHORT).show();
+                showMonthYearPicker("all", null);
             } else {
-                Toast.makeText(this, "Downloading Specific Branch...", Toast.LENGTH_SHORT).show();
+                showBranchSelectionForDownload();
             }
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         builder.show();
     }
+
+    // ==============================
+// Select Branch (for branch-specific download)
+// ==============================
+    private void showBranchSelectionForDownload() {
+        String[] branchNames = listGroupTitles.toArray(new String[0]);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Branch")
+                .setItems(branchNames, (dialog, which) -> {
+                    String selectedBranch = branchNames[which];
+                    showMonthYearPicker("branch", selectedBranch);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // ==============================
+// Month-Year Picker
+// ==============================
+    private void showMonthYearPicker(String type, String branch) {
+        final Calendar calendar = Calendar.getInstance();
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    String selectedMonth = String.format("%02d", month + 1);
+                    String selectedYear = String.valueOf(year);
+                    showDownloadFormatDialog(type, branch, selectedMonth, selectedYear);
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+
+        // Hide day spinner safely
+        try {
+            DatePicker dp = datePickerDialog.getDatePicker();
+            int daySpinnerId = Resources.getSystem().getIdentifier("day", "id", "android");
+            if (daySpinnerId != 0) {
+                View daySpinner = dp.findViewById(daySpinnerId);
+                if (daySpinner != null) daySpinner.setVisibility(View.GONE);
+            }
+        } catch (Exception ignored) {}
+
+        datePickerDialog.setTitle("Select Month & Year");
+        datePickerDialog.show();
+    }
+
+
+    // ==============================
+// Choose Format (Excel / PDF)
+// ==============================
+    private void showDownloadFormatDialog(String type, String branch, String month, String year) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Download Format");
+
+        String[] formats = {"XLSX", "PDF"}; // Show XLSX instead of Excel
+        builder.setItems(formats, (dialog, which) -> {
+            String format = (which == 0) ? "xlsx" : "pdf"; // pass "xlsx" instead of "excel"
+            downloadAttendanceReport(format, branch, month, year);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
+    }
+
+    // ==============================
+// Download Report via DownloadManager
+// ==============================
+    private void downloadAttendanceReport(String format, String branch, String month, String year) {
+        String baseUrl;
+        String fileExtension;
+
+        if ("pdf".equalsIgnoreCase(format)) {
+            baseUrl = "https://devonix.io/generate_pdf.php?";
+            fileExtension = "pdf";
+        } else if ("xlsx".equalsIgnoreCase(format)) { // match "xlsx" here
+            baseUrl = "https://devonix.io/generate_excel.php?";
+            fileExtension = "xlsx";
+        } else {
+            Toast.makeText(this, "Invalid format selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = baseUrl + "month=" + month + "&year=" + year;
+        if (branch != null) url += "&branch=" + Uri.encode(branch);
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        request.setTitle("Attendance Report - " + (branch != null ? branch : "All") + " (" + month + "/" + year + ")");
+        request.setDescription("Downloading " + format.toUpperCase() + " report");
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        request.setDestinationInExternalPublicDir(
+                Environment.DIRECTORY_DOWNLOADS,
+                "Attendance_" + (branch != null ? branch : "All") + "_" + month + "_" + year + "." + fileExtension
+        );
+
+        DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        if (manager != null) {
+            manager.enqueue(request);
+            Toast.makeText(this, "Download started...", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "DownloadManager not available", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

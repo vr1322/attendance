@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ public class salary_calculation extends AppCompatActivity {
             tvTotalDeduction, tvNetSalary, tvMonth, tvTotalDays;
     EditText etAdvance, etUniform, etFine, etPF, etOvertimePay, etEsicPt;
     Button btnGenerate, btnSave, btnSelectMonth, btnViewSlip;
+    private ImageView backButton;
 
     String empId, companyCode;
     String month; // selected month in YYYY-MM
@@ -42,6 +44,7 @@ public class salary_calculation extends AppCompatActivity {
         setContentView(R.layout.activity_salary_calculation);
 
         // Bind views
+        backButton = findViewById(R.id.back_btn);
         tvEmpName = findViewById(R.id.tvEmpName);
         tvDesignation = findViewById(R.id.tvDesignation);
         tvBasicPay = findViewById(R.id.tvBasicPay);
@@ -63,6 +66,9 @@ public class salary_calculation extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
         btnSelectMonth = findViewById(R.id.btnSelectMonth);
         btnViewSlip = findViewById(R.id.btnViewSlip); // new button
+
+        // Back button
+        backButton.setOnClickListener(view -> finish());
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");

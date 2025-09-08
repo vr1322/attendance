@@ -31,7 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SupervisorHomeActivity extends AppCompatActivity {
 
     private ImageButton el_button, ab_Button, ma_Button, mark_Button;
-    private Button ad_pay_btn, leave_manage_btn, sal_View, cnt_emp_btn; // Supervisor may not need all buttons
+    private Button ad_pay_btn, leave_manage_btn, sal_View, cnt_emp_btn;
     private CardView el_View, ab_View, ma_View, markAttendanceCard;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -43,7 +43,7 @@ public class SupervisorHomeActivity extends AppCompatActivity {
     private TextView companyName, designation;
 
     private String apiUrlFetch = "https://devonix.io/ems_api/get_supervisor_profile.php";
-    private String companyCode = "", email = "", supervisorName = "";
+    private String companyCode = "", email = "", supervisorName = "", role = "supervisor";
 
     @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
@@ -124,7 +124,7 @@ public class SupervisorHomeActivity extends AppCompatActivity {
             fetchSupervisorDetails(companyCode, email);
         }
 
-        // Assign Click Listeners
+        // Assign Click Listeners with extras
         assignClickListener(el_button, emp_list.class);
         assignClickListener(ab_Button, BranchListActivity.class);
         assignClickListener(ma_Button, attendance_report.class);
@@ -140,7 +140,7 @@ public class SupervisorHomeActivity extends AppCompatActivity {
 
         // Hide buttons if supervisor should not access them
         ad_pay_btn.setVisibility(View.GONE);
-        // all_ot_btn.setVisibility(View.GONE); // If supervisor cannot allocate OT
+        leave_manage_btn.setVisibility(View.GONE);
     }
 
     private void handleMarkAttendance() {
@@ -155,6 +155,7 @@ public class SupervisorHomeActivity extends AppCompatActivity {
         intent.putExtra("company_code", companyCode);
         intent.putExtra("email", email);
         intent.putExtra("supervisor_name", supervisorName);
+        intent.putExtra("role", role);
         startActivity(intent);
     }
 
@@ -188,6 +189,13 @@ public class SupervisorHomeActivity extends AppCompatActivity {
     }
 
     private void assignClickListener(View view, final Class<?> targetActivity) {
-        view.setOnClickListener(v -> startActivity(new Intent(SupervisorHomeActivity.this, targetActivity)));
+        view.setOnClickListener(v -> {
+            Intent intent = new Intent(SupervisorHomeActivity.this, targetActivity);
+            intent.putExtra("company_code", companyCode);
+            intent.putExtra("email", email);
+            intent.putExtra("supervisor_name", supervisorName);
+            intent.putExtra("role", role);
+            startActivity(intent);
+        });
     }
 }

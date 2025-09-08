@@ -66,7 +66,7 @@ public class EmployeeSalaryListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_emp_list);
+        setContentView(R.layout.emp_salary_list);
 
         requestQueue = Volley.newRequestQueue(this);
 
