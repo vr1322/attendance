@@ -150,6 +150,22 @@
     <string name="login_failed">"Login failed"</string>
     <string name="help_support"><![CDATA[Help & Support]]></string>
 
+    <string-array name="months_array">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+
     <string name="google_maps_key" templateMergeStrategy="preserve">
         AIzaSyDlh0EQcVa3F-y-KfjzDMDwutn6BG2lG7g
     </string>

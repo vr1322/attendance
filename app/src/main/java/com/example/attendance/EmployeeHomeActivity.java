@@ -72,11 +72,11 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         atView.setOnClickListener(v -> navigateTo(AttendanceTrackingActivity.class));
         lmView.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
         maView.setOnClickListener(v -> handleMarkAttendance());
-        salView.setOnClickListener(v -> navigateTo(SalaryDetailsActivity.class));
+        salView.setOnClickListener(v -> openSalaryView()); // ✅ updated
 
         btnMarkAttendance.setOnClickListener(v -> handleMarkAttendance());
         btnAttendTrack.setOnClickListener(v -> navigateTo(AttendanceTrackingActivity.class));
-        btnSalDetail.setOnClickListener(v -> navigateTo(SalaryDetailsActivity.class));
+        btnSalDetail.setOnClickListener(v -> openSalaryView()); // ✅ updated
         btnLeaveManage.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
 
         otReq.setOnClickListener(v -> navigateTo(EmpOtbtn.class));
@@ -100,6 +100,15 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(EmployeeHomeActivity.this, GeoFenceAttendanceActivity.class);
+        intent.putExtra("employee_id", employeeId);
+        intent.putExtra("company_code", companyCode);
+        intent.putExtra("employee_name", employeeName);
+        startActivity(intent);
+    }
+
+    // ✅ Open SalaryViewActivity with extras
+    private void openSalaryView() {
+        Intent intent = new Intent(EmployeeHomeActivity.this, SalaryViewActivity.class);
         intent.putExtra("employee_id", employeeId);
         intent.putExtra("company_code", companyCode);
         intent.putExtra("employee_name", employeeName);

@@ -131,8 +131,14 @@ public class SupervisorHomeActivity extends AppCompatActivity {
         assignClickListener(el_View, emp_list.class);
         assignClickListener(ab_View, BranchListActivity.class);
         assignClickListener(ma_View, attendance_report.class);
-        assignClickListener(sal_View, salary_calculation.class);
         assignClickListener(cnt_emp_btn, ContactEmpList.class);
+
+        // ✅ Salary button → SalaryViewActivity (with correct extras)
+        sal_View.setOnClickListener(v -> {
+            Intent intent = new Intent(SupervisorHomeActivity.this, SalaryViewActivity.class);
+            intent.putExtra("role", "supervisor"); // pass the role explicitly
+            startActivity(intent);
+        });
 
         // Mark Attendance
         markAttendanceCard.setOnClickListener(v -> handleMarkAttendance());
