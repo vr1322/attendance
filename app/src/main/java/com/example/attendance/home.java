@@ -30,7 +30,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class home extends AppCompatActivity {
     private ImageButton el_button, ab_Button, ma_Button, sal_Button;
-    private Button ad_pay_btn, all_ot_btn, leave_manage_btn, cnt_emp_btn;
+    private Button ad_pay_btn, all_ot_btn, leave_manage_btn, cnt_emp_btn, view_report_btn;
     private CardView el_View, ab_View, ma_View, sal_View;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -62,6 +62,7 @@ public class home extends AppCompatActivity {
         all_ot_btn = findViewById(R.id.allocate_otbt);
         leave_manage_btn = findViewById(R.id.leave_managbt);
         cnt_emp_btn = findViewById(R.id.cnt_empbt);
+        view_report_btn = findViewById(R.id.view_reportbt);
 
         // Setup Toolbar
         toolbar = findViewById(R.id.toolbar);
@@ -148,6 +149,7 @@ public class home extends AppCompatActivity {
         assignClickListener(el_View, emp_list.class);
         assignClickListener(ab_View, BranchListActivity.class);
         assignClickListener(ma_View, attendance_report.class);
+        assignClickListener(view_report_btn, ViewReportsActivity.class);
 
         // 🔹 Changed here → First go to emp_list instead of salary_calculation
         assignClickListener(sal_View, EmployeeSalaryListActivity.class);

@@ -206,8 +206,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraint"
                 android:layout_width="@dimen/dp360"
-                android:layout_height="@dimen/dp300"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:padding="@dimen/dp16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -217,84 +218,105 @@
                     android:id="@+id/card1"
                     app:cardCornerRadius="@dimen/dp30"
                     android:layout_width="@dimen/dp330"
-                    android:layout_height="@dimen/dp275"
+                    android:layout_height="@dimen/dp325"
                     app:layout_constraintBottom_toBottomOf="@+id/constraint"
                     app:layout_constraintEnd_toEndOf="@+id/constraint"
                     app:layout_constraintHorizontal_bias="0.483"
                     app:layout_constraintStart_toStartOf="@+id/constraint"
-                    app:layout_constraintTop_toTopOf="@+id/constraint" />
+                    app:layout_constraintTop_toTopOf="@+id/constraint">
 
-                <Button
-                    android:id="@+id/advance_paybt"
-                    android:layout_width="@dimen/dp290"
-                    android:layout_height="@dimen/dp45"
-                    android:background="@drawable/btn_bg"
-                    android:drawableLeft="@drawable/chevron_right"
-                    android:elevation="@dimen/dp20"
-                    android:paddingLeft="@dimen/dp10"
-                    android:text="Advance payment"
-                    android:textSize="@dimen/dp14"
-                    android:fontFamily="@font/inter_bold"
-                    android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/card1"
-                    app:layout_constraintEnd_toEndOf="@+id/card1"
-                    app:layout_constraintHorizontal_bias="0.637"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/card1"
-                    app:layout_constraintVertical_bias="0.083" />
+                    <!-- All buttons moved inside CardView -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                <Button
-                    android:id="@+id/allocate_otbt"
-                    android:layout_width="@dimen/dp290"
-                    android:layout_height="@dimen/dp45"
-                    android:layout_marginTop="@dimen/dp8"
-                    android:background="@drawable/btn_bg"
-                    android:drawableLeft="@drawable/chevron_right"
-                    android:paddingLeft="@dimen/dp10"
-                    android:text="Allocate overtime"
-                    android:textSize="@dimen/dp14"
-                    android:fontFamily="@font/inter_bold"
-                    android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/card1"
-                    app:layout_constraintEnd_toEndOf="@+id/advance_paybt"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="@+id/advance_paybt"
-                    app:layout_constraintTop_toBottomOf="@+id/advance_paybt"
-                    app:layout_constraintVertical_bias="0.068" />
+                        <Button
+                            android:id="@+id/advance_paybt"
+                            android:layout_width="@dimen/dp290"
+                            android:layout_height="@dimen/dp45"
+                            android:background="@drawable/btn_bg"
+                            android:drawableLeft="@drawable/chevron_right"
+                            android:elevation="@dimen/dp20"
+                            android:paddingLeft="@dimen/dp10"
+                            android:layout_margin="@dimen/dp16"
+                            android:text="Advance payment"
+                            android:textSize="@dimen/dp14"
+                            android:fontFamily="@font/inter_bold"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintVertical_bias="0.083" />
 
-                <Button
-                    android:id="@+id/cnt_empbt"
-                    android:layout_width="@dimen/dp290"
-                    android:layout_height="@dimen/dp45"
-                    android:background="@drawable/btn_bg"
-                    android:drawableLeft="@drawable/chevron_right"
-                    android:paddingLeft="@dimen/dp10"
-                    android:text="Contact Employee"
-                    android:textSize="@dimen/dp14"
-                    android:fontFamily="@font/inter_bold"
-                    android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/card1"
-                    app:layout_constraintEnd_toEndOf="@+id/leave_managbt"
-                    app:layout_constraintStart_toStartOf="@+id/leave_managbt"
-                    app:layout_constraintTop_toBottomOf="@+id/leave_managbt" />
+                        <Button
+                            android:id="@+id/allocate_otbt"
+                            android:layout_width="@dimen/dp290"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_marginTop="@dimen/dp8"
+                            android:background="@drawable/btn_bg"
+                            android:drawableLeft="@drawable/chevron_right"
+                            android:paddingLeft="@dimen/dp10"
+                            android:text="Allocate overtime"
+                            android:textSize="@dimen/dp14"
+                            android:layout_margin="@dimen/dp16"
+                            android:fontFamily="@font/inter_bold"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toBottomOf="@+id/advance_paybt"
+                            app:layout_constraintStart_toStartOf="@+id/advance_paybt"
+                            app:layout_constraintEnd_toEndOf="@+id/advance_paybt" />
 
-                <Button
-                    android:id="@+id/leave_managbt"
-                    android:layout_width="@dimen/dp290"
-                    android:layout_height="@dimen/dp45"
-                    android:background="@drawable/btn_bg"
-                    android:drawableLeft="@drawable/chevron_right"
-                    android:paddingStart="@dimen/dp10"
-                    android:text="Leave management"
-                    android:textSize="@dimen/dp14"
-                    android:fontFamily="@font/inter_bold"
-                    android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/card1"
-                    app:layout_constraintEnd_toEndOf="@+id/allocate_otbt"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="@+id/allocate_otbt"
-                    app:layout_constraintTop_toBottomOf="@+id/allocate_otbt"
-                    app:layout_constraintVertical_bias="0.229" />
+                        <!-- View Report button inserted here -->
+                        <Button
+                            android:id="@+id/view_reportbt"
+                            android:layout_width="@dimen/dp290"
+                            android:layout_height="@dimen/dp45"
+                            android:layout_marginTop="@dimen/dp8"
+                            android:background="@drawable/btn_bg"
+                            android:drawableLeft="@drawable/chevron_right"
+                            android:paddingLeft="@dimen/dp10"
+                            android:layout_margin="@dimen/dp16"
+                            android:text="View Reports"
+                            android:textSize="@dimen/dp14"
+                            android:fontFamily="@font/inter_bold"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toBottomOf="@+id/allocate_otbt"
+                            app:layout_constraintStart_toStartOf="@+id/allocate_otbt"
+                            app:layout_constraintEnd_toEndOf="@+id/allocate_otbt" />
+
+                        <Button
+                            android:id="@+id/leave_managbt"
+                            android:layout_width="@dimen/dp290"
+                            android:layout_height="@dimen/dp45"
+                            android:background="@drawable/btn_bg"
+                            android:drawableLeft="@drawable/chevron_right"
+                            android:paddingStart="@dimen/dp10"
+                            android:text="Leave management"
+                            android:layout_margin="@dimen/dp16"
+                            android:textSize="@dimen/dp14"
+                            android:fontFamily="@font/inter_bold"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toBottomOf="@+id/view_reportbt"
+                            app:layout_constraintStart_toStartOf="@+id/view_reportbt"
+                            app:layout_constraintEnd_toEndOf="@+id/view_reportbt" />
+
+                        <Button
+                            android:id="@+id/cnt_empbt"
+                            android:layout_width="@dimen/dp290"
+                            android:layout_height="@dimen/dp45"
+                            android:background="@drawable/btn_bg"
+                            android:drawableLeft="@drawable/chevron_right"
+                            android:paddingLeft="@dimen/dp10"
+                            android:text="Contact Employee"
+                            android:layout_margin="@dimen/dp16"
+                            android:textSize="@dimen/dp14"
+                            android:fontFamily="@font/inter_bold"
+                            android:textAlignment="center"
+                            app:layout_constraintTop_toBottomOf="@+id/leave_managbt"
+                            app:layout_constraintStart_toStartOf="@+id/leave_managbt"
+                            app:layout_constraintEnd_toEndOf="@+id/leave_managbt" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
