@@ -1,0 +1,51 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="4dp"
+    android:elevation="4dp"
+    app:cardCornerRadius="12dp"
+    app:cardUseCompatPadding="true"
+    android:backgroundTint="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Report Title -->
+        <TextView
+            android:id="@+id/reportTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="System Issue"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:ellipsize="end"
+            android:singleLine="true" />
+
+        <!-- Report Description -->
+        <TextView
+            android:id="@+id/reportDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Unable to login into EMS system. Please check."
+            android:textSize="13sp"
+            android:textColor="@color/dark_gray"
+            android:layout_marginTop="2dp" />
+
+        <!-- Footer Row with Date -->
+        <TextView
+            android:id="@+id/reportDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2025-03-19"
+            android:textSize="11sp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="4dp"
+            android:gravity="end"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

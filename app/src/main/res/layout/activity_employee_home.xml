@@ -198,98 +198,102 @@
         app:layout_constraintTop_toTopOf="@+id/sal_View"
         app:layout_constraintVertical_bias="0.105" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint"
-        android:layout_width="@dimen/dp360"
-        android:layout_height="@dimen/dp300"
-        android:layout_marginTop="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/at_View">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card1"
-            android:layout_width="@dimen/dp330"
-            android:layout_height="@dimen/dp275"
-            app:cardCornerRadius="@dimen/dp30"
-            app:layout_constraintBottom_toBottomOf="@+id/constraint"
-            app:layout_constraintEnd_toEndOf="@+id/constraint"
-            app:layout_constraintHorizontal_bias="0.483"
-            app:layout_constraintStart_toStartOf="@+id/constraint"
-            app:layout_constraintTop_toTopOf="@+id/constraint" />
-
-        <Button
-            android:id="@+id/advance_paybt"
-            android:layout_width="@dimen/dp290"
-            android:layout_height="@dimen/dp45"
-            android:background="@drawable/btn_bg"
-            android:drawableLeft="@drawable/chevron_right"
-            android:elevation="@dimen/dp20"
-            android:fontFamily="@font/inter_bold"
-            android:paddingLeft="@dimen/dp10"
-            android:text="Advance payment"
-            android:textAlignment="center"
-            android:textSize="@dimen/dp14"
-            app:layout_constraintBottom_toBottomOf="@+id/card1"
-            app:layout_constraintEnd_toEndOf="@+id/card1"
-            app:layout_constraintHorizontal_bias="0.637"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint"
+            android:layout_width="@dimen/dp360"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/card1"
-            app:layout_constraintVertical_bias="0.083" />
+            app:layout_constraintTop_toBottomOf="@id/at_View">
 
-        <Button
-            android:id="@+id/ot_request"
-            android:layout_width="@dimen/dp290"
-            android:layout_height="@dimen/dp45"
-            android:layout_marginTop="@dimen/dp8"
-            android:background="@drawable/btn_bg"
-            android:drawableLeft="@drawable/chevron_right"
-            android:fontFamily="@font/inter_bold"
-            android:paddingLeft="@dimen/dp10"
-            android:text="Overtime Request"
-            android:textAlignment="center"
-            android:textSize="@dimen/dp14"
-            app:layout_constraintBottom_toBottomOf="@+id/card1"
-            app:layout_constraintEnd_toEndOf="@+id/advance_paybt"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/advance_paybt"
-            app:layout_constraintTop_toBottomOf="@+id/advance_paybt"
-            app:layout_constraintVertical_bias="0.068" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card1"
+                android:layout_width="@dimen/dp330"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="@dimen/dp30"
+                app:cardElevation="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/btn_useapp"
-            android:layout_width="@dimen/dp290"
-            android:layout_height="@dimen/dp45"
-            android:background="@drawable/btn_bg"
-            android:drawableLeft="@drawable/chevron_right"
-            android:fontFamily="@font/inter_bold"
-            android:paddingLeft="@dimen/dp10"
-            android:text="How to use App"
-            android:textAlignment="center"
-            android:textSize="@dimen/dp14"
-            app:layout_constraintBottom_toBottomOf="@+id/card1"
-            app:layout_constraintEnd_toEndOf="@+id/help_btn"
-            app:layout_constraintStart_toStartOf="@+id/help_btn"
-            app:layout_constraintTop_toBottomOf="@+id/help_btn" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-        <Button
-            android:id="@+id/help_btn"
-            android:layout_width="@dimen/dp290"
-            android:layout_height="@dimen/dp45"
-            android:background="@drawable/btn_bg"
-            android:drawableLeft="@drawable/chevron_right"
-            android:fontFamily="@font/inter_bold"
-            android:paddingStart="@dimen/dp10"
-            android:text="@string/help_support"
-            android:textAlignment="center"
-            android:textSize="@dimen/dp14"
-            app:layout_constraintBottom_toBottomOf="@+id/card1"
-            app:layout_constraintEnd_toEndOf="@+id/ot_request"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/ot_request"
-            app:layout_constraintTop_toBottomOf="@+id/ot_request"
-            app:layout_constraintVertical_bias="0.229" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <Button
+                        android:id="@+id/advance_paybt"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp50"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/btn_bg"
+                        android:drawableLeft="@drawable/chevron_right"
+                        android:fontFamily="@font/inter_bold"
+                        android:padding="12dp"
+                        android:text="Advance Payment"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/dp14" />
+
+                    <Button
+                        android:id="@+id/ot_request"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp50"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/btn_bg"
+                        android:drawableLeft="@drawable/chevron_right"
+                        android:fontFamily="@font/inter_bold"
+                        android:padding="12dp"
+                        android:text="Overtime Request"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/dp14" />
+
+                    <Button
+                        android:id="@+id/report_problem"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp50"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/btn_bg"
+                        android:drawableLeft="@drawable/chevron_right"
+                        android:fontFamily="@font/inter_bold"
+                        android:padding="12dp"
+                        android:text="Report Problem"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/dp14" />
+
+                    <Button
+                        android:id="@+id/help_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp50"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/btn_bg"
+                        android:drawableLeft="@drawable/chevron_right"
+                        android:fontFamily="@font/inter_bold"
+                        android:padding="12dp"
+                        android:text="Help &amp; Support"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/dp14" />
+
+                    <Button
+                        android:id="@+id/btn_useapp"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp50"
+                        android:background="@drawable/btn_bg"
+                        android:drawableLeft="@drawable/chevron_right"
+                        android:fontFamily="@font/inter_bold"
+                        android:padding="12dp"
+                        android:layout_marginBottom="@dimen/dp5"
+                        android:text="How to use App"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/dp14" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -63,6 +63,7 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         ImageButton btnLeaveManage = findViewById(R.id.btn_leave_manage);
 
         Button otReq = findViewById(R.id.ot_request);
+        Button RepProb= findViewById(R.id.report_problem);
 
         // Profile ImageView
         ImageView empProfile = findViewById(R.id.emp_profile);
@@ -80,6 +81,7 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         btnLeaveManage.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
 
         otReq.setOnClickListener(v -> navigateTo(EmpOtbtn.class));
+        RepProb.setOnClickListener(v ->navigateTo(ReportListActivity.class));
     }
 
     // Open UpdateEmployee activity

@@ -11,6 +11,7 @@
     <color name="dark_blue">#3F51B5</color>       <!-- Overtime -->
     <color name="darkgray">#9E9E9E</color>       <!-- Not Marked -->
     <color name="primary">#4CAF50</color> <!-- Modern Green Shade -->
+    <color name="dark_gray">#424242</color>
 
 
 </resources>
