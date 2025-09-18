@@ -202,4 +202,4 @@ public class home extends AppCompatActivity {
             startActivity(intent);
         });
     }
-}
+}.
