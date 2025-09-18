@@ -97,14 +97,13 @@ public class add_emp extends AppCompatActivity {
     }
 
     private void setClickListeners() {
-        backButton.setOnClickListener(view -> startActivity(new Intent(add_emp.this, emp_list.class)));
-        addemp_text.setOnClickListener(view -> startActivity(new Intent(add_emp.this, emp_list.class)));
+        backButton.setOnClickListener(view -> goBackWithIntent());
+        addemp_text.setOnClickListener(view -> goBackWithIntent());
 
         icCalendarDob.setOnClickListener(v -> showDatePickerDialog(etDateOfBirth));
         icCalendarJoining.setOnClickListener(v -> showDatePickerDialog(etJoiningDate));
         etDateOfBirth.setOnClickListener(v -> showDatePickerDialog(etDateOfBirth));
         etJoiningDate.setOnClickListener(v -> showDatePickerDialog(etJoiningDate));
-
 
         profilePic.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -113,6 +112,39 @@ public class add_emp extends AppCompatActivity {
 
         saveButton.setOnClickListener(v -> addEmployee());
     }
+
+    private void goBackWithIntent() {
+        // Prefer extras if available, otherwise fallback to SharedPreferences
+        String companyCode = getIntent().getStringExtra("company_code");
+        String email = getIntent().getStringExtra("email");
+        String role = getIntent().getStringExtra("role");
+
+        if (companyCode == null || email == null || role == null) {
+            SharedPreferences prefs = getSharedPreferences("AdminPrefs", MODE_PRIVATE);
+            companyCode = prefs.getString("company_code", "");
+            email = prefs.getString("email", "");
+            role = prefs.getString("role", "");
+        }
+
+        Intent backIntent = new Intent(add_emp.this, emp_list.class);
+        backIntent.putExtra("company_code", companyCode);
+        backIntent.putExtra("email", email);
+        backIntent.putExtra("role", role);
+        backIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(backIntent);
+        finish();
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        // ❌ remove super.onBackPressed()
+        super.onBackPressed();
+        goBackWithIntent();  // use our method with role/company_code/email
+    }
+
+
 
 
     @SuppressLint("MissingSuperCall")
@@ -305,8 +337,9 @@ public class add_emp extends AppCompatActivity {
                         JSONObject jsonObject = new JSONObject(response);
                         if (jsonObject.getString("status").equals("success")) {
                             Toast.makeText(this, "Employee added successfully", Toast.LENGTH_SHORT).show();
-                            finish();
-                        } else {
+                            goBackWithIntent(); // ✅ redirect with correct role & company_code
+                        }
+                        else {
                             Toast.makeText(this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {

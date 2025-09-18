@@ -137,10 +137,25 @@ public class ContactEmpList extends AppCompatActivity {
     }
 
     private void loadBranchesAndEmployees() {
-        String companyCode = getSharedPreferences("AdminPrefs", MODE_PRIVATE).getString("company_code", "");
-        String url = GET_BRANCHES_URL + "?company_code=" + companyCode;
+        String companyCode = getIntent().getStringExtra("company_code");
+        String email = getIntent().getStringExtra("email");
+        String role = getIntent().getStringExtra("role");
 
-        // ✅ Clear data at the start to prevent duplication
+        String url;
+
+        if ("admin".equalsIgnoreCase(role)) {
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&admin_email=" + email;
+        } else if ("manager".equalsIgnoreCase(role)) {
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&manager_email=" + email;
+        } else if ("supervisor".equalsIgnoreCase(role)) {
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&supervisor_email=" + email;
+        } else if ("employee".equalsIgnoreCase(role)) {
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode + "&employee_email=" + email;
+        } else {
+            url = GET_BRANCHES_URL + "?company_code=" + companyCode;
+        }
+
+        // ✅ Clear before reloading
         listGroupTitles.clear();
         listData.clear();
 
@@ -153,7 +168,6 @@ public class ContactEmpList extends AppCompatActivity {
                             JSONObject branchObj = branchesArray.getJSONObject(i);
                             String branchName = branchObj.getString("branch_name");
 
-                            // Ensure unique branch entries
                             if (!listGroupTitles.contains(branchName)) {
                                 listGroupTitles.add(branchName);
                             }
@@ -166,7 +180,6 @@ public class ContactEmpList extends AppCompatActivity {
 
                                 String employeeId = empObj.getString("employee_id");
 
-                                // ✅ Prevent duplicate employees
                                 boolean isDuplicate = false;
                                 for (Employee emp : employees) {
                                     if (emp.getId().equals(employeeId)) {

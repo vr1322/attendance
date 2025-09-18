@@ -69,6 +69,9 @@ public class emp_list extends AppCompatActivity {
     private static final String BASE_URL = "https://devonix.io/ems_api/";
     private static final String GET_BRANCHES_URL = BASE_URL + "get_branches_employees.php";
     private static final int STORAGE_PERMISSION_CODE = 100;
+    private String companyCode;
+    private String email;
+    private String role;
 
     private FloatingActionButton addFab, addBranchFab, addEmployeeFab;
     private TextView addAlarmText, addPersonText;
@@ -93,6 +96,19 @@ public class emp_list extends AppCompatActivity {
         addEmployeeFab = findViewById(R.id.add_employee_fab);
         addAlarmText = findViewById(R.id.add_alarm_action_text);
         addPersonText = findViewById(R.id.add_person_action_text);
+        companyCode = getIntent().getStringExtra("company_code");
+        email = getIntent().getStringExtra("email");
+        role = getIntent().getStringExtra("role");
+
+        // ✅ Get role
+        if (role == null) role = "";
+
+// ✅ Disable Add Branch FAB if role is Manager or Supervisor
+        if (role.equalsIgnoreCase("manager") || role.equalsIgnoreCase("supervisor")) {
+            addBranchFab.setVisibility(View.GONE);
+            addAlarmText.setVisibility(View.GONE);
+        }
+
         fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open);
         fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close);
         rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward);
@@ -157,14 +173,23 @@ public class emp_list extends AppCompatActivity {
         addFab.setOnClickListener(view -> toggleFabVisibility(!isOpen));
 
         addBranchFab.setOnClickListener(view -> {
+            if (role.equalsIgnoreCase("manager") || role.equalsIgnoreCase("supervisor")) {
+                Toast.makeText(emp_list.this, "Permission denied!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent intent = new Intent(emp_list.this, AddBranchActivity.class);
             startActivity(intent);
         });
 
         addEmployeeFab.setOnClickListener(view -> {
             Intent intent = new Intent(emp_list.this, add_emp.class);
+            intent.putExtra("company_code", companyCode);
+            intent.putExtra("email", email);
+            intent.putExtra("role", role);
             startActivity(intent);
         });
+
+
 
 
         listGroupTitles = new ArrayList<>();

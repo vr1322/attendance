@@ -41,6 +41,9 @@ public class BranchListActivity extends AppCompatActivity implements BranchAdapt
     private FloatingActionButton fabAddBranch;
     private ImageView backButton;
 
+
+    private String role = "";  // ✅ Store role for permission check
+
     private static final String GET_BRANCHES_URL = "https://devonix.io/ems_api/get_branches.php";
     private static final String DELETE_BRANCH_URL = "https://devonix.io/ems_api/delete_branch.php";
     private static final String TAG = "BranchListActivity";
@@ -55,10 +58,19 @@ public class BranchListActivity extends AppCompatActivity implements BranchAdapt
         fabAddBranch = findViewById(R.id.fab_add_branch);
         backButton = findViewById(R.id.back);
 
+        // ✅ Get role from Intent
+        role = getIntent().getStringExtra("role");
+        if (role == null) role = "";
+
         // Set up RecyclerView
         branchRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         branchAdapter = new BranchAdapter(this, this);
         branchRecyclerView.setAdapter(branchAdapter);
+
+        // ✅ Disable FAB if role is Manager or Supervisor
+        if (role.equalsIgnoreCase("manager") || role.equalsIgnoreCase("supervisor")) {
+            fabAddBranch.setVisibility(View.GONE);  // Hide Add Branch
+        }
 
         // Load branches from API
         loadBranches();
@@ -81,6 +93,10 @@ public class BranchListActivity extends AppCompatActivity implements BranchAdapt
 
     @Override
     public void onEditBranch(Branch branch) {
+        if (role.equalsIgnoreCase("manager") || role.equalsIgnoreCase("supervisor")) {
+            Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(this, EditBranchActivity.class);
         intent.putExtra("branch_id", branch.getId());
         intent.putExtra("branch_name", branch.getName());
@@ -171,6 +187,10 @@ public class BranchListActivity extends AppCompatActivity implements BranchAdapt
 
     @Override
     public void onDeleteBranch(int position, int branchId) {
+        if (role.equalsIgnoreCase("manager") || role.equalsIgnoreCase("supervisor")) {
+            Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (branchList.isEmpty()) {
             Toast.makeText(this, "No branches available to delete!", Toast.LENGTH_SHORT).show();
             return;
