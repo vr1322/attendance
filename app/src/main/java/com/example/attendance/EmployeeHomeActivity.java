@@ -64,23 +64,36 @@ public class EmployeeHomeActivity extends AppCompatActivity {
 
         Button otReq = findViewById(R.id.ot_request);
         Button RepProb= findViewById(R.id.report_problem);
-
+        Button ad_pay_btn = findViewById(R.id.advance_paybt);
         // Profile ImageView
         ImageView empProfile = findViewById(R.id.emp_profile);
         empProfile.setOnClickListener(v -> openUpdateEmployee());
 
         // Click events
-        atView.setOnClickListener(v -> navigateTo(AttendanceTrackingActivity.class));
-        lmView.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
+        atView.setOnClickListener(v -> {
+            Toast.makeText(EmployeeHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
+        lmView.setOnClickListener(v -> {
+            Toast.makeText(EmployeeHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
         maView.setOnClickListener(v -> handleMarkAttendance());
         salView.setOnClickListener(v -> openSalaryView()); // ✅ updated
 
         btnMarkAttendance.setOnClickListener(v -> handleMarkAttendance());
-        btnAttendTrack.setOnClickListener(v -> navigateTo(AttendanceTrackingActivity.class));
+        btnAttendTrack.setOnClickListener(v -> {
+            Toast.makeText(EmployeeHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
         btnSalDetail.setOnClickListener(v -> openSalaryView()); // ✅ updated
-        btnLeaveManage.setOnClickListener(v -> navigateTo(LeaveManagementActivity.class));
+        btnLeaveManage.setOnClickListener(v -> {
+            Toast.makeText(EmployeeHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
 
-        otReq.setOnClickListener(v -> navigateTo(EmpOtbtn.class));
+        otReq.setOnClickListener(v -> {
+            Toast.makeText(EmployeeHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
+        ad_pay_btn.setOnClickListener(v -> {
+            Toast.makeText(EmployeeHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
         RepProb.setOnClickListener(v ->navigateTo(ReportListActivity.class));
     }
 

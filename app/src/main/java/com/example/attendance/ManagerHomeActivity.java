@@ -133,12 +133,22 @@ public class ManagerHomeActivity extends AppCompatActivity {
         assignClickListener(ab_View, BranchListActivity.class);
         assignClickListener(ma_View, attendance_report.class);
         assignClickListener(sal_View, SalaryViewActivity.class);
-        assignClickListener(all_ot_btn, AllocateOtPage.class);
         assignClickListener(cnt_emp_btn, ContactEmpList.class);
 
         // ✅ Mark Attendance Click Events (both card & button)
         markAttendanceCard.setOnClickListener(v -> handleMarkAttendance());
         mark_Button.setOnClickListener(v -> handleMarkAttendance());
+
+        ad_pay_btn.setOnClickListener(v -> {
+            Toast.makeText(ManagerHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
+        //assignClickListener(all_ot_btn, AllocateOvertimeActivity.class);
+        all_ot_btn.setOnClickListener(v -> {
+            Toast.makeText(ManagerHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
+        leave_manage_btn.setOnClickListener(v -> {
+            Toast.makeText(ManagerHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
     }
 
     /**

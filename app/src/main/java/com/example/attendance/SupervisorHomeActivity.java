@@ -31,7 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SupervisorHomeActivity extends AppCompatActivity {
 
     private ImageButton el_button, ab_Button, ma_Button, mark_Button;
-    private Button ad_pay_btn, leave_manage_btn, sal_View, cnt_emp_btn;
+    private Button ad_pay_btn,all_ot_btn, leave_manage_btn, sal_View, cnt_emp_btn;
     private CardView el_View, ab_View, ma_View, markAttendanceCard;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
@@ -61,6 +61,7 @@ public class SupervisorHomeActivity extends AppCompatActivity {
         ma_View = findViewById(R.id.ma_View);
         sal_View = findViewById(R.id.sal_View);
         ad_pay_btn = findViewById(R.id.advance_paybt);
+        all_ot_btn = findViewById(R.id.allocate_otbt);
         leave_manage_btn = findViewById(R.id.leave_managbt);
         cnt_emp_btn = findViewById(R.id.cnt_empbt);
         markAttendanceCard = findViewById(R.id.Mark_Attendance);
@@ -138,9 +139,16 @@ public class SupervisorHomeActivity extends AppCompatActivity {
         markAttendanceCard.setOnClickListener(v -> handleMarkAttendance());
         mark_Button.setOnClickListener(v -> handleMarkAttendance());
 
-        // Hide buttons if supervisor should not access them
-        ad_pay_btn.setVisibility(View.GONE);
-        leave_manage_btn.setVisibility(View.GONE);
+        ad_pay_btn.setOnClickListener(v -> {
+            Toast.makeText(SupervisorHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
+        //assignClickListener(all_ot_btn, AllocateOvertimeActivity.class);
+        all_ot_btn.setOnClickListener(v -> {
+            Toast.makeText(SupervisorHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
+        leave_manage_btn.setOnClickListener(v -> {
+            Toast.makeText(SupervisorHomeActivity.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void handleMarkAttendance() {

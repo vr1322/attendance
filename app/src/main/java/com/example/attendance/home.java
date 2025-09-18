@@ -146,8 +146,14 @@ public class home extends AppCompatActivity {
         // 🔹 Changed here → First go to emp_list instead of salary_calculation
         assignClickListener(sal_View, EmployeeSalaryListActivity.class);
         assignClickListener(cnt_emp_btn, ContactEmpList.class);
+        ad_pay_btn.setOnClickListener(v -> {
+            Toast.makeText(home.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
         //assignClickListener(all_ot_btn, AllocateOvertimeActivity.class);
         all_ot_btn.setOnClickListener(v -> {
+            Toast.makeText(home.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
+        });
+        leave_manage_btn.setOnClickListener(v -> {
             Toast.makeText(home.this, "🚀 This feature will come in a future update!", Toast.LENGTH_SHORT).show();
         });
     }
