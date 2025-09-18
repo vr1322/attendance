@@ -135,4 +135,4 @@ public class EmployeeHomeActivity extends AppCompatActivity {
         Intent intent = new Intent(EmployeeHomeActivity.this, targetActivity);
         startActivity(intent);
     }
-}.
+}

@@ -206,4 +206,4 @@ public class SupervisorHomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-}.
+}
