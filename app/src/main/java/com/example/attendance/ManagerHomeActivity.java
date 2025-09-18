@@ -132,7 +132,7 @@ public class ManagerHomeActivity extends AppCompatActivity {
         assignClickListener(el_View,  emp_list.class);
         assignClickListener(ab_View, BranchListActivity.class);
         assignClickListener(ma_View, attendance_report.class);
-        assignClickListener(sal_View, salary_calculation.class);
+        assignClickListener(sal_View, SalaryViewActivity.class);
         assignClickListener(all_ot_btn, AllocateOtPage.class);
         assignClickListener(cnt_emp_btn, ContactEmpList.class);
 
